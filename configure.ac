@@ -1,5 +1,6 @@
-AC_INIT(src/sockets.ads)
-AM_CONFIG_HEADER(src/config.h)
+AC_INIT
+AC_CONFIG_SRCDIR([src/sockets.ads])
+AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_AUX_DIR(support)
 #
 # Package description
@@ -10,16 +11,11 @@ AC_SUBST(LIBVERSIONINFO)
 LT_INIT
 #
 AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
-AC_PROG_CC
-AC_OBJEXT
-AC_EXEEXT
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 #
 # Check for maintainer mode
 #
 AC_ARG_ENABLE(debug,
-AC_HELP_STRING([--enable-debug], [turn on debugging options]),
+AS_HELP_STRING(--enable-debug,turn on debugging options),
 [ADAFLAGS="-g -O2 -Wall -gnatag"],
 [ADAFLAGS="-O2 -gnatpng"])
 AC_SUBST(ADAFLAGS)
@@ -27,7 +23,7 @@ AC_SUBST(ADAFLAGS)
 # Check for documentation build and installation
 #
 AC_ARG_ENABLE(doc,
-AC_HELP_STRING([--disable-doc], [do not build and install documentation]),
+AS_HELP_STRING(--disable-doc,do not build and install documentation),
 [case "${enableval}" in
   yes) doc=true ;;
   no)  doc=false ;;
@@ -38,7 +34,7 @@ AM_CONDITIONAL(BUILD_DOC, test x$doc = xtrue)
 # Check for examples build and installation
 #
 AC_ARG_ENABLE(examples,
-AC_HELP_STRING([--disable-examples], [do not build and install examples]),
+AS_HELP_STRING(--disable-examples,do not build and install examples),
 [case "${enableval}" in
   yes) examples=true ;;
   no)  examples=false ;;
@@ -57,7 +53,7 @@ AC_CHECK_PROG(DVIPS, dvips, dvips)
 #
 AC_CHECK_PROG([GNATMAKE], [gnatmake], [gnatmake])
 if test -z "$GNATMAKE"; then
-  AC_ERROR([unable to find gnatmake])
+  AC_MSG_ERROR([unable to find gnatmake])
 fi
 #
 # Test for -lnsl and -lsocket
@@ -102,7 +98,7 @@ AC_SUBST(WINNEEDED)
 #
 # Output
 #
-AC_OUTPUT([Makefile
+AC_CONFIG_FILES([Makefile
            support/adacompiler
            src/Makefile
            src/sockets-link.ads
@@ -111,3 +107,4 @@ AC_OUTPUT([Makefile
            man/Makefile
            examples/Makefile
            doc/Makefile])
+AC_OUTPUT
