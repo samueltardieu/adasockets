@@ -4,6 +4,9 @@
 
 Fix documentation, thanks to <odyssee.tremoulis@atosorigin.com>.
 
+Do not require a C++ compiler to be present because it is of no use.
+Request from Dmitriy Anisimkov <anisimkov@ada-ru.org>.
+
 * New in AdaSockets 1.8.4.5
 
 The Sockets.Naming.Value function now checks that a correct dotted IP address
