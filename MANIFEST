@@ -64,6 +64,11 @@ support/ltmain.sh
 support/adacompiler.in
 support/texinfo.tex
 support/mdate-sh
+support/argz.m4
+support/libtool.m4
+support/ltoptions.m4
+support/ltsugar.m4
+support/ltversion.m4
 Makefile.am
 Makefile.in
 contrib/win32/Readme.txt
