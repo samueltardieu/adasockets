@@ -1,0 +1,17 @@
+#! /bin/sh
+#
+# Extract the directory name from "-o .libs/foobar.lo" and do the move
+# after the compilation.
+#
+
+GNATMAKE="@GNATMAKE@"
+
+cline="$@"
+fname=`echo $cline | sed -e 's/^.* -o \([^ ]*\)$/\1/'`
+rname=`basename $fname | sed -e 's/lo$/o/'`
+cline=`echo $cline | sed -e "s, -o \([^ ]*\)\$,,"`
+$GNATMAKE -f -u $cline
+if [ "$rname" != "$fname" ]; then
+  echo mv $rname $fname
+  mv $rname $fname
+fi

@@ -1,0 +1,62 @@
+#!/bin/sh -e
+#
+# $Id: //depot/adabroker/main/broca/utils/make_distrib#2 $
+#
+# This script builds a compressed archive suitable for distribution.
+#
+# Usage: make_distrib dir
+#
+#   dir   : the distribution will unpack in directory <dir> and will be
+#           named <dir>.tar.gz
+#
+# The file MANIFEST contains the list of files to be included in this
+# archive, one file per line.
+#
+
+dir=temp$$
+prev=`pwd`
+tmp=${TMPDIR-/tmp}/t$$
+mkdir -p $tmp/$dir
+tar cf - . | (cd $tmp/$dir && tar xpBf -)
+chmod -R u+w $tmp/$dir
+cd $tmp/$dir
+echo Generating auto-generated files
+autoreconf --verbose --install
+echo Doing the necessary date modifications
+find . -name configure.ac -exec touch {} \;
+sleep 1
+find . -name aclocal.m4 -exec touch {} \;
+sleep 1
+find . -name Makefile.in -exec touch {} \;
+sleep 1
+find . -name configure -exec touch {} \;
+sleep 1
+find . -name stamp-h.in -exec touch {} \;
+sleep 1
+find . -name config.h.in -exec touch {} \;
+echo Configuring
+./configure
+echo Extracting the version
+newdir=`make version`
+echo Version is $newdir
+echo Building documentation
+(cd doc && gmake adasockets.info adasockets.dvi && dvips -o adasockets.ps adasockets.dvi && ps2pdf adasockets.ps adasockets.pdf)
+echo Setting timestamps on documentation
+sleep 2 && (cd doc && touch adasockets.info adasockets.ps adasockets.pdf)
+echo Adapting modes
+chmod -R +w .
+chmod -R og=u-w .
+flist=""
+echo Packaging
+for i in `cat MANIFEST`; do
+  flist="${flist} ${newdir}/${i}"
+done
+cd ..
+echo Renaming directory to $newdir
+mv $dir $newdir
+dir=$newdir
+tar cvf ${dir}.tar ${flist}
+gzip --best ${dir}.tar
+mv ${dir}.tar.gz ${prev}
+cd ${prev}
+rm -rf ${tmp}

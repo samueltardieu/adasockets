@@ -1,0 +1,87 @@
+/*=* Global settings.
+ *
+ * package: Sockets.Multicast
+ * intro:
+ *    The @code{Sockets.Multicast} allows the creation of IP multicast
+ *    sockets.
+=*/
+
+/*=type Multicast_Socket_FD
+ *
+ * what: IP multicast socket object
+ * def: new Socket_FD with private
+ * doc:
+ *    The @code{Multicast_Socket_FD} tagged type derives from the
+ *    @code{Socket_FD} type. It gets initialized by calling
+ *    @ref{Create_Multicast_Socket (function)}.
+=*/
+
+/*=subprogram Create_Multicast_Socket
+ *
+ * what: Create an IP multicast socket
+ * kind: function
+ * arg: Group, in, String,, IP address of the multicast group to join
+ * arg: Port, in, Positive,, Port of the multicast group to join
+ * arg: TTL, in, Positive, 16, Time-to-live of sent packets
+ * arg:
+ *   Self_Loop, in, Boolean, True, Should the socket receive the packets
+ *   sent from the local host?
+ * ret: Multicast_Socket_FD, The new initialized multicast socket
+ * doc:
+ *   This function creates an IP multicast socket attached to a given
+ *   group, identified by its class E IP address and port.
+ *
+ *   Be careful when choosing the TTL parameter of your IP multicast
+ *   socket. Most IP multicast routers do implement threshold-based
+ *   filtering and will not let IP multicast packets leave your
+ *   organization if the TTL on the last router is smaller than 16.
+ * concept: Creating a socket
+ * concept: Creating a multicast socket
+ * example:
+ * $ declare
+ * $    Sock : Multicast_Socket_FD;
+ * $ begin
+ * $    -- Create a multicast socket on group 224.1.2.3 port 8763
+ * $    Sock := Create_Multicast_Socket ("224.1.2.3", 8763);
+ * $    -- Perform some operations on socket
+ * $    [...]
+ * $    -- Shutdown the socket in both directions
+ * $    Shutdown (Sock, Both);
+ * $ end;
+ * see: Send (procedure)
+ * see: Shutdown (procedure)
+=*/
+
+/*=subprogram Create_Multicast_Socket
+ *
+ * what: Create an IP multicast socket
+ * kind: function
+ * arg: Group, in, String,, IP address of the multicast group to join
+ * arg: Port, in, Positive,, Port of the multicast group to join
+ * arg: Local_Port, in, Natural,, Local port number to use
+ * arg: TTL, in, Positive, 16, Time-to-live of sent packets
+ * ret: Multicast_Socket_FD, The new initialized multicast socket
+ * doc:
+ *   This function creates an IP multicast socket attached to a given
+ *   group, identified by its class E IP address and port. If
+ *   Local_Port is 0, a free port will automatically be chosen by
+ *   your operating system.
+ *
+ *   This function should be used when you want to send packets
+ *   to a multicast group without receiving any packet yourself.
+ * concept: Creating a socket
+ * concept: Creating a multicast socket
+ * example:
+ * $ declare
+ * $    Sock : Multicast_Socket_FD;
+ * $ begin
+ * $    -- Create a multicast socket on group 224.1.2.3 port 8763
+ * $    Sock := Create_Multicast_Socket ("224.1.2.3", 8763);
+ * $    -- Perform some operations on socket
+ * $    [...]
+ * $    -- Shutdown the socket in both directions
+ * $    Shutdown (Sock, Both);
+ * $ end;
+ * see: Send (procedure)
+ * see: Shutdown (procedure)
+=*/

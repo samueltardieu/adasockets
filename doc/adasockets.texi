@@ -1,0 +1,370 @@
+\input texinfo   @c -*-texinfo-*-
+@setfilename adasockets.info
+@settitle AdaSockets reference manual
+
+@setchapternewpage odd
+
+@include version.texi
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* adasockets: (adasockets).		AdaSockets reference manual
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@ifinfo
+Copyright @copyright{} 2002-2004 Samuel Tardieu
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+@end ifinfo
+
+@titlepage
+@finalout
+@title AdaSockets reference manual
+@subtitle for AdaSockets version @value{VERSION}
+@subtitle @value{UPDATED}
+@author Samuel Tardieu
+@page
+
+@vskip 0pt plus 1filll
+
+Copyright @copyright{} 2002-2004 Samuel Tardieu
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+
+@end titlepage
+
+@c New indices: constants (ct) and exceptions (ex)
+@defindex ct
+@defindex ex
+
+@syncodeindex ex cp
+@syncodeindex ct cp
+@syncodeindex vr cp
+@syncodeindex fn cp
+@syncodeindex tp cp
+
+@contents
+
+@c ---------------------------------------------------------------
+@node Top, What is AdaSockets?, (dir), (dir)
+
+@menu
+* What is AdaSockets?::         
+* Installing AdaSockets::       
+* Using AdaSockets::            
+* Sockets package::             
+* Sockets.Multicast package::   
+* Sockets.Naming package::      
+* Contributors::                
+* Resources on the Internet::   
+* Index::                       
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Using AdaSockets
+
+* Compiling an Ada application::  
+* Setting up unicast sockets::  
+* Setting up multicast sockets::  
+* Sending and receiving data::  
+
+Sending and receiving data
+
+* Raw data manipulation::       
+* String-oriented exchanges::   
+
+@end detailmenu
+@end menu
+
+@node What is AdaSockets?, Installing AdaSockets, Top, Top
+@chapter What is AdaSockets?
+@cindex AdaSockets presentation
+@cindex Comparaison with @code{GNAT.Sockets}
+
+AdaSockets is a set of free software Ada packages allowing Ada
+programmers to use the so-called BSD sockets from their favourite
+programming language. AdaSockets has been designed and tested with the
+GNAT free software Ada compiler, but should be portable to other
+compilers quite easily.
+
+Starting from release 3.14, the GNAT compiler started to integrate a
+@code{GNAT.Sockets} package. However, this package is GNAT specific and
+contains at this time less features than AdaSockets. At some point,
+AdaSockets may use @code{GNAT.Sockets} as its underlying sockets structure.
+
+AdaSockets philosophy is to help the Ada programmer by providing
+easy-to-use objects. Special care has been taken to ensure that
+performances do however remain good.
+
+@node Installing AdaSockets, Using AdaSockets, What is AdaSockets?, Top
+@chapter Installing AdaSockets
+@cindex Installing AdaSockets
+
+Installing AdaSockets on a Unix or OpenVMS machine is as simple as
+typing a few commands. Once you got the latest version of AdaSockets
+(@pxref{Resources on the Internet}), uncompress and untar it and go to
+the top-level directory of the distribution.
+
+You must configure the AdaSockets distribution by using the
+@command{configure} command, such as in:
+
+@example
+./configure --prefix=/users/sam/adasockets
+@end example
+
+If you want to install AdaSockets under the @file{/usr/local} hierarchy,
+you do not need to specify the @option{--prefix} option. Make sure you
+have write permission on the target directories.
+
+Once AdaSockets is configured, you can compile and install it by using the
+@command{make} command:
+
+@example
+make install
+@end example
+
+The GNU make program is recommended but not mandatory. On your system,
+it may be installed under the @command{gmake} name.
+
+@node Using AdaSockets, Sockets package, Installing AdaSockets, Top
+@chapter Using AdaSockets
+
+@menu
+* Compiling an Ada application::  
+* Setting up unicast sockets::  
+* Setting up multicast sockets::  
+* Sending and receiving data::  
+@end menu
+
+@node Compiling an Ada application, Setting up unicast sockets, Using AdaSockets, Using AdaSockets
+@section Compiling an Ada application
+
+AdaSockets comes with an @code{adasockets-config} application that can
+be used to retrieve installation parameters while using @code{gnatmake}
+to compile your Ada application. The @code{--cflags} parameters tells
+@code{adasockets-config} to output the path to the Ada packages sources,
+while @code{--libs} asks for the path to the Ada library.
+
+@example
+gnatmake `adasockets-config --cflags` mainprog
+  -largs `adasockets-config --libs`
+@end example
+
+@node Setting up unicast sockets, Setting up multicast sockets, Compiling an Ada application, Using AdaSockets
+@section Setting up unicast sockets
+@cindex Unicast sockets
+@cindex Creating a unicast socket
+@cindex Creating a TCP socket
+@cindex Creating a UDP socket
+@cindex TCP socket
+@cindex UDP socket
+@cindex Creating a socket
+@tindex Socket_FD
+@findex Sockets.Socket
+@findex Socket
+
+Unicast sockets are used everywhere on the Internet, for surfing the
+web, sending electronic mails or accessing remote files. They come in
+two flavours:
+@table @asis
+@item TCP
+TCP is a connected mode, in which packets are sent in a reliable and
+ordered way. Everything sent at one end will eventually arrive in the
+same order at the other end, the underlying operating system takes care
+of retransmitting missing packets and reordering out-of-order ones.
+
+@item UDP
+UDP is a non-connected mode. A packet sent on a UDP socket may or may
+not arrive at the other end. This is a much lighter protocol when
+reliability is not needed as the operating system does not have to use
+large buffers to reorder packets. Also, this generates less traffic as
+no acknowledgments need to be sent by the kernels.
+@end table
+
+The package @code{Sockets} defines a @code{Socket_FD} tagged type. An
+instance of this type (or of any of its descendants) represents an
+incoming or outgoing socket. Two different kinds of sockets can be
+created: unicast (one-to-one) and multicast (many-to-many).
+
+@node Setting up multicast sockets, Sending and receiving data, Setting up unicast sockets, Using AdaSockets
+@section Setting up multicast sockets
+@cindex Multicast sockets
+@cindex Creating a multicast socket
+@cindex Mbone
+@cindex Group communication
+
+Multicast sockets are used for group communication over the Internet. To
+use multicast sockets, you must be connected to a multicast
+network and use a multicast-enabled operating system (such as most
+Unices, Linux or even recent Windows versions). Unless you are connected
+to the mbone (multicast backbone) or have setup a private multicast
+network, you will only be able to use multicast on your local network.
+
+A multicast socket is somewhat similar to a UDP socket; in particular,
+packets may be lost or misordered.
+
+@findex Create_Multicast_Socket
+@findex Sockets.Multicast.Create_Multicast_Socket
+@tindex Multicast_Socket_FD
+
+You can create a multicast socket using the function
+@code{Create_Multicast_Socket} in the package
+@code{Sockets.Multicast}. This function returns a
+@code{Multicast_Socket_FD} object, which derives from @code{Socket_FD}.
+
+@code{Create_Multicast_Socket} takes care of the whole setup of your
+multicast socket. You do not need to call any additionnal subprogram
+before using it. In particular, @code{Create_Multicast_Socket} will take
+care of registering the multicast socket to the operating system, so
+that the latter can tell the connected routers to propagate the
+subscription to the mbone as needed.
+
+@node Sending and receiving data,  , Setting up multicast sockets, Using AdaSockets
+@section Sending and receiving data
+@cindex Sending data
+@cindex Receiving data
+
+In AdaSockets, data can be sent and received in three different ways:
+raw, string-oriented and stream-oriented.
+
+@menu
+* Raw data manipulation::       
+* String-oriented exchanges::   
+@end menu
+
+@node Raw data manipulation, String-oriented exchanges, Sending and receiving data, Sending and receiving data
+@subsection Raw data manipulation
+@cindex Raw data manipulation
+@tindex Ada.Streams.Stream_Element_Array
+@tindex Stream_Element_Array
+
+Raw data is manipulated using the predefined
+@code{Ada.Streams.Stream_Element_Array} Ada type. This corresponds to an
+array of bytes, or an @code{unsigned char *} in the C programming
+language.
+
+@node String-oriented exchanges,  , Raw data manipulation, Sending and receiving data
+@subsection String-oriented exchanges
+
+String-oriented exchanges provides the programmer with @code{Ada.Text_IO}
+like subprograms. Most Internet protocols are line-oriented and those
+subprograms are perfectly suited to implement those.
+
+When sending data, the classical @code{CR + LF} sequence will be sent at
+the end of each line. When receiving data, @code{CR} characters are
+discarded and @code{LF} is used as the end-of-line marker.
+
+The @code{Get} function is tied to the size of the operating system
+buffer. It is better to use @code{Get_Line} to get a full line. The line
+can be as long as the length of the Ada buffer. The Ada buffer can be
+adjusted by using the @code{Set_Buffer} and @code{Unset_Buffer}
+procedures.
+
+When using string-oriented exchanges with datagram protocols such as UDP,
+setting a buffer using @code{Set_Buffer} for the receiving socket is
+mandatory. If you don't, the receiving socket will loose data and will be
+unable to reconstitute the string.
+
+@node Sockets package, Sockets.Multicast package, Using AdaSockets, Top
+@chapter Sockets package
+@include sockets.texi
+
+@node Sockets.Multicast package, Sockets.Naming package, Sockets package, Top
+@chapter Sockets.Multicast package
+@include sockets-multicast.texi
+
+@node Sockets.Naming package, Contributors, Sockets.Multicast package, Top
+@chapter Sockets.Naming package
+@include sockets-naming.texi
+
+@node Contributors, Resources on the Internet, Sockets.Naming package, Top
+@appendix Contributors
+@cindex Contributing
+
+AdaSockets has been originally developped by Samuel Tardieu who still
+maintains it. However, the following people have made crucial
+contributions to AdaSockets, be they new code, bug fixes or porting to
+new operating systems:
+
+@itemize @bullet
+@item Dmitriy Anisimkov (@email{anisimkov@@yahoo.com})
+@item Alan Barnes (@email{barnesa@@aston.ac.uk})
+@item Juanma Barranquero (@email{lektu@@terra.es})
+@item Bobby D. Bryant (@email{bdbryant@@mail.utexas.edu})
+@item Sander Cox (@email{sander.cox@@philips.com})
+@item Sune Falk (@email{sune.falck@@telia.com})
+@item Guillaume Foliard (@email{guifo@@wanadoo.fr})
+@item Laurent Guerby (@email{guerby@@club-internet.fr})
+@item David J. Kristola (@email{David95037@@aol.com})
+@item Dominik Madon (@email{dominik@@acm.org})
+@item Pascal Obry (@email{p.obry@@wanadoo.fr})
+@item Nicolas Ollinger (@email{Nicolas.Ollinger@@ens-lyon.fr})
+@item Stéphane Patureau (@email{spaturea@@meletu.univ-valenciennes.fr})
+@item Thomas Quinot (@email{thomas@@cuivre.fr.eu.org})
+@item Preben Randhol (@email{randhol@@pvv.org})
+@item Maxim Reznik (@email{max1@@mbank.com.ua})
+@item Samuel Tardieu (@email{sam@@rfc1149.net})
+@end itemize
+
+If you feel that you have been forgotten, please send me a mail so that
+I can fix it in the next version.
+
+@xref{Resources on the Internet}, for how to contribute.
+
+@node Resources on the Internet, Index, Contributors, Top
+@appendix Resources on the Internet
+@cindex Sending patches
+@cindex Reporting a bug
+@cindex Suggesting a feature
+@cindex Finding AdaSockets on the Internet
+@cindex Contributing
+
+The latest version of AdaSockets can always be found at:
+
+@center @url{http://www.rfc1149.net/devel/adasockets}
+
+There is a mailing-list that you can use to discuss problem or
+suggestions at:
+
+@center @url{http://www.rfc1149.net/lists/info/adasockets}
+
+Please use the mailing-list for questions and discussions. However, you
+can send me patches by private mail (@email{sam@@rfc1149.net}).
+
+@node Index,  , Resources on the Internet, Top
+@unnumbered Index
+@printindex cp
+
+@bye

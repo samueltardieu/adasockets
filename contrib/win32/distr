@@ -1,0 +1,6 @@
+#! /bin/sh
+
+cp ../../src/sockets*.ad? adasockets
+(if ! [ -e adasockets/examples ]; then mkdir adasockets/examples; fi)
+cp ../../examples/*.adb adasockets/examples/
+tar czf adasockets.tgz adasockets/*

@@ -1,0 +1,64 @@
+# Makefile for OpenVMS (GNU Make)
+#
+# $Revision$
+#
+#
+# This file is part of adasockets port to OpenVMS
+#
+
+.PHONY: all distclean clean
+.DEFAULT: all
+
+
+FILES=	sockets-thin.adb\
+	sockets-multicast.adb\
+	sockets-naming.adb\
+	sockets-stream_io.adb\
+	sockets-utils.adb\
+	sockets.adb\
+	sockets-constants.ads\
+	sockets-vms_link.ads\
+	sockets-link.ads
+
+VMS_FILES=\
+	sockets-thin.adb\
+	sockets-thin.ads\
+	sockets-link.ads\
+	sockets-constants.ads
+
+ADS_OBJ=$(patsubst %.ads, %.obj, $(filter %.ads, $(FILES)))
+ADB_OBJ=$(patsubst %.adb, %.obj, $(filter %.adb, $(FILES)))
+
+
+
+all: $(VMS_FILES) $(FILES) $(ADB_OBJ) $(ADS_OBJ)
+
+
+sockets-thin.adb:
+	copy/log sockets-thin.adb_vms sockets-thin.adb
+
+sockets-thin.ads:
+	copy/log sockets-thin.ads_vms sockets-thin.ads
+
+sockets-link.ads:
+	copy/log sockets-link.ads_vms sockets-link.ads
+
+sockets-constants.ads:
+	make "-C" [-.vms] -f Makefile.VMS all
+	copy/log [-.vms]sockets-constants.ads [-.src]*.*
+
+
+$(ADB_OBJ): %.obj: %.adb
+	gnat comp /debug $<
+
+$(ADS_OBJ): %.obj: %.ads
+	gnat comp /debug $<
+
+distclean:
+	del/noconf/log *.ali;*, *.obj;*, b$*.*;*, sockets-link.ads;*
+	del/noconf/log sockets-thin.ads;*, sockets-thin.adb;*
+	del/noconf/log sockets-constants.ads;*
+
+clean:
+	
+

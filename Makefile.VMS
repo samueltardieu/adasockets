@@ -1,0 +1,27 @@
+# Main Makefile.VMS
+#
+# $Revision$
+#
+#
+# This file is part of adasockets port on OpenVMS
+#
+
+.PHONY: all clean distclean
+.DEFAULT: all
+
+
+
+all:
+	make "-C" [.vms] all
+	make "-C" [.src] all
+	make "-C" [.examples] all
+
+clean:
+	make "-C" [.vms] clean
+	make "-C" [.src] clean
+	make "-C" [.examples] clean
+
+distclean:
+	make "-C" [.vms] distclean
+	make "-C" [.src] distclean
+	make "-C" [.examples] distclean
