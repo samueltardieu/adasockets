@@ -1,5 +1,10 @@
 -*- outline -*-
 
+* New in AdaSockets 1.8.4.7
+
+Packaging glitch is now fixed, thanks to Dani <danielcheagle@ig.com.br>
+for reporting it.
+
 * New in AdaSockets 1.8.4.6
 
 Fix documentation, thanks to <odyssee.tremoulis@atosorigin.com>.
