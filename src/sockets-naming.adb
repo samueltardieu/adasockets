@@ -302,14 +302,15 @@ package body Sockets.Naming is
    begin
       Naming_Lock.Lock;
       Res := C_Gethostbyname (C_Name);
-      Naming_Lock.Unlock;
       Free (C_Name);
       if Res = null then
+         Naming_Lock.Unlock;
          Raise_Naming_Error (Errno, Name);
       end if;
       declare
          Result : constant Host_Entry := Parse_Entry (Res.all);
       begin
+         Naming_Lock.Unlock;
          return Result;
       end;
    end Info_Of;
@@ -332,13 +333,14 @@ package body Sockets.Naming is
       Res := C_Gethostbyaddr (C_Addr,
                               int (Temp'Size / CHAR_BIT),
                               Constants.Af_Inet);
-      Naming_Lock.Unlock;
       if Res = null then
+         Naming_Lock.Unlock;
          Raise_Naming_Error (Errno, Image (Addr));
       end if;
       declare
          Result : constant Host_Entry := Parse_Entry (Res.all);
       begin
+         Naming_Lock.Unlock;
          return Result;
       end;
    end Info_Of;

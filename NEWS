@@ -1,5 +1,10 @@
 -*- outline -*-
 
+* New in AdaSockets 1.8.5
+
+Fix locking race condition in naming routines. Bug found and fix sent by
+Dmitriy Anisimkov <anisimkov@ada-ru.org>.
+
 * New in AdaSockets 1.8.4.7
 
 Packaging glitch is now fixed, thanks to Dani <danielcheagle@ig.com.br>
