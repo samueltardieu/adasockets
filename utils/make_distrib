@@ -21,19 +21,7 @@ tar cf - . | (cd $tmp/$dir && tar xpBf -)
 chmod -R u+w $tmp/$dir
 cd $tmp/$dir
 echo Generating auto-generated files
-autoreconf --verbose --install
-echo Doing the necessary date modifications
-find . -name configure.ac -exec touch {} \;
-sleep 1
-find . -name aclocal.m4 -exec touch {} \;
-sleep 1
-find . -name Makefile.in -exec touch {} \;
-sleep 1
-find . -name configure -exec touch {} \;
-sleep 1
-find . -name stamp-h.in -exec touch {} \;
-sleep 1
-find . -name config.h.in -exec touch {} \;
+autoreconf --verbose --install --force
 echo Configuring
 ./configure
 echo Extracting the version
