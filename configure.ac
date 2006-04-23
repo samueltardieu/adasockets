@@ -49,12 +49,20 @@ AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo)
 AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi)
 AC_CHECK_PROG(DVIPS, dvips, dvips)
 #
+# Look for the C compiler
+#
+AC_LANG_COMPILER(C)
+#
 # Look for the Ada compiler
 #
 AC_CHECK_PROG([GNATMAKE], [gnatmake], [gnatmake])
 if test -z "$GNATMAKE"; then
   AC_MSG_ERROR([unable to find gnatmake])
 fi
+#
+# Libtool checks
+#
+AC_PROG_LIBTOOL
 #
 # Test for -lnsl and -lsocket
 #
