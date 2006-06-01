@@ -4,7 +4,7 @@ bin_SCRIPTS = adasockets-config
 
 lib_LTLIBRARIES = libadasockets.la
 libadasockets_la_SOURCES = $(ADA_SRCS)
-libadasockets_la_LDFLAGS = -no-undefined -version-info $(LIBVERSIONINFO)
+libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
 
 ADA_SRCS = \
 	sockets-constants.ads \
