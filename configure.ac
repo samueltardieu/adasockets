@@ -5,7 +5,7 @@ AC_CONFIG_AUX_DIR(support)
 #
 # Package description
 #
-AM_INIT_AUTOMAKE([adasockets],[1.8.4.7])
+AM_INIT_AUTOMAKE([adasockets],[1.8.5])
 LIBVERSIONINFO=0:0:0
 AC_SUBST(LIBVERSIONINFO)
 LT_INIT
