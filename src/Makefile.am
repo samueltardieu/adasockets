@@ -5,6 +5,8 @@ bin_SCRIPTS = adasockets-config
 lib_LTLIBRARIES = libadasockets.la
 libadasockets_la_SOURCES = $(ADA_SRCS)
 libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
+libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
+	-o libadasockets.la
 
 ADA_SRCS = \
 	sockets-constants.ads \
@@ -39,8 +41,6 @@ ALIS = $(ADA_OBJECTS:.o=.ali) $(ADA_OBJECTS_WIN:.o=.ali)
 ADACOMPILER = $(top_builddir)/support/adacompiler
 
 ADAFLAGS = -I. -I$(srcdir)
-
-LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) -o libadasockets.la
 
 CLEANFILES = *.o *.ali
 DISTCLEANFILES = b_split.c split constants_nodef \
