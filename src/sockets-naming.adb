@@ -523,21 +523,18 @@ package body Sockets.Naming is
    -----------
 
    function Value (Add : String) return Address is
+      C_Add     : chars_ptr        := New_String (Add);
+      Converted : aliased In_Addr;
    begin
-      if not Is_IP_Address (Add) then
-	 Ada.Exceptions.Raise_Exception (Naming_Error'Identity,
-					 Add & " is not an IP address");
+      if C_Inet_Aton (C_Add, Converted'Unchecked_Access) = 0 then
+         Ada.Exceptions.Raise_Exception (Naming_Error'Identity,
+                                         Add & " is not an IP address");
       end if;
-      declare
-	 C_Add     : chars_ptr        := New_String (Add);
-	 Converted : constant In_Addr := C_Inet_Addr (C_Add);
-      begin
-	 Free (C_Add);      
-	 return (H1 => Address_Component (Converted.S_B1),
-		 H2 => Address_Component (Converted.S_B2),
-		 H3 => Address_Component (Converted.S_B3),
-		 H4 => Address_Component (Converted.S_B4));
-      end;
+      Free (C_Add);
+      return (H1 => Address_Component (Converted.S_B1),
+              H2 => Address_Component (Converted.S_B2),
+              H3 => Address_Component (Converted.S_B3),
+              H4 => Address_Component (Converted.S_B4));
    end Value;
 
 end Sockets.Naming;
