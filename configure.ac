@@ -82,10 +82,10 @@ AC_SUBST(EXTRA_LIBS)
 #
 # Header files
 #
-AC_CHECK_HEADERS([stdio.h sys/types.h sys/socket.h errno.h netdb.h])
+AC_CHECK_HEADERS([stdio.h sys/types.h sys/socket.h errno.h netdb.h stdlib.h])
 AC_CHECK_HEADERS([netinet/in.h signal.h fcntl.h termio.h termios.h sys/file.h])
 AC_CHECK_HEADERS([sys/ioctl.h netinet/tcp.h sys/systeminfo.h poll.h stropts.h])
-AC_CHECK_HEADERS([sys/conf.h sys/param.h time.h windows.h])
+AC_CHECK_HEADERS([sys/conf.h sys/param.h time.h windows.h string.h])
 AC_CHECK_HEADERS(windows.h, [usewin32=true useunix=false],
                             [usewin32=false useunix=true])
 #
