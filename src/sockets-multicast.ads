@@ -52,7 +52,8 @@ package Sockets.Multicast is
      (Group     : String;
       Port      : Positive;
       TTL       : Positive := 16;
-      Self_Loop : Boolean  := True)
+      Self_Loop : Boolean  := True;
+      Local_If  : String   := "0.0.0.0")
      return Multicast_Socket_FD;
    --  Create a multicast socket
 
@@ -60,7 +61,8 @@ package Sockets.Multicast is
      (Group      : String;
       Port       : Positive;
       Local_Port : Natural;
-      TTL        : Positive := 16)
+      TTL        : Positive := 16;
+      Local_If   : String   := "0.0.0.0")
      return Multicast_Socket_FD;
    --  Create a multicast socket that can only send data and is bound
    --  to the local port Local_Port. Use 0 if you do not care about

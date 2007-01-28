@@ -60,7 +60,8 @@ package body Sockets.Multicast is
       Port       : Positive;
       Local_Port : Natural;
       TTL        : Positive := 16;
-      Self_Loop  : Boolean  := True)
+      Self_Loop  : Boolean  := True;
+      Local_If   : String   := "0.0.0.0")
      return Multicast_Socket_FD;
 
    -----------------------------
@@ -72,7 +73,8 @@ package body Sockets.Multicast is
       Port       : Positive;
       Local_Port : Natural;
       TTL        : Positive := 16;
-      Self_Loop  : Boolean  := True)
+      Self_Loop  : Boolean  := True;
+      Local_If   : String   := "0.0.0.0")
      return Multicast_Socket_FD
    is
       Result      : Multicast_Socket_FD;
@@ -91,6 +93,7 @@ package body Sockets.Multicast is
       end if;
       Bind (Result, Local_Port);
       Mreq.Imr_Multiaddr := To_In_Addr (Address_Of (Group));
+      Mreq.Imr_Interface := To_In_Addr (Address_Of (Local_If));
       Setsockopt_Add_Membership (Result, Mreq);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_TTL, TTL);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_LOOP, C_Self_Loop);
@@ -108,7 +111,8 @@ package body Sockets.Multicast is
      (Group     : String;
       Port      : Positive;
       TTL       : Positive := 16;
-      Self_Loop : Boolean  := True)
+      Self_Loop : Boolean  := True;
+      Local_If  : String   := "0.0.0.0")
      return Multicast_Socket_FD
    is
    begin
@@ -117,7 +121,8 @@ package body Sockets.Multicast is
                  Port       => Port,
                  Local_Port => Port,
                  TTL        => TTL,
-                 Self_Loop  => Self_Loop);
+                 Self_Loop  => Self_Loop,
+                 Local_If   => Local_If);
    end Create_Multicast_Socket;
 
    -----------------------------
@@ -128,7 +133,8 @@ package body Sockets.Multicast is
      (Group      : String;
       Port       : Positive;
       Local_Port : Natural;
-      TTL        : Positive := 16)
+      TTL        : Positive := 16;
+      Local_If   : String   := "0.0.0.0")
      return Multicast_Socket_FD
    is
    begin
@@ -137,7 +143,8 @@ package body Sockets.Multicast is
                  Port       => Port,
                  Local_Port => Local_Port,
                  TTL        => TTL,
-                 Self_Loop  => False);
+                 Self_Loop  => False,
+                 Local_If   => Local_If);
    end Create_Multicast_Socket;
 
    ----------
