@@ -4,10 +4,10 @@
 #
 # This script builds a compressed archive suitable for distribution.
 #
-# Usage: make_distrib dir
+# Usage: make_distrib
 #
 #   dir   : the distribution will unpack in directory <dir> and will be
-#           named <dir>.tar.gz
+#           named <dir>.tar.gz (where <dir> is the result of make version)
 #
 # The file MANIFEST contains the list of files to be included in this
 # archive, one file per line.
@@ -20,6 +20,8 @@ mkdir -p $tmp/$dir
 tar cf - . | (cd $tmp/$dir && tar xpBf -)
 chmod -R u+w $tmp/$dir
 cd $tmp/$dir
+echo Generating ChangeLog
+hg log --style=changelog --no-merges --removed > ChangeLog
 echo Generating auto-generated files
 autoreconf --verbose --install --force
 echo Configuring
