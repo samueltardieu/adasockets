@@ -21,7 +21,7 @@ tar cf - . | (cd $tmp/$dir && tar xpBf -)
 chmod -R u+w $tmp/$dir
 cd $tmp/$dir
 echo Generating ChangeLog
-hg log --style=changelog --no-merges --removed > ChangeLog
+hg log --style=changelog --no-merges > ChangeLog
 echo Generating auto-generated files
 autoreconf --verbose --install --force
 echo Configuring

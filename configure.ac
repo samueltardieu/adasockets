@@ -1,14 +1,13 @@
-AC_INIT
-AC_CONFIG_SRCDIR([src/sockets.ads])
-AC_CONFIG_HEADERS([src/config.h])
+AC_INIT(src/sockets.ads)
+AM_INIT_AUTOMAKE([adasockets],[1.8.5])
+AM_CONFIG_HEADER(src/config.h)
 AC_CONFIG_AUX_DIR(support)
 #
 # Package description
 #
-AM_INIT_AUTOMAKE([adasockets],[1.8.5])
 LIBVERSIONINFO=0:0:0
 AC_SUBST(LIBVERSIONINFO)
-AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 #
 AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
 #
