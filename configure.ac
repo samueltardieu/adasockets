@@ -50,7 +50,7 @@ AC_CHECK_PROG(DVIPS, dvips, dvips)
 #
 # Look for the C compiler
 #
-AC_LANG_COMPILER(C)
+AC_PROG_CC
 #
 # Look for the Ada compiler
 #
