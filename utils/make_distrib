@@ -30,7 +30,7 @@ echo Extracting the version
 newdir=`make version`
 echo Version is $newdir
 echo Building documentation
-(cd doc && gmake adasockets.info adasockets.dvi && dvips -o adasockets.ps adasockets.dvi && ps2pdf adasockets.ps adasockets.pdf)
+(cd doc && make adasockets.info adasockets.dvi && dvips -o adasockets.ps adasockets.dvi && ps2pdf adasockets.ps adasockets.pdf)
 echo Setting timestamps on documentation
 sleep 2 && (cd doc && touch adasockets.info adasockets.ps adasockets.pdf)
 echo Adapting modes
