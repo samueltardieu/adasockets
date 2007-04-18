@@ -63,7 +63,7 @@ fi
 #
 AC_PROG_LIBTOOL
 #
-# Test for -lnsl and -lsocket
+# Test for -lnsl, -lsocket and -lresolv
 #
 AC_CHECK_FUNC(gethostbyname,NSLNEEDED="--  ",
   AC_CHECK_LIB(nsl,gethostbyname,,NSLNEEDED="--  "))
@@ -71,6 +71,8 @@ AC_SUBST(NSLNEEDED)
 AC_CHECK_FUNC(connect,SOCKETNEEDED="--  ",
   AC_CHECK_LIB(socket,connect,,SOCKETNEEDED="--  "))
 AC_SUBST(SOCKETNEEDED)
+AC_CHECK_FUNC(inet_aton,RESOLVNEEDED="--  ",
+  AC_CHECK_LIB(resolv,inet_aton,,RESOLVNEEDED="--  "))
 #
 # Extra libraries
 #

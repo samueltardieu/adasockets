@@ -42,5 +42,6 @@ private package Sockets.Link is
 
    @NSLNEEDED@pragma Linker_Options ("-lnsl");
    @SOCKETNEEDED@pragma Linker_Options ("-lsocket");
+   @RESOLVNEEDED@pragma Linker_Options ("-lresolv");
 
 end Sockets.Link;
