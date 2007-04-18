@@ -73,6 +73,7 @@ AC_CHECK_FUNC(connect,SOCKETNEEDED="--  ",
 AC_SUBST(SOCKETNEEDED)
 AC_CHECK_FUNC(inet_aton,RESOLVNEEDED="--  ",
   AC_CHECK_LIB(resolv,inet_aton,,RESOLVNEEDED="--  "))
+AC_SUBST(RESOLVNEEDED)
 #
 # Extra libraries
 #
