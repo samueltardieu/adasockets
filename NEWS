@@ -5,6 +5,18 @@
 Fix locking race condition in naming routines. Bug found and fix sent by
 Dmitriy Anisimkov <anisimkov@ada-ru.org>.
 
+Allow explicit interface selection for multicast sockets. Patch sent by
+Guillaume Foliard <guifo@wanadoo.fr>.
+
+Use inet_aton instead of inet_addr. Patch sent by Guillaume Foliard
+<guifo@wanadoo.fr>.
+
+Use -lresolv on Solaris for inet_aton.
+
+Update build process with latest autotools.
+
+Use stdlib.h and string.h in constants.c when appropriate.
+
 * New in AdaSockets 1.8.4.7
 
 Packaging glitch is now fixed, thanks to Dani <danielcheagle@ig.com.br>
