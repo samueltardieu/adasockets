@@ -13,6 +13,7 @@
 # archive, one file per line.
 #
 
+umask 022
 dir=temp$$
 prev=`pwd`
 tmp=${TMPDIR-/tmp}/t$$
