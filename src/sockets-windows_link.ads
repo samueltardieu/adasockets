@@ -40,7 +40,7 @@
 private package Sockets.Windows_Link is
 
    pragma Linker_Options ("-lwsock32");
-   
+
 private
 
    procedure Unsupported;

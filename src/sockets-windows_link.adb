@@ -48,12 +48,12 @@ package body Sockets.Windows_Link is
 
    type WSADATA is
       record
-         wVersion       : unsigned_16;
-         wHighVersion   : unsigned_16;
+         wVersion       : Unsigned_16;
+         wHighVersion   : Unsigned_16;
          szDescription  : char_array (1 .. 129);
          szSystemStatus : char_array (1 .. 257);
-         iMaxSockets    : unsigned_16;
-         iMaxUdpDg      : unsigned_16;
+         iMaxSockets    : Unsigned_16;
+         iMaxUdpDg      : Unsigned_16;
          lpVendorInfo   : chars_ptr;
       end record;
    pragma Convention (C, WSADATA);
