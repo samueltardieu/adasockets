@@ -78,6 +78,7 @@ private
      (Sock   : out Multicast_Socket_FD;
       Domain : in Socket_Domain := PF_INET;
       Typ    : in Socket_Type   := SOCK_STREAM);
+   pragma No_Return (Socket);
    --  Do not call this one, it will raise Program_Error
 
    type Multicast_Socket_FD is new Socket_FD with record
