@@ -50,8 +50,6 @@ with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets.Naming is
 
-   use Sockets.Constants, Sockets.Thin;
-
    Default_Buffer_Size : constant := 16384;
 
    procedure Free is
@@ -442,7 +440,7 @@ package body Sockets.Naming is
       Result.Name := new String'(Value (Host.H_Name));
       for I in 1 .. Result.Aliases'Last loop
          declare
-            Index   : Natural := I - 1 + Natural (C_Aliases'First);
+            Index   : constant Natural := I - 1 + Natural (C_Aliases'First);
             Current : chars_ptr renames C_Aliases (size_t (Index));
          begin
             Result.Aliases (I) := new String'(Value (Current));
@@ -450,7 +448,7 @@ package body Sockets.Naming is
       end loop;
       for I in Result.Addresses'Range loop
          declare
-            Index   : Natural := I - 1 + Natural (C_Addr'First);
+            Index   : constant Natural := I - 1 + Natural (C_Addr'First);
             Current : In_Addr_Access renames C_Addr (Index);
          begin
             Result.Addresses (I) := To_Address (Current.all);

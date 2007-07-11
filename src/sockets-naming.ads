@@ -39,7 +39,6 @@
 -----------------------------------------------------------------------------
 
 with Ada.Finalization;
-with Sockets.Thin;
 with Sockets.Types;
 
 package Sockets.Naming is
