@@ -54,11 +54,13 @@ package body Sockets.Utils is
      return unsigned_short
    is
    begin
+      pragma Warnings (Off);     --  Test is statically always True or False
       if Default_Bit_Order = High_Order_First then
          return Port;
       else
          return (Port / 256) + (Port mod 256) * 256;
       end if;
+      pragma Warnings (On);
    end Port_To_Network;
 
    ------------------------
