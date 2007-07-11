@@ -615,6 +615,7 @@ package body Sockets is
       if Socket.Shutdown (Receive) and then Socket.Shutdown (Send) then
          declare
             Result : constant int := C_Close (Socket.FD);
+            pragma Unreferenced (Result);
          begin
             Unset_Buffer (Socket);
          end;
