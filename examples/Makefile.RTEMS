@@ -1,0 +1,70 @@
+#
+#  Makefile for Ada sockets example
+#
+#  Directly produces an executable for a BSP which directly runs
+#  the format (usually ELF) produced by just linking an application.
+#  The executables produced by this Makefile should run on at least the
+#  following BSPs:
+#      arm/edb7312
+#      mips/jmr3904
+#      powerpc/psim
+#      powerpc/score603e
+#      sparc/erc32
+#      sparc/sis
+#
+#  Some BSPs require extra manipulation of the ELF file before it can
+#  be run on the target hardware.
+#
+
+EXAMPLES=stream_listener stream_sender listener multi tcprelay
+
+include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
+include $(RTEMS_CUSTOM)
+include $(PROJECT_ROOT)/make/leaf.cfg
+
+# GEN5200 Specific Information
+ifeq ($(RTEMS_BSP_FAMILY),gen5200)
+  LINKARGS+=-qnolinkcmds -T$(RTEMS_LINKCMDS)
+endif
+
+# PC386 Specific Information
+ifeq ($(RTEMS_BSP_FAMILY),pc386)
+  HEADERADDR=0x00097E00
+  START16FILE=$(RTEMS_MAKEFILE_PATH)/lib/start16.bin
+  START16ADDR=0x00097C00
+  RELOCADDR=0x00100000
+  LINKARGS+= -Wl,-Ttext,$(RELOCADDR) 
+endif
+
+# Tool helpers
+GNATMAKE=$(AS:as=gnatmake)
+CARGS =-B${RTEMS_MAKEFILE_PATH}/lib/ -specs bsp_specs -qrtems $(CPU_CFLAGS) 
+CARGS+=-DGNAT_MAIN_STACKSPACE=100
+
+all:  $(EXAMPLES)
+
+stream_listener stream_sender listener multi tcprelay: rtems_init.o *.adb
+	$(GNATMAKE) -v -O -gnata -gnatE -gnato $(@) -g \
+	    -I../src \
+	    -bargs -Mgnat_main \
+	    -largs $(CARGS) $(LINKARGS) rtems_init.o
+	$(SIZE) $(@)
+ifeq ($(RTEMS_BSP_FAMILY),pc386)
+	mv $(@) $(@).obj
+	$(OBJCOPY) -O elf32-i386 \
+            --remove-section=.rodata \
+            --remove-section=.comment \
+            --remove-section=.note \
+            --strip-unneeded $(@).obj $(@)
+	$(OBJCOPY) -O binary $(@).obj $(@).bin
+	$(RTEMS_MAKEFILE_PATH)/build-tools/bin2boot -v $(@).bt $(HEADERADDR) \
+          $(START16FILE) $(START16ADDR) 0 $(@).bin $(RELOCADDR) 0
+else
+endif
+
+rtems_init.o: rtems_init.c
+	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c rtems_init.c
+
+clean:
+	rm -f b~*.*  *.o *.ali $(EXAMPLES)
+	rm -f *.num *.exe *.obj *.bin *.bt
