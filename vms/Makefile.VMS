@@ -1,0 +1,30 @@
+#
+# VMS specific Makefile to build the 
+# sockets-constants.ads file.
+#
+# $Revision$
+#
+# This file is part of adasockets port to OpenVMS
+
+.PHONY: all distclean clean
+.DEFAULT: all
+
+
+all: sockets-constants.ads
+
+sockets-constants.ads: constants.exe
+	\@create_constants_ads.com
+
+constants.exe: constants.c
+	cc constants
+	link constants
+
+constants.c: constants.list
+	\@create_constants_c.com
+
+distclean:
+	del *.exe;*, *.obj;*, *.c;*, sockets-constants.ads;*
+
+clean:
+	del *.exe;*, *.obj;*, *.c;*
+

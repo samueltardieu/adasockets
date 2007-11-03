@@ -1,0 +1,177 @@
+/*=* Global settings.
+ *
+ * package: Sockets.Naming
+ * intro:
+ *    The @code{Sockets.Naming} package contains types and helper functions
+ *    needed to manipulate Internet host names and addresses.
+=*/
+
+/*=type String_Access
+ *
+ * what: Access on string
+ * def: access String
+ * doc:
+ *    Helper type
+=*/
+
+/*=type String_Array
+ *
+ * what: Array of strings
+ * def: array (Positive range <>) of String_Access
+ * doc:
+ *    Helper type
+=*/
+
+/*=type Address_Component
+ *
+ * what: IPv4 address component (subtype)
+ * def: Natural range 0 .. 255
+ * doc:
+ *    Helper type
+=*/
+
+/*=type Address
+ *
+ * what: IPv4 address (subtype)
+ * def: record@*@w{  }H1, H2, H3, H4 : Address_Component;@*end record
+ * doc:
+ *    This type represents an IPv4 address with @code{H1} being the first
+ *    octet and @code{H4} the last one. For example, 137.194.161.2 is
+ *    represented by @code{H1=137, H2=194, H3=161, H4=2}.
+=*/
+
+/*=type Address_Array
+ *
+ * what: array of IPv4 addresses
+ * def: array (Positive range <>) of Address
+ * doc:
+ *    Helper type
+=*/
+
+/*=type Host_Entry
+ *
+ * discr: N_Aliases, N_Addresses : Natural
+ * def: new Ada.Finalization.Controlled with record@*@w{  } Name : String_Access;@*@w{  } Aliases : String_Array (1 .. N_Aliases);@*@w{  } Addresses : Address_Array (1 .. N_Addresses);@* end record
+ * doc:
+ *    The @code{Host_Entry} type holds a set of names and IP addresses
+ *    associated with a host. Each host can have several IP address
+ *    as well as several aliases.
+=*/
+
+/*=subprogram Image
+ *
+ * what: Make a string from an address
+ * kind: function
+ * arg: Add, in, Address,, IP address
+ * ret: String, String representation of the IP address
+ * concept: Representing IP addresses
+ * see: Value (function)
+=*/
+
+/*=subprogram Value
+ *
+ * what: Transform a string into an address
+ * kind: function
+ * arg: Add, in, String,, Textual representation of an IP address
+ * ret: Address, Corresponding Address
+ * concept: Representing IP addresses
+ * see: Image (function)
+=*/
+
+/*=subprogram Is_IP_Address
+ *
+ * what: Check if given string is a valid IP address
+ * kind: function
+ * arg: Something, in, String,, String to check
+ * ret: Boolean, @samp{True} if @var{Something} is an IP address
+=*/
+
+/*=subprogram Info_Of_Name_Or_IP
+ *
+ * what: Get addresses and names of a host
+ * kind: function
+ * arg: Something, in, String,, Host name or IP address
+ * ret: Host_Entry, Corresponding host entry
+ * exc: Naming_Error, No information available for this name or address
+ * doc:
+ *    This function extracts all the names and addresses from the
+ *    naming service.
+=*/
+
+/*=subprogram Address_Of
+ *
+ * what: Get the IP address of a host
+ * kind: function
+ * arg: Something, in, String,, Host name or IP address
+ * ret: Address, IPv4 address
+ * exc: Naming_Error, No information available for this name or address
+ * see: Name_Of (function)
+=*/
+
+/*=subprogram Host_Name
+ *
+ * what: Get the name of the current host
+ * kind: function
+ * ret: String, Name of the current host
+ * doc:
+ *    This function returns the name of the current host. Depending on
+ *    the local configuration, it may or may not be a fully qualified
+ *    domain name (FQDN).
+=*/
+
+/*=subprogram Name_Of
+ *
+ * what: Official name of the host
+ * kind: function
+ * arg: Something, in, String,, Host name or IP address
+ * ret: String, Name of the host
+ * exc: Naming_Error, No information available for this name or address
+ * see: Address_Of (function)
+=*/
+
+/*=subprogram Any_Address
+ *
+ * what: Special address representing any address on the local host
+ * kind: function
+ * ret: Address, Equivalent to @code{INADDR_ANY} in the C programming language
+=*/
+
+/*=subprogram Get_Peer_Addr
+ *
+ * what: Retrieve IP address of remote host
+ * kind: function
+ * arg: Socket, in, Socket_FD,, Connected socket object
+ * ret: Address, Peer address
+ * see: Get_Peer_Port (function)
+ * see: Get_Sock_Addr (function)
+=*/
+
+/*=subprogram Get_Peer_Port
+ *
+ * what: Retrieve port used by remote host
+ * kind: function
+ * arg: Socket, in, Socket_FD,, Connected socket object
+ * ret: Positive, Port used on the remote host
+ * see: Get_Sock_Port (function)
+ * see: Get_Peer_Addr (function)
+=*/
+
+/*=subprogram Get_Sock_Addr
+ *
+ * what: Retrieve IP address of local host
+ * kind: function
+ * arg: Socket, in, Socket_FD,, Connected socket object
+ * ret: Address, Address of local interface used
+ * see: Get_Sock_Port (function)
+ * see: Get_Peer_Addr (function)
+=*/
+
+/*=subprogram Get_Sock_Port
+ *
+ * what: Retrieve port used by local host
+ * kind: function
+ * arg: Socket, in, Socket_FD,, Connected socket object
+ * ret: Positive, Port used on the local host
+ * see: Get_Peer_Port (function)
+ * see: Get_Sock_Addr (function)
+=*/

@@ -1,0 +1,565 @@
+/*=* Global settings.
+ *
+ * package: Sockets
+ * intro:
+ *    The @code{Sockets} package contains all the definitions and
+ *    subprograms needed to build a simple unicast client or server.
+=*/
+
+/*=type Socket_FD
+ *
+ * what: Socket object
+ * def: tagged private
+ * doc:
+ *    The @code{Socket_FD} tagged type is the root type of all
+ *    sockets. It gets initialized by calling @ref{Socket (procedure)}.
+=*/
+
+/*=subprogram Socket
+ *
+ * what: Create a socket of the given mode
+ * kind: procedure
+ * arg: Socket, out, Socket_FD,, Socket object to initialize
+ * arg: Domain, in, Socket_Domain, PF_INET, Protocol family
+ * arg: Typ, in, Socket_Type, SOCK_STREAM, Kind of sockets
+ * doc:
+ * @ctindex PF_INET
+ * @ctindex AF_INET
+ * @ctindex SOCK_STREAM
+ * @ctindex SOCK_DGRAM
+ *   This procedure initializes a new socket object by reserving a file
+ *   descriptor to the operating system. For backward compatibility with
+ *   older versions of this library, @code{AF_INET} is still accepted as
+ *   a value but should be replaced as soon as possible with the proper
+ *   @code{PF_INET}. Using @code{SOCK_STREAM} for the @var{Typ}
+ *   argument will create a TCP socket while a @code{SOCK_DGRAM} will
+ *   create a UDP one.
+ * concept: Creating a socket
+ * example:
+ * $ declare
+ * $    Sock : Socket_FD;
+ * $ begin
+ * $    -- Create a TCP socket
+ * $    Socket (Sock, PF_INET, SOCK_STREAM);
+ * $    -- Perform some operations on socket
+ * $    [...]
+ * $    -- Shutdown the socket in both directions
+ * $    Shutdown (Sock, Both);
+ * $ end;
+ * see: Shutdown (procedure)
+=*/
+
+/*=subprogram Connect
+ *
+ * what: Connect a socket on a given host/port
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized socket object
+ * arg: Host, in, String,, Host to connect to
+ * arg: Port, in, Positive,, Port to connect to
+ * exc: Connection_Refused, The connection has been refused by the server
+ * exc: Socket_Error, Another error occurred during the connection
+ * doc:
+ *   This procedure connects an initialized socket to a given host on
+ *   a given port. In the case of a TCP socket, a real connection is
+ *   attempted. In the case of a UDP socket, no connection takes place
+ *   but the endpoint coordinates are recorded.
+ * concept: Connecting a socket
+ * example:
+ * $ declare
+ * $    Sock : Socket_FD;
+ * $ begin
+ * $    -- Create a TCP socket
+ * $    Socket (Sock, PF_INET, SOCK_STREAM);
+ * $    -- Connect it to rfc1149.net's mail server
+ * $    Connect (Sock, "mail.rfc1149.net", 25);
+ * $    -- Do a mail transaction then close the socket
+ * $    [...]
+ * $ end;
+ * see: Socket (procedure)
+=*/
+
+/*=subprogram Bind
+ *
+ * what: Associate a local port to a socket
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized socket object
+ * arg: Port, in, Natural,, Local port to bind to
+ * arg: Host, in, String, @w{}"", Local interface to bind to
+ * exc: Socket_Error, Requested port or interface not available
+ * doc:
+ *    This procedure requests a local port from the operating
+ *    system. If 0 is given in @var{Port}, the system will assign a
+ *    free port whose number can later be retrieved using
+ *    @ref{Get_Sock_Port (function)}. Also, most operating systems require
+ *    special privileges if you want to bind to ports below 1024.
+ *
+ *    If @var{Host} is not the empty string, it must contain the
+ *    IP address of a local interface to bind to, or a name which
+ *    resolves into such an address. If an empty string is given (the
+ *    default), the socket will be bound to all the available
+ *    interfaces.
+ * concept: Binding a socket
+ * concept: Assigning a local port
+ * concept: Creating a server
+ * see: Listen (procedure)
+ * see: Socket (procedure)
+=*/
+
+/*=subprogram Listen
+ *
+ * what: Establish a listen queue
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized and bound socket object
+ * arg: Queue_Size, in, Positive, 5, Requested slots in the listen queue
+ * doc:
+ *    This procedure establishes a listen queue after a TCP socket as been
+ *    initialized and bound. Each slot in the queue can hold one
+ *    incoming connection that has not been accepted yet. Note that
+ *    most operating systems ignore queue sizes larger than five.
+ * concept: Establishing a listen queue
+ * concept: Listen queue
+ * see: Accept_Socket (procedure)
+ * see: Bind (procedure)
+ * see: Socket (procedure)
+=*/
+
+/*=subprogram Getsockopt
+ *
+ * what: Retrieve a socket option
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized and bound socket object
+ * arg: Level, in, Socket_Level, SOL_SOCKET, Protocol level
+ * arg: Optname, in, Socket_Option,, Option name
+ * arg: Optval, out, Integer,, Option value
+ * doc:
+ * @ctindex Sockets.SOL_SOCKET
+ * @ctindex Sockets.IPPROTO_IP
+ * @ctindex Sockets.SO_REUSEADDR
+ * @ctindex Sockets.SO_REUSEPORT
+ * @ctindex Sockets.IP_MULTICAST_TTL
+ * @ctindex Sockets.IP_ADD_MEMBERSHIP
+ * @ctindex Sockets.IP_DROP_MEMBERSHIP
+ * @ctindex Sockets.IP_MULTICAST_LOOP
+ * @ctindex Sockets.SO_SNDBUF
+ * @ctindex Sockets.SO_RCVBUF
+ * @ctindex SOL_SOCKET
+ * @ctindex IPPROTO_IP
+ * @ctindex SO_REUSEADDR
+ * @ctindex SO_REUSEPORT
+ * @ctindex IP_MULTICAST_TTL
+ * @ctindex IP_ADD_MEMBERSHIP
+ * @ctindex IP_DROP_MEMBERSHIP
+ * @ctindex IP_MULTICAST_LOOP
+ * @ctindex SO_SNDBUF
+ * @ctindex SO_RCVBUF
+ *    This procedure retrieves options applicable to a socket. Please
+ *    see your operating system manual for usable levels and options.
+ *
+ *    Two levels are defined: @code{SOL_SOCKET} (the default) and
+ *    @code{IPPROTO_IP}. The options are @code{SO_REUSEADDR},
+ *    @code{SO_REUSEPORT}, @code{IP_MULTICAST_TTL},
+ *    @code{IP_ADD_MEMBERSHIP}, @code{IP_DROP_MEMBERSHIP},
+ *    @code{IP_MULTICAST_LOOP}, @code{SO_SNDBUF} and
+ *    @code{IP_RCVBUF}.
+ *
+ *    Note that unlike their C language counterpart, @code{Getsockopt}
+ *    and @code{Setsockopt} do not require an extra parameter
+ *    representing the length in bytes of the option value. AdaSockets
+ *    nows the right size for every option.
+ * concept: Manipulating socket options
+ * concept: Retrieving socket options
+ * see: Setsockopt (procedure)
+=*/
+
+/*=subprogram Setsockopt
+ *
+ * what: Set a socket option
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized and bound socket object
+ * arg: Level, in, Socket_Level, SOL_SOCKET, Protocol level
+ * arg: Optname, in, Socket_Option,, Option name
+ * arg: Optval, in, Integer,, Option value
+ * doc:
+ * @ctindex Sockets.SOL_SOCKET
+ * @ctindex Sockets.IPPROTO_IP
+ * @ctindex Sockets.SO_REUSEADDR
+ * @ctindex Sockets.SO_REUSEPORT
+ * @ctindex Sockets.IP_MULTICAST_TTL
+ * @ctindex Sockets.IP_ADD_MEMBERSHIP
+ * @ctindex Sockets.IP_DROP_MEMBERSHIP
+ * @ctindex Sockets.IP_MULTICAST_LOOP
+ * @ctindex Sockets.SO_SNDBUF
+ * @ctindex Sockets.SO_RCVBUF
+ * @ctindex SOL_SOCKET
+ * @ctindex IPPROTO_IP
+ * @ctindex SO_REUSEADDR
+ * @ctindex SO_REUSEPORT
+ * @ctindex IP_MULTICAST_TTL
+ * @ctindex IP_ADD_MEMBERSHIP
+ * @ctindex IP_DROP_MEMBERSHIP
+ * @ctindex IP_MULTICAST_LOOP
+ * @ctindex SO_SNDBUF
+ * @ctindex SO_RCVBUF
+ *    This procedure sets options applicable to a socket. Please
+ *    see your operating system manual for usable levels and options.
+ *
+ *    Two levels are defined: @code{SOL_SOCKET} (the default) and
+ *    @code{IPPROTO_IP}. The options are @code{SO_REUSEADDR},
+ *    @code{SO_REUSEPORT}, @code{IP_MULTICAST_TTL},
+ *    @code{IP_ADD_MEMBERSHIP}, @code{IP_DROP_MEMBERSHIP},
+ *    @code{IP_MULTICAST_LOOP}, @code{SO_SNDBUF} and
+ *    @code{IP_RCVBUF}.
+ *
+ *    Note that unlike their C language counterpart, @code{Getsockopt}
+ *    and @code{Setsockopt} do not require an extra parameter
+ *    representing the length in bytes of the option value. AdaSockets
+ *    nows the right size for every option.
+ * concept: Manipulating socket options
+ * concept: Setting socket options
+ * see: Getsockopt (procedure)
+=*/
+
+/*=subprogram Accept_Socket
+ *
+ * what: Accept an incoming connection
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized, bound and listening socket object
+ * arg: New_Socket, out, Socket_FD,, Incoming socket object
+ * doc:
+ *    This procedure creates a new socket corresponding to an incoming
+ *    connection on TCP socket @var{Socket}. All the communications
+ *    with the peer will take place on @var{New_Socket}, while the
+ *    program can accept another connection on @var{Socket}.
+ *
+ *    @var{New_Socket} must not be initialized before calling this
+ *    procedure, or must have been cleaned up by calling
+ *    @code{Shutdown}, in order to avoid a file descriptors leak.
+ *
+ *    @code{Accept_Socket} will block until an incoming connection is
+ *    ready to be accepted.
+ * concept: Accepting a new connection
+ * concept: Handling a new connection
+ * example:
+ * $ declare
+ * $    Sock     : Socket_FD;
+ * $    Incoming : Socket_FD;
+ * $ begin
+ * $    -- Create a TCP socket listening on local port 4161
+ * $    Socket (Sock, PF_INET, SOCK_STREAM);
+ * $    Bind (Sock, 4161);
+ * $    Listen (Sock, 3);
+ * $    -- One-connection-at-a-time server (3 may be pending)
+ * $    loop
+ * $       -- Wait for a new connection and accept it
+ * $       Accept_Socket (Sock, Incoming);
+ * $       -- Do some dialog with the remote host
+ * $       Do_Some_Dialog (Incoming);
+ * $       -- Close incoming socket and wait for next connection
+ * $       Shutdown (Incoming);
+ * $    end loop;
+ * $ end;
+ * see: Bind (procedure)
+ * see: Listen (procedure)
+ * see: Shutdown (procedure)
+ * see: Socket (procedure)
+=*/
+
+/*=subprogram Send
+ *
+ * what: Send raw data over a socket
+ * kind: procedure
+ * arg: Socket, in, Socket_FD,, Initialized and connected socket object
+ * arg: Data, out, Ada.Streams.Stream_Element_Array,, Data to be sent
+ * doc:
+ * @tindex Ada.Streams.Stream_Element_Array
+ * @tindex Stream_Element_Array
+ *    This procedure sends data over a connected outgoing socket or
+ *    over an incoming socket.
+ * concept: Sending data
+ * exc: Connection_Closed, Peer has prematurely closed the connection
+ * see: Put (procedure)
+ * see: Put_Line (procedure)
+=*/
+
+/*=subprogram Receive
+ *
+ * what: Receive raw data over a socket
+ * kind: function
+ * arg:
+ *    Socket, in, Socket_FD,, Initialized and bound or connected socket object
+ * arg: Max, in, Ada.Streams.Stream_Element_Count, 4096, Maximum data length
+ * ret: Ada.Streams.Stream_Element_Array, Received raw data
+ * doc:
+ * @tindex Ada.Streams.Stream_Element_Count
+ * @tindex Ada.Streams.Stream_Element_Array
+ * @tindex Stream_Element_Count
+ * @tindex Stream_Element_Array
+ *    This procedure receives data from a bound UDP socket or a connected
+ *    TCP socket. Only one system call will be performed; this
+ *    function will return whatever data has arrived. Note that in
+ *    GNAT the secondary stack may be used to store  the data and may
+ *    result in stack storage exhaustion. 
+ * concept: Receiving data
+ * exc:
+ *   Connection_Closed, Peer has closed the connection before sending any data
+ * see: Receive (procedure)
+ * see: Receive_Some (procedure)
+ * see: Get_Line (function)
+ * see: Get_Line (procedure)
+=*/
+
+/*=subprogram Receive
+ *
+ * what: Receive raw data over a socket
+ * kind: procedure
+ * arg:
+ *    Socket, in, Socket_FD'Class,,
+ *    Initialized and bound or connected socket object
+ * arg: Data, out, Ada.Streams.Stream_Element_Array,, Incoming data buffer
+ * doc:
+ * @tindex Ada.Streams.Stream_Element_Array
+ * @tindex Stream_Element_Array
+ *    This procedure receives data from a bound UDP socket or a connected
+ *    TCP socket. It will block until the @var{Data} reception buffer
+ *    has been totally filled.
+ * concept: Receiving data
+ * exc:
+ *   Connection_Closed,
+ *   Peer has closed the connection before @code{Data'Length} bytes@*
+ *   were received
+ * see: Get_Line (function)
+ * see: Get_Line (procedure)
+ * see: Receive (function)
+ * see: Receive_Some (procedure)
+=*/
+
+/*=subprogram Receive_Some
+ *
+ * what: Receive raw data over a socket
+ * kind: procedure
+ * arg:
+ *    Socket, in, Socket_FD'Class,,
+ *    Initialized and bound or connected socket object
+ * arg: Data, out, Ada.Streams.Stream_Element_Array,, Incoming data buffer
+ * arg:
+ *   Last, out, Ada.Streams.Stream_Element_Offset,,
+ *   Index of last element placed into @var{Data}
+ * doc:
+ * @tindex Ada.Streams.Stream_Element_Array
+ * @tindex Stream_Element_Array
+ * @tindex Ada.Streams.Stream_Element_Count
+ * @tindex Stream_Element_Count
+ *    This procedure receives data from a bound UDP socket or a connected
+ *    TCP socket. As soon as at least one byte has been read, it returns
+ *    with @var{Last} set to the index of the latest written element
+ *    of @var{Data}.
+ * concept: Receiving data
+ * exc:
+ *   Connection_Closed,
+ *   Peer has closed the connection before sending any data
+ * see: Get_Line (function)
+ * see: Get_Line (procedure)
+ * see: Receive (function)
+ * see: Receive (procedure)
+=*/
+
+/*=subprogram Shutdown
+ *
+ * what: Shutdown a socket
+ * kind: procedure
+ * arg: Socket, in out, Socket_FD,, Socket object to shutdown
+ * arg: How, in, Shutdown_Type, Both, Direction to shutdown
+ * doc:
+ * @ctindex Send
+ * @ctindex Receive
+ * @ctindex Both
+ *   This procedure shutdowns either direction of the socket. @var{How}
+ *   can take the value @samp{Send}, @samp{Receive} or @samp{Both}.
+ * concept: Closing a socket
+ * concept: Socket shutdown
+ * see: Socket (procedure)
+=*/
+
+/*=subprogram Put
+ *
+ * what: Send a string to a remote host
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Str, in, String,, String to send
+ * doc:
+ *    This procedure sends the content of @var{Str} over an outgoing
+ *    or incoming socket.
+ * concept: Sending data
+ * exc: Connection_Closed, Peer has prematurely closed the connection
+ * see: New_Line (procedure)
+ * see: Put_Line (procedure)
+ * see: Send (procedure)
+=*/
+
+/*=subprogram New_Line
+ *
+ * what: Send a CR/LF to a remote host
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Count, in, Natural, 1, Number of CR/LF sequences to send
+ * doc:
+ * @ctindex CR
+ * @ctindex LF
+ *    This procedure sends one or more CR/LF combinations to the peer.
+ * concept: Sending data
+ * exc: Connection_Closed, Peer has prematurely closed the connection
+ * see: Put (procedure)
+ * see: Put_Line (procedure)
+=*/
+
+/*=subprogram Put_Line
+ *
+ * what: Send a CR/LF terminated string to a remote host
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Str, in, String,, String to send
+ * doc:
+ *    This procedure sends the content of @var{Str} plus a CR/LF combination
+ *    over an outgoing or incoming socket.
+ * concept: Sending data
+ * exc: Connection_Closed, Peer has prematurely closed the connection
+ * see: New_Line (procedure)
+ * see: Put (procedure)
+ * see: Send (procedure)
+=*/
+
+/*=subprogram Get
+ *
+ * what: Get a string from a remote host
+ * kind: function
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * ret: String, Some characters that have been received
+ * doc:
+ *    This function receives some characters from a remote host.
+ *    As soon that at least one character is available, the current
+ *    reception buffer is returned.
+ *
+ *    There is usually little gain in using this function whose behaviour is
+ *    comparable to the one of @ref{Receive (function)}. Other
+ *    functions such as @ref{Get_Char (function)}, or
+ *    @ref{Get_Line (function)}, allow more structured programming.
+ *
+ *    However, this function may be used to avoid loosing characters
+ *    when calling @ref{Unset_Buffer (procedure)}, if, for some reason,
+ *    the remote host may have sent some.
+ * concept: Receiving data
+ * exc:
+ *    Connection_Closed,
+ *    Peer has closed the connection before sending any data
+=*/
+
+/*=subprogram Get_Char
+ *
+ * what: Get a character from a remote host
+ * kind: function
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * ret: Character, One character sent by the remote host
+ * doc:
+ *    This function receives exactly one character from the remote host.
+ * concept: Receiving data
+ * exc:
+ *    Connection_Closed,
+ *    Peer has closed the connection before sending the character
+ * see: Get (function)
+ * see: Get_Line (function)
+ * see: Get_Line (procedure)
+ * see: Receive (procedure)
+ * see: Set_Buffer (procedure)
+=*/
+
+/*=subprogram Get_Line
+ *
+ * what: Get a whole line from a remote host
+ * kind: function
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Max_Length, in, Positive, 2048, Maximum returned line length
+ * ret: String, A line without the CR and LF separators
+ * doc:
+ * @ctindex CR
+ * @ctindex LF
+ *    This function receives one line from the remote host. A line
+ *    consists into zero or more characters followed by an optional CR
+ *    and by a LF. Those terminators are stripped before the line is
+ *    returned.
+ *
+ *    This function blocks until one full line has been received. The line
+ *    length is limited with the value of the Max_Length argument, to avoid
+ *    exhaustion of the secondary stack.
+ * concept: Receiving data
+ * exc:
+ *    Connection_Closed,
+ *    Peer has closed the connection before sending a whole line
+ * see: Get (function)
+ * see: Get_Char (function)
+ * see: Get_Line (procedure)
+ * see: Receive (procedure)
+ * see: Set_Buffer (procedure)
+=*/
+
+/*=subprogram Get_Line
+ *
+ * what: Get a whole line from a remote host
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Str, in out, String,, String to fill
+ * arg: Last, out, Natural,, Last index used in the string
+ * doc:
+ * @ctindex CR
+ * @ctindex LF
+ *    This procedure receives one line from the remote host. A line
+ *    consists into zero or more characters followed by an optional CR
+ *    and by a LF. Those terminators are stripped before the line is
+ *    returned.
+ *
+ *    This procedure blocks until one full line has been received.
+ * concept: Receiving data
+ * exc:
+ *    Connection_Closed,
+ *    Peer has closed the connection before sending a whole line
+ * see: Get (function)
+ * see: Get_Char (function)
+ * see: Get_Line (function)
+ * see: Receive (procedure)
+ * see: Set_Buffer (procedure)
+=*/
+
+/*=subprogram Set_Buffer
+ *
+ * what: Install a line-oriented buffer of the socket object
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * arg: Length, in, Positive, 1500, Size in bytes of the newly installed buffer
+ * doc:
+ *    This procedure puts the socket object in buffered mode. If the
+ *    socket was already buffered, the content of the previous buffer
+ *    will be lost. The buffered mode only affects character- and
+ *    line-oriented read operation such as @ref{Get (function)},
+ *    @ref{Get_Char (function)}, and @ref{Get_Line (function)}. Other
+ *    reception subprograms will not function properly if buffered mode
+ *    is used at the same time.
+ *
+ *    The size of the buffer has to be greater than the biggest
+ *    possible packet sent by the remote host, otherwise data loss may
+ *    occur.
+ * concept: Receiving data
+ * see: Unset_Buffer (procedure)
+=*/
+
+/*=subprogram Unset_Buffer
+ *
+ * what: Deinstall the line-oriented buffer of the socket object
+ * kind: procedure
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * doc:
+ *    This procedure deinstalls the buffer previously installed by
+ *    @ref{Set_Buffer (procedure)}. If any data is still present in
+ *    the buffer, it will be lost. To avoid this situation, the buffer
+ *    can be flushed by calling @ref{Get (function)}.
+ * concept: Receiving data
+=*/
+

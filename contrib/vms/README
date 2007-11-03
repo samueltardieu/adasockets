@@ -1,0 +1,4 @@
+The file sockets-constants.ads is usually produced by compiling a
+small C program that dumps several network and system constants.
+However, as I assumed every body doesn't have a C compiler installed,
+I put here the file generated on my host.

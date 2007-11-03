@@ -1,0 +1,35 @@
+# Makefile for OpenVMS (GNU Make)
+#
+# $Revision$
+#
+#
+# This file is part of adasockets port to OpenVMS
+#
+
+.PHONY: all distclean clean
+.DEFAULT: all
+
+
+
+FILES=	stream_listener.adb\
+	stream_sender.adb\
+	listener.adb\
+	multi.adb\
+	tcprelay.adb
+
+
+all: $(FILES:.adb=.exe)
+
+
+
+%.exe: %.adb
+	gnat make /search=([-.src]) $<
+
+
+distclean:
+	del/noconf/log *.ali;*, *.obj;*, *.exe;*
+
+
+clean:
+	del/noconf/log *.ali;*, *.obj;*
+

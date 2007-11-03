@@ -1,0 +1,53 @@
+#!/bin/sh -e
+#
+# $Id: //depot/adabroker/main/broca/utils/make_distrib#2 $
+#
+# This script builds a compressed archive suitable for distribution.
+#
+# Usage: make_distrib
+#
+#   dir   : the distribution will unpack in directory <dir> and will be
+#           named <dir>.tar.gz (where <dir> is the result of make version)
+#
+# The file MANIFEST contains the list of files to be included in this
+# archive, one file per line.
+#
+
+umask 022
+dir=temp$$
+prev=`pwd`
+tmp=${TMPDIR-/tmp}/t$$
+mkdir -p $tmp/$dir
+tar cf - . | (cd $tmp/$dir && tar xpBf -)
+chmod -R u+w $tmp/$dir
+cd $tmp/$dir
+echo Generating ChangeLog
+hg log --style=changelog --no-merges > ChangeLog
+echo Generating auto-generated files
+autoreconf --verbose --install --force
+echo Configuring
+./configure
+echo Extracting the version
+newdir=`make version`
+echo Version is $newdir
+echo Building documentation
+(cd doc && make adasockets.info adasockets.dvi && dvips -o adasockets.ps adasockets.dvi && ps2pdf adasockets.ps adasockets.pdf)
+echo Setting timestamps on documentation
+sleep 2 && (cd doc && touch adasockets.info adasockets.ps adasockets.pdf)
+echo Adapting modes
+chmod -R +w .
+chmod -R og=u-w .
+flist=""
+echo Packaging
+for i in `cat MANIFEST`; do
+  flist="${flist} ${newdir}/${i}"
+done
+cd ..
+echo Renaming directory to $newdir
+mv $dir $newdir
+dir=$newdir
+fakeroot tar cvf ${dir}.tar ${flist}
+gzip --best ${dir}.tar
+mv ${dir}.tar.gz ${prev}
+cd ${prev}
+rm -rf ${tmp}
