@@ -4,7 +4,7 @@ adasockets_TEXINFOS = sockets.texi sockets-multicast.texi sockets-naming.texi
 ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 	  --subblock=ret=rettype,retdesc \
 	  --subblock=exc=excname,excdesc \
-	  --template=adadoc
+	  --template=${srcdir}/adadoc
 
 CLEANFILES=	*.defs ${adasockets_TEXINFOS}
 
