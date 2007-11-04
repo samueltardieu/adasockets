@@ -26,7 +26,7 @@ ADA_SRCS = \
 	$(ADA_SRCS_WIN)
 
 ADA_OBJECTS = \
-	sockets-constants.o \
+	sockets-constants.ads \
 	sockets-link.o \
 	sockets-multicast.o \
 	sockets-naming.o \
@@ -43,18 +43,7 @@ ADACOMPILER = $(top_srcdir)/support/adacompiler
 ADAFLAGS = -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali
-DISTCLEANFILES = b_split.c split constants_nodef \
-		sockets-thin.ads sockets-thin.adb
-
-constants_nodef: constants.c config.h
-	$(CC) -I. -o constants_nodef $(srcdir)/constants.c
-
-sockets-constants.ads: $(srcdir)/constants.sh split constants_nodef
-	$(SHELL) $(srcdir)/constants.sh Sockets.Constants $(srcdir) \
-	  sockets-constants.ads
-
-split: $(srcdir)/split.adb
-	$(GNATMAKE) -g -O2 $(srcdir)/split.adb
+DISTCLEANFILES = sockets-thin.ads sockets-thin.adb
 
 if WIN32
 ADA_SRCS_WIN=	sockets-windows_link.ads sockets-windows_link.adb \

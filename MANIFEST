@@ -31,14 +31,11 @@ man/Makefile.in
 man/adasockets-config.1
 src/adasockets-config.in
 src/sockets-link.ads.in
-src/split.adb
-src/config.h.in
-src/constants.sh
-src/constants.c
 src/Makefile.am
 src/Makefile.in
 src/sockets.ads
 src/sockets.adb
+src/sockets-constants.ads
 src/sockets-thin.ads.unix
 src/sockets-thin.ads.win32
 src/sockets-thin.adb.win32
