@@ -72,7 +72,7 @@ endif
 
 SUFFIXES = .ads .lo .ali
 
-.ads.lo .ads.ali:
+.ads.lo:
 	@chmod a+x $(ADACOMPILER)
 	if [ -f `echo $< | sed -e 's/s$$/b/'` ]; then \
 	  $(LIBTOOL) --tag=CC --mode=compile $(ADACOMPILER) $(ADAFLAGS) \
@@ -80,6 +80,8 @@ SUFFIXES = .ads .lo .ali
 	else \
 	  $(LIBTOOL) --tag=CC --mode=compile $(ADACOMPILER) $(ADAFLAGS) $<; \
 	fi
+
+.lo.ali:
 
 install-data-local: all
 	rm -rf $(DESTDIR)$(privatelibdir)
