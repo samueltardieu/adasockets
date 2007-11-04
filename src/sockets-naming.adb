@@ -477,7 +477,6 @@ package body Sockets.Naming is
             when Host_Not_Found => return "Host not found";
             when Try_Again      => return "Try again";
             when No_Recovery    => return "No recovery";
-            when No_Address     => return "No address";
             when others         => return "Unknown error" &
                                           Integer'Image (Errno);
          end case;
