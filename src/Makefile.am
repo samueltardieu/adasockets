@@ -38,7 +38,7 @@ ADA_OBJECTS = \
 
 ALIS = $(ADA_OBJECTS:.o=.ali) $(ADA_OBJECTS_WIN:.o=.ali)
 
-ADACOMPILER = $(top_builddir)/support/adacompiler
+ADACOMPILER = $(top_srcdir)/support/adacompiler
 
 ADAFLAGS = -I. -I$(srcdir)
 
@@ -73,12 +73,13 @@ endif
 SUFFIXES = .ads .lo .ali
 
 .ads.lo:
-	@chmod a+x $(ADACOMPILER)
 	if [ -f `echo $< | sed -e 's/s$$/b/'` ]; then \
-	  $(LIBTOOL) --tag=CC --mode=compile $(ADACOMPILER) $(ADAFLAGS) \
+	  $(LIBTOOL) --tag=CC --mode=compile \
+	  $(ADACOMPILER) $(GNATMAKE) $(ADAFLAGS) \
 	  `echo $< | sed -e 's/s$$/b/'`; \
 	else \
-	  $(LIBTOOL) --tag=CC --mode=compile $(ADACOMPILER) $(ADAFLAGS) $<; \
+	  $(LIBTOOL) --tag=CC --mode=compile \
+	  $(ADACOMPILER) $(GNATMAKE) $(ADAFLAGS) $<; \
 	fi
 
 .lo.ali:

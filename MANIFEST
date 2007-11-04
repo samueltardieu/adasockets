@@ -61,7 +61,7 @@ support/install-sh
 support/config.sub
 support/config.guess
 support/ltmain.sh
-support/adacompiler.in
+support/adacompiler
 support/texinfo.tex
 support/mdate-sh
 Makefile.am

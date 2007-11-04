@@ -4,8 +4,8 @@
 # after the compilation.
 #
 
-GNATMAKE="@GNATMAKE@"
-
+GNATMAKE=$1
+shift
 cline="$@"
 fname=`echo $cline | sed -e 's/^.* -o \([^ ]*\)$/\1/'`
 rname=`basename $fname | sed -e 's/lo$/o/'`

@@ -109,7 +109,6 @@ AC_SUBST(WINNEEDED)
 # Output
 #
 AC_CONFIG_FILES([Makefile
-           support/adacompiler
            src/Makefile
            src/sockets-link.ads
            src/adasockets-config
