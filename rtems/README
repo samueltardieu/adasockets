@@ -22,34 +22,12 @@ Build and run the RTEMS hello_world_ada from the ada-examples
 package using your GNAT/RTEMS development environment.
 
 If everything is working at this point, then you are ready to
-build Ada Sockets.
+build AdaSockets.
 
-Generate sockets-constants-ads
-==============================
-We will use the RTEMS you installed to build and run a program
-called "constants.exe".  The output of this program needs to be
-saved as sockets-constants.ads.  To compile this program use
-the Makefile.constants.
-
-RTEMS_MAKEFILE_PATH=install_patch_of_BSP \
-  make -f Makefile.constants
-
-Then run the program o-optimize/constants.exe on the target hardware.
-Your saved target board output may end up with DOS style 
-CR/LF's.  Run "dos2unix" on the file to get it back to
-Unix style.
-
-There is a version of this file generated using psim using 
-a pre-4.8 CVS snapshot of RTEMS which should work on any target.
-You can use this but you would be safer to generate your own.
-Consider it an example of how it should look when it works.
-
-
-Building Ada Sockets
-====================
-Now that you have a sockets-constants.ads, we can build the
-Ada Sockets library.  Makefile.adasockets is provided for this
-step:
+Building AdaSockets
+===================
+We can now build the AdaSockets library.  Makefile.adasockets is
+provided for this step:
 
 RTEMS_MAKEFILE_PATH=install_patch_of_BSP \
   make -f Makefile.lib

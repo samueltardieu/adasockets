@@ -26,8 +26,7 @@ include $(PROJECT_ROOT)/make/leaf.cfg
 RTEMS_FILES=\
 	sockets-types.ads\
 	sockets-thin.ads\
-	sockets-link.ads\
-	sockets-constants.ads
+	sockets-link.ads
 
 FILES=	sockets-multicast.adb\
 	sockets-naming.adb\
@@ -55,9 +54,6 @@ sockets-link.ads: sockets-link.ads.in Makefile.RTEMS
 	    -e '/@RESOLVNEEDED@/d' $< >$@
 
 sockets-thin.ads: sockets-thin.ads.unix
-	cp $< $@
-
-sockets-constants.ads: ../rtems/sockets-constants.ads
 	cp $< $@
 
 $(ADB_OBJ): %.o: %.adb

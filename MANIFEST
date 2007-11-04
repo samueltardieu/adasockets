@@ -89,7 +89,4 @@ examples/rtems_networkconfig.h
 rtems/ChangeLog
 rtems/Makefile.RTEMS
 rtems/README
-rtems/create_constants_c.sh
-rtems/rtems_main.c
-rtems/sockets-constants-rtems.ads
 src/Makefile.RTEMS

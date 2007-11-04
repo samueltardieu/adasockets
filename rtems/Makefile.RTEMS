@@ -24,14 +24,4 @@ include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
 include $(RTEMS_CUSTOM)
 include $(PROJECT_ROOT)/make/leaf.cfg
 
-CLEAN_ADDITIONS += constants.c
-
 OBJS= $(COBJS) 
-
-all: $(ARCH)/constants.exe
-
-$(ARCH)/constants.exe: $(ARCH) $(OBJS)
-	$(make-exe)
-
-constants.c: create_constants_c.sh ../vms/constants.list
-	sh ./create_constants_c.sh ../vms/constants.list $@
