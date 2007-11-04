@@ -85,3 +85,14 @@ vms/constants.c_pre
 vms/constants.list
 vms/create_constants_ads.com
 vms/create_constants_c.com
+README.RTEMS
+examples/Makefile.RTEMS
+examples/rtems_init.c
+examples/rtems_networkconfig.h
+rtems/ChangeLog
+rtems/Makefile.RTEMS
+rtems/README
+rtems/create_constants_c.sh
+rtems/rtems_main.c
+rtems/sockets-constants-rtems.ads
+src/Makefile.RTEMS
