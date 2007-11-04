@@ -86,11 +86,6 @@ package body Sockets.Multicast is
          C_Self_Loop := 0;
       end if;
       Setsockopt (Result, SOL_SOCKET, SO_REUSEADDR, 1);
-      pragma Warnings (Off);    --  Statically determined
-      if Constants.So_Reuseport /= -1 then
-        Setsockopt (Result, SOL_SOCKET, SO_REUSEPORT, 1);
-      end if;
-      pragma Warnings (On);
       Bind (Result, Local_Port);
       Mreq.Imr_Multiaddr := To_In_Addr (Address_Of (Group));
       Mreq.Imr_Interface := To_In_Addr (Address_Of (Local_If));

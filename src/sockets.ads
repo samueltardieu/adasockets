@@ -88,7 +88,7 @@ package Sockets is
 
    type Socket_Level is (SOL_SOCKET, IPPROTO_IP);
 
-   type Socket_Option is (SO_REUSEADDR, SO_REUSEPORT, IP_MULTICAST_TTL,
+   type Socket_Option is (SO_REUSEADDR, IP_MULTICAST_TTL,
                           IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
                           IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF);
 

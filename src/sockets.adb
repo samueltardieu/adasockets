@@ -69,7 +69,6 @@ package body Sockets is
 
    Socket_Option_Match : constant array (Socket_Option) of int :=
      (SO_REUSEADDR       => Constants.So_Reuseaddr,
-      SO_REUSEPORT       => Constants.So_Reuseport,
       IP_MULTICAST_TTL   => Constants.Ip_Multicast_Ttl,
       IP_ADD_MEMBERSHIP  => Constants.Ip_Add_Membership,
       IP_DROP_MEMBERSHIP => Constants.Ip_Drop_Membership,
@@ -79,7 +78,6 @@ package body Sockets is
 
    Socket_Option_Size  : constant array (Socket_Option) of Natural :=
      (SO_REUSEADDR       => 4,
-      SO_REUSEPORT       => 4,
       IP_MULTICAST_TTL   => 1,
       IP_ADD_MEMBERSHIP  => 8,
       IP_DROP_MEMBERSHIP => 8,
