@@ -335,6 +335,7 @@ new operating systems:
 @item Thomas Quinot (@email{thomas@@cuivre.fr.eu.org})
 @item Preben Randhol (@email{randhol@@pvv.org})
 @item Maxim Reznik (@email{max1@@mbank.com.ua})
+@item Joel Sherrill (@email{joel.sherrill@oarcorp.com})
 @item Samuel Tardieu (@email{sam@@rfc1149.net})
 @end itemize
 
