@@ -328,7 +328,7 @@ package body Sockets.Naming is
       Naming_Lock.Lock;
       Res := C_Gethostbyaddr (C_Addr,
                               int (Temp'Size / CHAR_BIT),
-                              Constants.Af_Inet);
+                              Constants.AF_INET);
       if Res = null then
          Naming_Lock.Unlock;
          Raise_Naming_Error (Errno, Image (Addr));
@@ -474,9 +474,9 @@ package body Sockets.Naming is
       function Error_Message return String is
       begin
          case Errno is
-            when Host_Not_Found => return "Host not found";
-            when Try_Again      => return "Try again";
-            when No_Recovery    => return "No recovery";
+            when HOST_NOT_FOUND => return "Host not found";
+            when TRY_AGAIN      => return "Try again";
+            when NO_RECOVERY    => return "No recovery";
             when others         => return "Unknown error" &
                                           Integer'Image (Errno);
          end case;

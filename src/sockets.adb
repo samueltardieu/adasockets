@@ -51,12 +51,12 @@ package body Sockets is
    use Ada.Streams, Interfaces.C;
 
    Socket_Domain_Match : constant array (Socket_Domain) of int :=
-     (PF_INET => Constants.Af_Inet,
-      AF_INET => Constants.Af_Inet);  --  They hold the same value
+     (PF_INET => Constants.AF_INET,
+      AF_INET => Constants.AF_INET);  --  They hold the same value
 
    Socket_Type_Match : constant array (Socket_Type) of int :=
-     (SOCK_STREAM => Constants.Sock_Stream,
-      SOCK_DGRAM  => Constants.Sock_Dgram);
+     (SOCK_STREAM => Constants.SOCK_STREAM,
+      SOCK_DGRAM  => Constants.SOCK_DGRAM);
 
    Shutdown_Type_Match : constant array (Shutdown_Type) of int :=
      (Receive => 0,
@@ -64,17 +64,17 @@ package body Sockets is
       Both    => 2);
 
    Socket_Level_Match : constant array (Socket_Level) of int :=
-     (SOL_SOCKET => Constants.Sol_Socket,
-      IPPROTO_IP => Constants.Ipproto_Ip);
+     (SOL_SOCKET => Constants.SOL_SOCKET,
+      IPPROTO_IP => Constants.IPPROTO_IP);
 
    Socket_Option_Match : constant array (Socket_Option) of int :=
-     (SO_REUSEADDR       => Constants.So_Reuseaddr,
-      IP_MULTICAST_TTL   => Constants.Ip_Multicast_Ttl,
-      IP_ADD_MEMBERSHIP  => Constants.Ip_Add_Membership,
-      IP_DROP_MEMBERSHIP => Constants.Ip_Drop_Membership,
-      IP_MULTICAST_LOOP  => Constants.Ip_Multicast_Loop,
-      SO_SNDBUF          => Constants.So_Sndbuf,
-      SO_RCVBUF          => Constants.So_Rcvbuf);
+     (SO_REUSEADDR       => Constants.SO_REUSEADDR,
+      IP_MULTICAST_TTL   => Constants.IP_MULTICAST_TTL,
+      IP_ADD_MEMBERSHIP  => Constants.IP_ADD_MEMBERSHIP,
+      IP_DROP_MEMBERSHIP => Constants.IP_DROP_MEMBERSHIP,
+      IP_MULTICAST_LOOP  => Constants.IP_MULTICAST_LOOP,
+      SO_SNDBUF          => Constants.SO_SNDBUF,
+      SO_RCVBUF          => Constants.SO_RCVBUF);
 
    Socket_Option_Size  : constant array (Socket_Option) of Natural :=
      (SO_REUSEADDR       => 4,
@@ -149,7 +149,7 @@ package body Sockets is
    is
       Sin : aliased Sockaddr_In;
    begin
-      Sin.Sin_Family := Constants.Af_Inet;
+      Sin.Sin_Family := Constants.AF_INET;
       if Host /= "" then
          Sin.Sin_Addr   := To_In_Addr (Address_Of (Host));
       end if;
@@ -171,12 +171,12 @@ package body Sockets is
       Sin           : aliased Sockaddr_In;
       Current_Errno : Integer;
    begin
-      Sin.Sin_Family := Constants.Af_Inet;
+      Sin.Sin_Family := Constants.AF_INET;
       Sin.Sin_Addr   := To_In_Addr (Address_Of (Host));
       Sin.Sin_Port   := Port_To_Network (unsigned_short (Port));
       if C_Connect (Socket.FD, Sin'Address, Sin'Size / 8) = Failure then
          Current_Errno := Thin.Errno;
-         if Current_Errno = Constants.Econnrefused then
+         if Current_Errno = Constants.ECONNREFUSED then
             raise Connection_Refused;
          else
             Raise_With_Message

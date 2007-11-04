@@ -92,7 +92,7 @@ package body Sockets.Multicast is
       Setsockopt_Add_Membership (Result, Mreq);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_TTL, TTL);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_LOOP, C_Self_Loop);
-      Result.Target.Sin_Family := Constants.Af_Inet;
+      Result.Target.Sin_Family := Constants.AF_INET;
       Result.Target.Sin_Port := Port_To_Network (unsigned_short (Port));
       Result.Target.Sin_Addr := To_In_Addr (Address_Of (Group));
       return Result;
