@@ -99,11 +99,16 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(privatelibdir)
 
 ### DO NOT REMOVE THIS LINE, IT IS USED BY MAKEDEPEND ###
-sockets-constants.lo:sockets-constants.ads sockets.ads 
-sockets-link.lo:sockets-link.ads sockets.ads 
-sockets-multicast.lo:sockets-constants.ads sockets-link.ads sockets-multicast.adb sockets-multicast.ads sockets-naming.ads sockets-thin.ads sockets-utils.ads sockets.adb sockets.ads sockets-types.ads
-sockets-naming.lo:sockets-constants.ads sockets-naming.adb sockets-naming.ads sockets-thin.ads sockets-utils.ads sockets.ads sockets-types.ads
-sockets-stream_io.lo:sockets-stream_io.adb sockets-stream_io.ads sockets.ads 
-sockets-thin.lo:sockets-thin.ads sockets.ads sockets-types.ads
-sockets-utils.lo:sockets-utils.adb sockets-utils.ads sockets.ads 
-sockets.lo:sockets-constants.ads sockets-link.ads sockets-naming.ads sockets-thin.ads sockets-utils.ads sockets.adb sockets.ads sockets-types.ads
+sockets-multicast.lo : sockets.ads sockets.adb sockets-constants.ads \
+ sockets-link.ads sockets-multicast.ads sockets-multicast.adb \
+ sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
+sockets.lo : sockets.ads sockets.adb sockets-constants.ads sockets-link.ads \
+ sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
+sockets-constants.lo : sockets.ads sockets-constants.ads
+sockets-naming.lo : sockets.ads sockets-constants.ads sockets-naming.ads \
+ sockets-naming.adb sockets-thin.ads sockets-types.ads sockets-utils.ads
+sockets-thin.lo : sockets.ads sockets-thin.ads sockets-types.ads
+sockets-types.lo : sockets.ads sockets-types.ads
+sockets-utils.lo : sockets.ads sockets-thin.ads sockets-types.ads \
+ sockets-utils.ads sockets-utils.adb
+sockets-link.lo : sockets.ads sockets-link.ads
