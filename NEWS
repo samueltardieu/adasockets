@@ -1,5 +1,13 @@
 -*- outline -*-
 
+* New in AdaSockets 1.8.6
+
+Add RTEMS port from Joel Sherrill <joel.sherrill@oarcorp.com>.
+
+Fix style issues and warnings from newer GNAT versions.
+
+Use a LIBVERSION of 1:0:0 as is done in the Debian package.
+
 * New in AdaSockets 1.8.5
 
 Fix locking race condition in naming routines. Bug found and fix sent by
