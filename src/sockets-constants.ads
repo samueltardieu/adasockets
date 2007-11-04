@@ -39,4 +39,4 @@ pragma Warnings (Off);
 with GNAT.Sockets.Constants;
 pragma Warnings (On);
 
-package Sockets.Constants renames GNAT.Sockets.Constants;
+private package Sockets.Constants renames GNAT.Sockets.Constants;
