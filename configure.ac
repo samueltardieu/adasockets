@@ -1,7 +1,6 @@
 AC_INIT(src/sockets.ads)
 AC_CONFIG_AUX_DIR(support)
 AM_INIT_AUTOMAKE([adasockets],[1.8.6])
-AM_CONFIG_HEADER(src/config.h)
 #
 # Package description
 #
@@ -48,10 +47,6 @@ AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo)
 AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi)
 AC_CHECK_PROG(DVIPS, dvips, dvips)
 #
-# Look for the C compiler
-#
-AC_PROG_CC
-#
 # Look for the Ada compiler
 #
 AC_CHECK_PROG([GNATMAKE], [gnatmake], [gnatmake])
@@ -82,15 +77,6 @@ AC_ARG_WITH(extra-libs,
  [EXTRA_LIBS="${withval}"])
 AC_SUBST(EXTRA_LIBS)
 #
-# Header files
-#
-AC_CHECK_HEADERS([stdio.h sys/types.h sys/socket.h errno.h netdb.h stdlib.h])
-AC_CHECK_HEADERS([netinet/in.h signal.h fcntl.h termio.h termios.h sys/file.h])
-AC_CHECK_HEADERS([sys/ioctl.h netinet/tcp.h sys/systeminfo.h poll.h stropts.h])
-AC_CHECK_HEADERS([sys/conf.h sys/param.h time.h windows.h string.h])
-AC_CHECK_HEADERS(windows.h, [usewin32=true useunix=false],
-                            [usewin32=false useunix=true])
-#
 # sa_len field ?
 #
 AC_CHECK_MEMBER(struct sockaddr.sa_len,[SA_LEN="" NO_SA_LEN="--  "],[SA_LEN="--  " NO_SA_LEN=""],[#include <sys/types.h>
@@ -100,6 +86,8 @@ AC_SUBST(NO_SA_LEN)
 #
 # Conditional import for Win32 and substitution
 #
+AC_CHECK_HEADERS(windows.h, [usewin32=true useunix=false],
+                            [usewin32=false useunix=true])
 AM_CONDITIONAL(WIN32, $usewin32)
 if $useunix; then
   WINNEEDED="--  "
