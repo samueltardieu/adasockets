@@ -38,7 +38,7 @@
 
 with Ada.Characters.Latin_1;     use Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
-with Sockets.Constants;          use Sockets.Constants;
+with Sockets.Constants;
 with Sockets.Link;
 pragma Warnings (Off, Sockets.Link);
 with Sockets.Naming;             use Sockets.Naming;

@@ -40,7 +40,7 @@ with Ada.Exceptions;    use Ada.Exceptions;
 with Interfaces.C;      use Interfaces.C;
 with Sockets;
 pragma Elaborate_All (Sockets);
-with Sockets.Constants; use Sockets.Constants;
+with Sockets.Constants;
 with Sockets.Naming;    use Sockets.Naming;
 with Sockets.Thin;      use Sockets.Thin;
 with Sockets.Types;     use Sockets.Types;
