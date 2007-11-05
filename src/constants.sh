@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# $ReleaseVersion: 0.1.6 $
-#
 # This file generates any necessary constant for a given platform.
 #
 
