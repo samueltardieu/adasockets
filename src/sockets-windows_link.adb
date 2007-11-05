@@ -2,14 +2,12 @@
 --                                                                         --
 --                         ADASOCKETS COMPONENTS                           --
 --                                                                         --
---               S O C K E T S . W I N D O W S _ L I N K                   --
+--                S O C K E T S . W I N D O W S _ L I N K                  --
 --                                                                         --
---                                S p e c                                  --
+--                                B o d y                                  --
 --                                                                         --
---                        $ReleaseVersion: 0.1.9 $                         --
---                                                                         --
---        Copyright (C) 1998,1999 Samuel Tardieu <sam@rfc1149.net>         --
---             Copyright (C) 1999-2003 ENST http://www.enst.fr/            --
+--          Copyright (C) 1998-2007 Samuel Tardieu <sam@rfc1149.net>       --
+--               Copyright (C) 1999-2003 ENST http://www.enst.fr/          --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
 --   it  under terms of the GNU  General  Public License as published by   --
@@ -33,7 +31,11 @@
 --   The main repository for this software is located at:                  --
 --       http://www.rfc1149.net/devel/adasockets                           --
 --                                                                         --
+--   If you have any question, please send a mail to the AdaSockets list   --
+--       adasockets@lists.rfc1149.net                                      --
+--                                                                         --
 -----------------------------------------------------------------------------
+
 --  Dmitiry Anisimkov changes only for Win32 platform                      --
 -----------------------------------------------------------------------------
 
