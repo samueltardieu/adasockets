@@ -37,6 +37,7 @@
 -----------------------------------------------------------------------------
 
 with Ada.Streams;
+with GNAT.Sockets;
 with Interfaces.C;
 
 package Sockets is
@@ -218,7 +219,7 @@ private
    type Shutdown_Array is array (Receive .. Send) of Boolean;
 
    type Socket_FD is tagged record
-      FD       : Interfaces.C.int;
+      FD       : GNAT.Sockets.Socket_Type;
       Shutdown : Shutdown_Array;
       Buffer   : Buffer_Access;
    end record;

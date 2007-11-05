@@ -155,7 +155,7 @@ package body Sockets.Multicast is
       Count : int;
    begin
       while Rest > 0 loop
-         Count := C_Sendto (Socket.FD,
+         Count := C_Sendto (Get_FD (Socket),
                             Data (Index) 'Address,
                             int (Rest),
                             0,

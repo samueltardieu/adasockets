@@ -153,7 +153,8 @@ package body Sockets.Naming is
       Name : aliased Sockaddr_In;
       Len  : aliased int := Name'Size / 8;
    begin
-      if C_Getpeername (Socket.FD, Name'Address, Len'Access) = Failure then
+      if C_Getpeername (Get_FD (Socket), Name'Address, Len'Access) = Failure
+      then
          Raise_Naming_Error (Errno, "");
       end if;
       return Name;
@@ -194,7 +195,8 @@ package body Sockets.Naming is
       Name : aliased Sockaddr_In;
       Len  : aliased int := Name'Size / 8;
    begin
-      if C_Getsockname (Socket.FD, Name'Address, Len'Access) = Failure then
+      if C_Getsockname (Get_FD (Socket), Name'Address, Len'Access) = Failure
+      then
          Raise_Naming_Error (Errno, "");
       end if;
       return Name;
