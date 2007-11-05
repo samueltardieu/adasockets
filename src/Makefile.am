@@ -26,7 +26,7 @@ ADA_SRCS = \
 	$(ADA_SRCS_WIN)
 
 ADA_OBJECTS = \
-	sockets-constants.ads \
+	sockets-constants.o \
 	sockets-link.o \
 	sockets-multicast.o \
 	sockets-naming.o \
