@@ -1,8 +1,9 @@
 ;;;
-;;; $Id: update-headers.el 1.1 Tue, 10 Feb 1998 11:51:47 +0100 sam $
-;;;
 ;;; This file contains the update-header command which can be used to
 ;;; update headers depending on the header.txt file in the current directory.
+;;;
+;;; It should be used as:
+;;;   emacs -batch -l ../utils/update-headers.el -f update-headers
 ;;;
 ;;; XXXXX will be replaced by context-dependent information.
 ;;;
@@ -75,7 +76,7 @@
 (defun update-headers ()
   "Update headers of files given on the command line"
   (interactive)
-  (let ((l (directory-files "." nil "\\.ad.$" nil t)))
+  (let ((l (directory-files "." nil "\\.ad[bs]" nil)))
     (while l
       (let ((current (car l)))
 	(message "Updating %s..." current)
