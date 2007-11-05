@@ -616,31 +616,6 @@ package body Sockets is
       Sock := (FD => Result, Shutdown => (others => False), Buffer => null);
    end Socket;
 
-   ----------------
-   -- Socketpair --
-   ----------------
-
-   procedure Socketpair
-     (Read_End  : out Socket_FD;
-      Write_End : out Socket_FD;
-      Domain    : in Socket_Domain := PF_INET;
-      Typ       : in Socket_Type   := SOCK_STREAM)
-   is
-      Filedes : aliased Two_Int;
-      Result  : constant int :=
-        C_Socketpair (Socket_Domain_Match (Domain),
-                      Socket_Type_Match (Typ), 0,
-                      Filedes'Address);
-   begin
-      if Result = Failure then
-         Raise_With_Message ("Unable to create socket");
-      end if;
-      Read_End  := (FD     => Filedes (0), Shutdown => (others => False),
-                    Buffer => null);
-      Write_End := (FD     => Filedes (1), Shutdown => (others => False),
-                    Buffer => null);
-   end Socketpair;
-
    ---------------
    -- To_String --
    ---------------

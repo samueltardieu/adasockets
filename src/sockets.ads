@@ -148,13 +148,6 @@ package Sockets is
                        How    : in Shutdown_Type := Both);
    --  Close a previously opened socket
 
-   procedure Socketpair
-     (Read_End  : out Socket_FD;
-      Write_End : out Socket_FD;
-      Domain    : in Socket_Domain := PF_INET;
-      Typ       : in Socket_Type   := SOCK_STREAM);
-   --  Create a socketpair.
-
    function Get_FD (Socket : in Socket_FD)
      return Interfaces.C.int;
    --  Get a socket's FD field
