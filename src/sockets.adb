@@ -58,10 +58,10 @@ package body Sockets is
      (SOCK_STREAM => Socket_Stream,
       SOCK_DGRAM  => Socket_Datagram);
 
-   Shutdown_Type_Match : constant array (Shutdown_Type) of int :=
-     (Receive => 0,
-      Send    => 1,
-      Both    => 2);
+   Shutdown_Type_Match : constant array (Shutdown_Type) of Shutmode_Type :=
+     (Receive => Shut_Read,
+      Send    => Shut_Write,
+      Both    => Shut_Read_Write);
 
    Socket_Level_Match : constant array (Socket_Level) of int :=
      (SOL_SOCKET => Constants.SOL_SOCKET,
@@ -536,14 +536,10 @@ package body Sockets is
       else
          Socket.Shutdown := (others => True);
       end if;
-      C_Shutdown (Get_FD (Socket), Shutdown_Type_Match (How));
+      Shutdown_Socket (Socket.FD, Shutdown_Type_Match (How));
       if Socket.Shutdown (Receive) and then Socket.Shutdown (Send) then
-         declare
-            Result : constant int := C_Close (Get_FD (Socket));
-            pragma Unreferenced (Result);
-         begin
-            Unset_Buffer (Socket);
-         end;
+         Unset_Buffer (Socket);
+         Close_Socket (Socket.FD);
       end if;
    end Shutdown;
 
