@@ -55,4 +55,8 @@ private package Sockets.Utils is
      return Interfaces.C.unsigned_short
      renames Port_To_Network;
 
+   function "*" (Left : String; Right : Natural) return String;
+   pragma Inline ("*");
+   --  Return Left string repeated Right times
+
 end Sockets.Utils;

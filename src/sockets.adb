@@ -85,9 +85,6 @@ package body Sockets is
       SO_SNDBUF          => 4,
       SO_RCVBUF          => 4);
 
-   function "*" (Left : String; Right : Natural) return String;
-   pragma Inline ("*");
-
    CRLF : constant String := CR & LF;
 
    procedure Refill (Socket : in Socket_FD'Class);
@@ -98,23 +95,6 @@ package body Sockets is
 
    function Empty_Buffer (Socket : Socket_FD'Class) return Boolean;
    --  Return True if buffered socket has an empty buffer
-
-   ---------
-   -- "*" --
-   ---------
-
-   function "*" (Left : String; Right : Natural) return String is
-      Result : String (1 .. Left'Length * Right);
-      First  : Positive := 1;
-      Last   : Natural  := First + Left'Length - 1;
-   begin
-      for I in 1 .. Right loop
-         Result (First .. Last) := Left;
-         First := First + Left'Length;
-         Last  := Last + Left'Length;
-      end loop;
-      return Result;
-   end "*";
 
    -------------------
    -- Accept_Socket --
