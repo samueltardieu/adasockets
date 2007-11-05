@@ -151,6 +151,7 @@ package Sockets is
 
    function Get_FD (Socket : in Socket_FD)
      return Interfaces.C.int;
+   pragma Inline (Get_FD);
    --  Get a socket's FD field
 
    ---------------------------------

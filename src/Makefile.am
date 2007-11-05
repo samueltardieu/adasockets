@@ -102,3 +102,4 @@ sockets-types.lo : sockets.ads sockets-types.ads
 sockets-utils.lo : sockets.ads sockets-thin.ads sockets-types.ads \
  sockets-utils.ads sockets-utils.adb
 sockets-link.lo : sockets.ads sockets-link.ads
+sockets-stream_io.lo : sockets.ads sockets-stream_io.ads sockets-stream_io.adb
