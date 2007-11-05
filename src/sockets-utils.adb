@@ -44,6 +44,23 @@ package body Sockets.Utils is
 
    use Interfaces.C;
 
+   ---------
+   -- "*" --
+   ---------
+
+   function "*" (Left : String; Right : Natural) return String is
+      Result : String (1 .. Left'Length * Right);
+      First  : Positive := 1;
+      Last   : Natural  := First + Left'Length - 1;
+   begin
+      for I in 1 .. Right loop
+         Result (First .. Last) := Left;
+         First := First + Left'Length;
+         Last  := Last + Left'Length;
+      end loop;
+      return Result;
+   end "*";
+
    ---------------------
    -- Port_To_Network --
    ---------------------
