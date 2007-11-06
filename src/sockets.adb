@@ -38,8 +38,6 @@
 
 with Ada.Characters.Latin_1;     use Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
-with Sockets.Link;
-pragma Warnings (Off, Sockets.Link);
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets is

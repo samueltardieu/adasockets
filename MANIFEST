@@ -30,7 +30,6 @@ man/Makefile.am
 man/Makefile.in
 man/adasockets-config.1
 src/adasockets-config.in
-src/sockets-link.ads.in
 src/Makefile.am
 src/Makefile.in
 src/sockets.ads
@@ -43,8 +42,6 @@ src/sockets-stream_io.ads
 src/sockets-stream_io.adb
 src/sockets-utils.ads
 src/sockets-utils.adb
-src/sockets-windows_link.ads
-src/sockets-windows_link.adb
 configure.ac
 configure
 aclocal.m4
@@ -68,8 +65,6 @@ contrib/vms/README
 contrib/vms/sockets-constants.ads
 examples/Makefile.VMS
 src/Makefile.VMS
-src/sockets-link.ads.vms
-src/sockets-vms_link.ads
 vms/Makefile.VMS
 vms/constants.c_pre
 vms/constants.list

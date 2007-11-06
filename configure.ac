@@ -58,47 +58,10 @@ fi
 #
 AC_PROG_LIBTOOL
 #
-# Test for -lnsl, -lsocket and -lresolv
-#
-AC_CHECK_FUNC(gethostbyname,NSLNEEDED="--  ",
-  AC_CHECK_LIB(nsl,gethostbyname,,NSLNEEDED="--  "))
-AC_SUBST(NSLNEEDED)
-AC_CHECK_FUNC(connect,SOCKETNEEDED="--  ",
-  AC_CHECK_LIB(socket,connect,,SOCKETNEEDED="--  "))
-AC_SUBST(SOCKETNEEDED)
-AC_CHECK_FUNC(inet_aton,RESOLVNEEDED="--  ",
-  AC_CHECK_LIB(resolv,inet_aton,,RESOLVNEEDED="--  "))
-AC_SUBST(RESOLVNEEDED)
-#
-# Extra libraries
-#
-AC_ARG_WITH(extra-libs,
- [  --with-extra-libs=libs  Add extra libraries when building a program],
- [EXTRA_LIBS="${withval}"])
-AC_SUBST(EXTRA_LIBS)
-#
-# sa_len field ?
-#
-AC_CHECK_MEMBER(struct sockaddr.sa_len,[SA_LEN="" NO_SA_LEN="--  "],[SA_LEN="--  " NO_SA_LEN=""],[#include <sys/types.h>
-AC_SUBST(SA_LEN)
-AC_SUBST(NO_SA_LEN)
-#include <sys/socket.h>])
-#
-# Conditional import for Win32 and substitution
-#
-AC_CHECK_HEADERS(windows.h, [usewin32=true useunix=false],
-                            [usewin32=false useunix=true])
-AM_CONDITIONAL(WIN32, $usewin32)
-if $useunix; then
-  WINNEEDED="--  "
-fi
-AC_SUBST(WINNEEDED)
-#
 # Output
 #
 AC_CONFIG_FILES([Makefile
            src/Makefile
-           src/sockets-link.ads
            src/adasockets-config
            man/Makefile
            examples/Makefile
