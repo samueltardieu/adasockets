@@ -48,6 +48,9 @@ with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets.Naming is
 
+   function Is_IP_Address (Something : String) return Boolean
+     renames Sockets.Utils.Is_IP_Address;
+
    Default_Buffer_Size : constant := 16384;
 
    procedure Free is
@@ -355,28 +358,6 @@ package body Sockets.Naming is
          return Info_Of (Something);
       end if;
    end Info_Of_Name_Or_IP;
-
-   -------------------
-   -- Is_Ip_Address --
-   -------------------
-
-   function Is_IP_Address (Something : String)
-     return Boolean
-   is
-   begin
-      for Index in Something'Range loop
-         declare
-            Current : Character renames Something (Index);
-         begin
-            if (Current < '0'
-                or else Current > '9')
-              and then Current /= '.' then
-               return False;
-            end if;
-         end;
-      end loop;
-      return True;
-   end Is_IP_Address;
 
    -------------
    -- Name_Of --

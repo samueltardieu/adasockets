@@ -59,4 +59,8 @@ private package Sockets.Utils is
    pragma Inline ("*");
    --  Return Left string repeated Right times
 
+   function Is_IP_Address (Something : String)
+     return Boolean;
+   --  Return True if the name looks like an IP address, False otherwise
+
 end Sockets.Utils;

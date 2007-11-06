@@ -61,6 +61,28 @@ package body Sockets.Utils is
       return Result;
    end "*";
 
+   -------------------
+   -- Is_Ip_Address --
+   -------------------
+
+   function Is_IP_Address (Something : String)
+     return Boolean
+   is
+   begin
+      for Index in Something'Range loop
+         declare
+            Current : Character renames Something (Index);
+         begin
+            if (Current < '0'
+                or else Current > '9')
+              and then Current /= '.' then
+               return False;
+            end if;
+         end;
+      end loop;
+      return True;
+   end Is_IP_Address;
+
    ---------------------
    -- Port_To_Network --
    ---------------------
