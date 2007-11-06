@@ -42,6 +42,11 @@ with Sockets.Types;
 
 package Sockets.Naming is
 
+   --  Warning: this package is considered obsolete. You should use
+   --  subprograms from GNAT.Sockets instead.
+
+   pragma Obsolescent ("use subprograms from GNAT.Sockets instead");
+
    type String_Access is access String;
 
    type String_Array is array (Positive range <>) of String_Access;
