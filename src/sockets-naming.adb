@@ -160,7 +160,8 @@ package body Sockets.Naming is
       Name : aliased Sockaddr_In;
       Len  : aliased int := Name'Size / 8;
    begin
-      if C_Getpeername (Get_FD (Socket), Name'Address, Len'Access) = Failure
+      if
+        C_Getpeername (Get_FD (Socket), Name'Address, Len'Access) = Failure
       then
          Raise_Naming_Error (Errno, "");
       end if;
@@ -202,7 +203,8 @@ package body Sockets.Naming is
       Name : aliased Sockaddr_In;
       Len  : aliased int := Name'Size / 8;
    begin
-      if C_Getsockname (Get_FD (Socket), Name'Address, Len'Access) = Failure
+      if
+        C_Getsockname (Get_FD (Socket), Name'Address, Len'Access) = Failure
       then
          Raise_Naming_Error (Errno, "");
       end if;
