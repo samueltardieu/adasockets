@@ -38,41 +38,13 @@
 
 with Ada.Characters.Latin_1;     use Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
-pragma Warnings (Off);
-with GNAT.Sockets.Constants;
-pragma Warnings (On);
 with Sockets.Link;
 pragma Warnings (Off, Sockets.Link);
-with Sockets.Thin;               use Sockets.Thin;
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets is
 
    use Ada.Streams, Interfaces.C, GNAT.Sockets;
-
-   package Constants renames GNAT.Sockets.Constants;
-
-   Socket_Level_Match : constant array (Socket_Level) of int :=
-     (SOL_SOCKET => Constants.SOL_SOCKET,
-      IPPROTO_IP => Constants.IPPROTO_IP);
-
-   Socket_Option_Match : constant array (Socket_Option) of int :=
-     (SO_REUSEADDR       => Constants.SO_REUSEADDR,
-      IP_MULTICAST_TTL   => Constants.IP_MULTICAST_TTL,
-      IP_ADD_MEMBERSHIP  => Constants.IP_ADD_MEMBERSHIP,
-      IP_DROP_MEMBERSHIP => Constants.IP_DROP_MEMBERSHIP,
-      IP_MULTICAST_LOOP  => Constants.IP_MULTICAST_LOOP,
-      SO_SNDBUF          => Constants.SO_SNDBUF,
-      SO_RCVBUF          => Constants.SO_RCVBUF);
-
-   Socket_Option_Size  : constant array (Socket_Option) of Natural :=
-     (SO_REUSEADDR       => 4,
-      IP_MULTICAST_TTL   => 1,
-      IP_ADD_MEMBERSHIP  => 8,
-      IP_DROP_MEMBERSHIP => 8,
-      IP_MULTICAST_LOOP  => 1,
-      SO_SNDBUF          => 4,
-      SO_RCVBUF          => 4);
 
    CRLF : constant String := CR & LF;
 
@@ -289,47 +261,18 @@ package body Sockets is
       Optname : in  Socket_Option;
       Optval  : out Integer)
    is
-      Len : aliased int;
+      Result : constant Option_Type :=
+        Get_Socket_Option (Socket.FD, Level, Optname);
    begin
-      case Socket_Option_Size (Optname) is
-
-         when 1 =>
-            declare
-               C_Char_Optval : aliased char;
-            begin
-               pragma Assert (C_Char_Optval'Size = 8);
-               Len := 1;
-               if C_Getsockopt (Get_FD (Socket),
-                                Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Char_Optval'Address, Len'Access) = Failure
-               then
-                  Raise_With_Message ("Getsockopt failed");
-               end if;
-               Optval := char'Pos (C_Char_Optval);
-            end;
-
-         when 4 =>
-            declare
-               C_Int_Optval : aliased int;
-            begin
-               pragma Assert (C_Int_Optval'Size = 32);
-               Len := 4;
-               if C_Getsockopt (Get_FD (Socket),
-                                Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Int_Optval'Address, Len'Access) = Failure
-               then
-                  Raise_With_Message ("Getsockopt failed");
-               end if;
-               Optval := Integer (C_Int_Optval);
-
-            end;
-
+      case Optname is
+         when SO_REUSEADDR | IP_MULTICAST_LOOP =>
+            Optval := Boolean'Pos (Result.Enabled);
+         when IP_MULTICAST_TTL =>
+            Optval := Result.Time_To_Live;
+         when SO_SNDBUF | SO_RCVBUF =>
+            Optval := Result.Size;
          when others =>
-            Raise_With_Message ("Getsockopt called with wrong arguments",
-                                False);
-
+            Raise_With_Message ("Unimplemented option for Getsockopt", False);
       end case;
    end Getsockopt;
 
@@ -505,43 +448,29 @@ package body Sockets is
 
    procedure Setsockopt
      (Socket  : in Socket_FD'Class;
-      Level   : in Socket_Level := Sol_Socket;
+      Level   : in Socket_Level := SOL_SOCKET;
       Optname : in Socket_Option;
       Optval  : in Integer)
    is
    begin
-      case Socket_Option_Size (Optname) is
-
-         when 1 =>
-            declare
-               C_Char_Optval : aliased char := char'Val (Optval);
-            begin
-               pragma Assert (C_Char_Optval'Size = 8);
-               if C_Setsockopt (Get_FD (Socket), Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Char_Optval'Address, 1) = Failure
-               then
-                  Raise_With_Message ("Setsockopt failed");
-               end if;
-            end;
-
-         when 4 =>
-            declare
-               C_Int_Optval : aliased int := int (Optval);
-            begin
-               pragma Assert (C_Int_Optval'Size = 32);
-               if C_Setsockopt (Get_FD (Socket), Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Int_Optval'Address, 4) = Failure
-               then
-                  Raise_With_Message ("Setsockopt failed");
-               end if;
-            end;
-
+      case Optname is
+         when SO_REUSEADDR =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Reuse_Address, Boolean'Val (Optval)));
+         when IP_MULTICAST_TTL =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Multicast_TTL, Optval));
+         when IP_MULTICAST_LOOP =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Multicast_Loop, Boolean'Val (Optval)));
+         when SO_SNDBUF =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Send_Buffer, Optval));
+         when SO_RCVBUF =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Receive_Buffer, Optval));
          when others =>
-            Raise_With_Message ("Setsockopt called with wrong arguments",
-                                False);
-
+            Raise_With_Message ("Unimplemented option for Setsockopt", False);
       end case;
    end Setsockopt;
 

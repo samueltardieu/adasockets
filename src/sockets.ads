@@ -92,11 +92,28 @@ package Sockets is
       Queue_Size : in Positive := 5);
    --  Create a socket's listen queue
 
-   type Socket_Level is (SOL_SOCKET, IPPROTO_IP);
+   subtype Socket_Level is GNAT.Sockets.Level_Type;
+   function SOL_SOCKET return Socket_Level renames GNAT.Sockets.Socket_Level;
+   function IPPROTO_IP return Socket_Level
+     renames GNAT.Sockets.IP_Protocol_For_IP_Level;
+   --  Those two entries are kept for compatibility
 
-   type Socket_Option is (SO_REUSEADDR, IP_MULTICAST_TTL,
-                          IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
-                          IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF);
+   subtype Socket_Option is GNAT.Sockets.Option_Name;
+   function SO_REUSEADDR return Socket_Option
+     renames GNAT.Sockets.Reuse_Address;
+   function IP_MULTICAST_TTL return Socket_Option
+     renames GNAT.Sockets.Multicast_TTL;
+   function IP_ADD_MEMBERSHIP return Socket_Option
+     renames GNAT.Sockets.Add_Membership;
+   function IP_DROP_MEMBERSHIP return Socket_Option
+     renames GNAT.Sockets.Drop_Membership;
+   function IP_MULTICAST_LOOP return Socket_Option
+     renames GNAT.Sockets.Multicast_Loop;
+   function SO_SNDBUF return Socket_Option
+     renames GNAT.Sockets.Send_Buffer;
+   function SO_RCVBUF return Socket_Option
+     renames GNAT.Sockets.Receive_Buffer;
+   --  Those seven entries are kept for compatibility
 
    procedure Getsockopt
      (Socket  : in  Socket_FD'Class;
