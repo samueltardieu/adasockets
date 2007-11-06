@@ -272,7 +272,7 @@ package body Sockets is
          when SO_SNDBUF | SO_RCVBUF =>
             Optval := Result.Size;
          when others =>
-            Raise_With_Message ("Unimplemented option for Getsockopt", False);
+            Raise_With_Message ("Unimplemented option for Getsockopt");
       end case;
    end Getsockopt;
 
@@ -473,7 +473,7 @@ package body Sockets is
             Set_Socket_Option
               (Socket.FD, Level, (Receive_Buffer, Optval));
          when others =>
-            Raise_With_Message ("Unimplemented option for Setsockopt", False);
+            Raise_With_Message ("Unimplemented option for Setsockopt");
       end case;
    end Setsockopt;
 
