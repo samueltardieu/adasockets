@@ -164,8 +164,11 @@ package Sockets is
                        How    : in Shutdown_Type := Both);
    --  Close a previously opened socket
 
-   function Get_FD (Socket : Socket_FD)
-     return Interfaces.C.int;
+   function Get_FD (Socket : Socket_FD) return GNAT.Sockets.Socket_Type;
+   pragma Inline (Get_FD);
+   --  Get a Socket_Type from a Socket_FD
+
+   function Get_FD (Socket : Socket_FD) return Interfaces.C.int;
    pragma Inline (Get_FD);
    --  Get a socket's FD field
 

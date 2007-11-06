@@ -240,11 +240,18 @@ package body Sockets is
    -- Get FD --
    ------------
 
-   function Get_FD (Socket : Socket_FD)
-     return Interfaces.C.int
-   is
+   function Get_FD (Socket : Socket_FD) return Interfaces.C.int is
    begin
-      return Interfaces.C.int (To_C (Socket.FD));
+      return Interfaces.C.int (To_C (Get_FD (Socket)));
+   end Get_FD;
+
+   ------------
+   -- Get FD --
+   ------------
+
+   function Get_FD (Socket : Socket_FD) return GNAT.Sockets.Socket_Type is
+   begin
+      return Socket.FD;
    end Get_FD;
 
    --------------
