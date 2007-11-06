@@ -40,7 +40,7 @@ ALIS = $(ADA_OBJECTS:.o=.ali) $(ADA_OBJECTS_WIN:.o=.ali)
 
 ADACOMPILER = $(top_srcdir)/support/adacompiler
 
-ADAFLAGS = -I. -I$(srcdir)
+ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali
 DISTCLEANFILES = b_split.c split constants_nodef \

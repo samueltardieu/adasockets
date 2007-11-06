@@ -15,7 +15,7 @@ AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
 #
 AC_ARG_ENABLE(debug,
 AS_HELP_STRING(--enable-debug,turn on debugging options),
-[ADAFLAGS="-g -O2 -Wall -gnatag"],
+[ADAFLAGS="-g -O2 -Wall -Werror -gnatag -gnatwa -gnatwe"],
 [ADAFLAGS="-O2 -gnatpng"])
 AC_SUBST(ADAFLAGS)
 #
