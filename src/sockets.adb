@@ -477,6 +477,26 @@ package body Sockets is
       end loop;
    end Send;
 
+   ----------
+   -- Send --
+   ----------
+
+   procedure Send (Socket : in Socket_FD;
+                   Data   : in Stream_Element_Array;
+                   Target : in Sock_Addr_Type)
+   is
+      Last     : Stream_Element_Offset := Data'First - 1;
+      Old_Last : Stream_Element_Offset;
+   begin
+      while Last /= Data'Last loop
+         Old_Last := Last;
+         Send_Socket (Socket.FD, Data (Last + 1 .. Data'Last), Last, Target);
+         if Last = Old_Last then
+            raise Connection_Closed;
+         end if;
+      end loop;
+   end Send;
+
    ----------------
    -- Set_Buffer --
    ----------------

@@ -63,6 +63,7 @@ package Sockets is
       Domain : in Socket_Domain := PF_INET;
       Typ    : in Socket_Type   := SOCK_STREAM);
    --  Create a socket of the given mode
+   --  Kept for compatibility
 
    Connection_Refused : exception;
    Socket_Error       : exception renames GNAT.Sockets.Socket_Error;
@@ -129,6 +130,12 @@ package Sockets is
                    Data   : in Ada.Streams.Stream_Element_Array);
    --  Send data on a socket. Raise Connection_Closed if the socket
    --  has been closed.
+
+   procedure Send (Socket : in Socket_FD;
+                   Data   : in Ada.Streams.Stream_Element_Array;
+                   Target : in GNAT.Sockets.Sock_Addr_Type);
+   --  Send data on a socket with an explicit target. The socket must
+   --  not be connected.
 
    function Receive (Socket : Socket_FD;
                      Max    : Ada.Streams.Stream_Element_Count := 4096)
