@@ -87,8 +87,7 @@ package Sockets.Naming is
      return Host_Entry;
    --  Host entry of an IP address
 
-   function Is_IP_Address (Something : String)
-     return Boolean;
+   function Is_IP_Address (Something : String) return Boolean;
    --  Return True if the name looks like an IP address, False otherwise
 
    function Info_Of_Name_Or_IP (Something : String)
