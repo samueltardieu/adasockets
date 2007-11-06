@@ -37,6 +37,7 @@
 -----------------------------------------------------------------------------
 
 with Ada.Finalization;
+with GNAT.Sockets;
 with Sockets.Types;
 
 package Sockets.Naming is
@@ -66,7 +67,7 @@ package Sockets.Naming is
    procedure Adjust   (Object : in out Host_Entry);
    procedure Finalize (Object : in out Host_Entry);
 
-   Naming_Error : exception;
+   Naming_Error : exception renames GNAT.Sockets.Host_Error;
    --  This exception is raised when a name cannot be resolved
 
    function Image (Add : Address) return String;

@@ -65,7 +65,7 @@ package Sockets is
    --  Create a socket of the given mode
 
    Connection_Refused : exception;
-   Socket_Error       : exception;
+   Socket_Error       : exception renames GNAT.Sockets.Socket_Error;
 
    procedure Connect
      (Socket : in Socket_FD;
