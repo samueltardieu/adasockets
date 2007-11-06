@@ -36,69 +36,34 @@
 --                                                                         --
 -----------------------------------------------------------------------------
 
-with Ada.Exceptions;
-with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
-with Interfaces.C;               use Interfaces.C;
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings (Off);
-with GNAT.Sockets.Constants;     use GNAT.Sockets.Constants;
-pragma Warnings (On);
-with Sockets.Thin;               use Sockets.Thin;
-with Sockets.Types;              use Sockets.Types;
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets.Naming is
 
-   package Constants renames GNAT.Sockets.Constants;
+   use GNAT.Sockets;
 
    function Is_IP_Address (Something : String) return Boolean
      renames Sockets.Utils.Is_IP_Address;
 
-   Default_Buffer_Size : constant := 16384;
-
    procedure Free is
       new Ada.Unchecked_Deallocation (String, String_Access);
 
-   procedure Free is
-      new Ada.Unchecked_Deallocation (char_array, char_array_access);
+   function To_Address (Addr : Inet_Addr_Type) return Address;
 
-   function Allocate (Size : Positive := Default_Buffer_Size)
-     return char_array_access;
-   --  Allocate a buffer
-
-   function Parse_Entry (Host : Hostent)
-     return Host_Entry;
-   --  Parse an entry
-
-   procedure Raise_Naming_Error
-     (Errno   : in Integer;
-      Message : in String);
-   --  Raise the exception Naming_Error with an appropriate error message
-
-   protected Naming_Lock is
-      entry Lock;
-      procedure Unlock;
-   private
-      Locked : Boolean := False;
-   end Naming_Lock;
-   --  A locking object
-
-   function Get_Peer (Socket : Socket_FD) return Sockaddr_In;
-   function Get_Sock (Socket : Socket_FD) return Sockaddr_In;
+   function To_Host_Entry (H : Host_Entry_Type) return Host_Entry;
 
    ----------------
    -- Address_Of --
    ----------------
 
-   function Address_Of (Something : String)
-     return Address
+   function Address_Of (Something : String) return Address
    is
    begin
       if Is_IP_Address (Something) then
          return Value (Something);
       else
-         return Info_Of (Something) .Addresses (1);
+         return To_Address (Addresses (Get_Host_By_Name (Something), 1));
       end if;
    end Address_Of;
 
@@ -116,18 +81,6 @@ package body Sockets.Naming is
       end loop;
    end Adjust;
 
-   --------------
-   -- Allocate --
-   --------------
-
-   function Allocate
-     (Size : Positive := Default_Buffer_Size)
-     return char_array_access
-   is
-   begin
-      return new char_array (1 .. size_t (Size));
-   end Allocate;
-
    -----------------
    -- Any_Address --
    -----------------
@@ -135,7 +88,7 @@ package body Sockets.Naming is
    function Any_Address return Address
    is
    begin
-      return To_Address (Inaddr_Any);
+      return To_Address (Any_Inet_Addr);
    end Any_Address;
 
    --------------
@@ -152,38 +105,13 @@ package body Sockets.Naming is
       end loop;
    end Finalize;
 
-   --------------
-   -- Get_Peer --
-   --------------
-
-   function Get_Peer (Socket : Socket_FD) return Sockaddr_In is
-      Name : aliased Sockaddr_In;
-      Len  : aliased int := Name'Size / 8;
-   begin
-      if
-        C_Getpeername (Get_FD (Socket), Name'Address, Len'Access) = Failure
-      then
-         Raise_Naming_Error (Errno, "");
-      end if;
-      return Name;
-   end Get_Peer;
-
-   -------------------
-   -- Get_Peer_Addr --
-   -------------------
-
-   function Get_Peer_Addr (Socket : Socket_FD) return Types.In_Addr is
-   begin
-      return Get_Peer (Socket) .Sin_Addr;
-   end Get_Peer_Addr;
-
    -------------------
    -- Get_Peer_Addr --
    -------------------
 
    function Get_Peer_Addr (Socket : Socket_FD) return Address is
    begin
-      return To_Address (Get_Peer_Addr (Socket));
+      return To_Address (Get_Peer_Name (Socket.FD) .Addr);
    end Get_Peer_Addr;
 
    -------------------
@@ -192,33 +120,8 @@ package body Sockets.Naming is
 
    function Get_Peer_Port (Socket : Socket_FD) return Positive is
    begin
-      return Positive (Network_To_Port (Get_Peer (Socket) .Sin_Port));
+      return Positive (Get_Peer_Name (Socket.FD) .Port);
    end Get_Peer_Port;
-
-   --------------
-   -- Get_Sock --
-   --------------
-
-   function Get_Sock (Socket : Socket_FD) return Sockaddr_In is
-      Name : aliased Sockaddr_In;
-      Len  : aliased int := Name'Size / 8;
-   begin
-      if
-        C_Getsockname (Get_FD (Socket), Name'Address, Len'Access) = Failure
-      then
-         Raise_Naming_Error (Errno, "");
-      end if;
-      return Name;
-   end Get_Sock;
-
-   -------------------
-   -- Get_Sock_Addr --
-   -------------------
-
-   function Get_Sock_Addr (Socket : Socket_FD) return In_Addr is
-   begin
-      return Get_Sock (Socket) .Sin_Addr;
-   end Get_Sock_Addr;
 
    -------------------
    -- Get_Sock_Addr --
@@ -226,7 +129,7 @@ package body Sockets.Naming is
 
    function Get_Sock_Addr (Socket : Socket_FD) return Address is
    begin
-      return To_Address (Get_Sock_Addr (Socket));
+      return To_Address (Get_Socket_Name (Socket.FD) .Addr);
    end Get_Sock_Addr;
 
    -------------------
@@ -235,30 +138,8 @@ package body Sockets.Naming is
 
    function Get_Sock_Port (Socket : Socket_FD) return Positive is
    begin
-      return Positive (Network_To_Port (Get_Sock (Socket) .Sin_Port));
+      return Positive (Get_Socket_Name (Socket.FD) .Port);
    end Get_Sock_Port;
-
-   ---------------
-   -- Host_Name --
-   ---------------
-
-   function Host_Name return String
-   is
-      Buff   : char_array_access  := Allocate;
-      Buffer : constant chars_ptr := To_Chars_Ptr (Buff);
-      Res    : constant int       := C_Gethostname (Buffer, Buff'Length);
-   begin
-      if Res = Failure then
-         Free (Buff);
-         Raise_Naming_Error (Errno, "");
-      end if;
-      declare
-         Result : constant String := Value (Buffer);
-      begin
-         Free (Buff);
-         return Result;
-      end;
-   end Host_Name;
 
    -----------
    -- Image --
@@ -288,68 +169,24 @@ package body Sockets.Naming is
         Image (Add.H3) & "." & Image (Add.H4);
    end Image;
 
-   -----------
-   -- Image --
-   -----------
-
-   function Image (Add : Types.In_Addr) return String is
-   begin
-      return Image (To_Address (Add));
-   end Image;
-
    -------------
    -- Info_Of --
    -------------
 
-   function Info_Of (Name : String)
-     return Host_Entry
+   function Info_Of (Name : String) return Host_Entry
    is
-      Res    : Hostent_Access;
-      C_Name : chars_ptr := New_String (Name);
    begin
-      Naming_Lock.Lock;
-      Res := C_Gethostbyname (C_Name);
-      Free (C_Name);
-      if Res = null then
-         Naming_Lock.Unlock;
-         Raise_Naming_Error (Errno, Name);
-      end if;
-      declare
-         Result : constant Host_Entry := Parse_Entry (Res.all);
-      begin
-         Naming_Lock.Unlock;
-         return Result;
-      end;
+      return To_Host_Entry (Get_Host_By_Name (Name));
    end Info_Of;
 
    -------------
    -- Info_Of --
    -------------
 
-   function Info_Of (Addr : Address)
-     return Host_Entry
+   function Info_Of (Addr : Address) return Host_Entry
    is
-      function Convert is
-         new Ada.Unchecked_Conversion (Source => In_Addr_Access,
-                                       Target => chars_ptr);
-      Temp    : aliased In_Addr    := To_In_Addr (Addr);
-      C_Addr  : constant chars_ptr := Convert (Temp'Unchecked_Access);
-      Res     : Hostent_Access;
    begin
-      Naming_Lock.Lock;
-      Res := C_Gethostbyaddr (C_Addr,
-                              int (Temp'Size / CHAR_BIT),
-                              Constants.AF_INET);
-      if Res = null then
-         Naming_Lock.Unlock;
-         Raise_Naming_Error (Errno, Image (Addr));
-      end if;
-      declare
-         Result : constant Host_Entry := Parse_Entry (Res.all);
-      begin
-         Naming_Lock.Unlock;
-         return Result;
-      end;
+      return To_Host_Entry (Get_Host_By_Address (Inet_Addr (Image (Addr))));
    end Info_Of;
 
    ------------------------
@@ -371,154 +208,91 @@ package body Sockets.Naming is
    -- Name_Of --
    -------------
 
-   function Name_Of (Something : String)
-     return String
-   is
-      Hostent : constant Host_Entry := Info_Of_Name_Or_IP (Something);
+   function Name_Of (Something : String) return String is
    begin
-      if Hostent.Name = null then
-         Ada.Exceptions.Raise_Exception (Naming_Error'Identity,
-                                         "No name for " & Something);
-      end if;
-      return Hostent.Name.all;
+      return Info_Of_Name_Or_IP (Something) .Name.all;
    end Name_Of;
-
-   -----------------
-   -- Naming_Lock --
-   -----------------
-
-   protected body Naming_Lock is
-
-      ----------
-      -- Lock --
-      ----------
-
-      entry Lock when not Locked is
-      begin
-         Locked := True;
-      end Lock;
-
-      ------------
-      -- Unlock --
-      ------------
-
-      procedure Unlock is
-      begin
-         Locked := False;
-      end Unlock;
-
-   end Naming_Lock;
-
-   -----------------
-   -- Parse_Entry --
-   -----------------
-
-   function Parse_Entry (Host : Hostent)
-     return Host_Entry
-   is
-      C_Aliases : constant Thin.Chars_Ptr_Array    :=
-        Chars_Ptr_Pointers.Value (Host.H_Aliases);
-      C_Addr    : constant In_Addr_Access_Array :=
-                                    In_Addr_Access_Pointers.Value
-                                      (Host.H_Addr_List);
-      Result    : Host_Entry (N_Aliases     => C_Aliases'Length - 1,
-                              N_Addresses => C_Addr'Length - 1);
-   begin
-      Result.Name := new String'(Value (Host.H_Name));
-      for I in 1 .. Result.Aliases'Last loop
-         declare
-            Index   : constant Natural := I - 1 + Natural (C_Aliases'First);
-            Current : chars_ptr renames C_Aliases (size_t (Index));
-         begin
-            Result.Aliases (I) := new String'(Value (Current));
-         end;
-      end loop;
-      for I in Result.Addresses'Range loop
-         declare
-            Index   : constant Natural := I - 1 + Natural (C_Addr'First);
-            Current : In_Addr_Access renames C_Addr (Index);
-         begin
-            Result.Addresses (I) := To_Address (Current.all);
-         end;
-      end loop;
-      return Result;
-   end Parse_Entry;
-
-   ------------------------
-   -- Raise_Naming_Error --
-   ------------------------
-
-   procedure Raise_Naming_Error
-     (Errno   : in Integer;
-      Message : in String)
-   is
-
-      function Error_Message return String;
-      --  Return the message according to Errno.
-
-      -------------------
-      -- Error_Message --
-      -------------------
-
-      function Error_Message return String is
-      begin
-         case Errno is
-            when HOST_NOT_FOUND => return "Host not found";
-            when TRY_AGAIN      => return "Try again";
-            when NO_RECOVERY    => return "No recovery";
-            when others         => return "Unknown error" &
-                                          Integer'Image (Errno);
-         end case;
-      end Error_Message;
-
-   begin
-      Ada.Exceptions.Raise_Exception (Naming_Error'Identity,
-                                      Error_Message & ": " & Message);
-   end Raise_Naming_Error;
 
    ----------------
    -- To_Address --
    ----------------
 
-   function To_Address (Addr : In_Addr) return Address
-   is
+   function To_Address (Addr : Inet_Addr_Type) return Address is
    begin
-      return (H1 => Address_Component (Addr.S_B1),
-              H2 => Address_Component (Addr.S_B2),
-              H3 => Address_Component (Addr.S_B3),
-              H4 => Address_Component (Addr.S_B4));
+      return Value (Image (Addr));
    end To_Address;
 
-   ----------------
-   -- To_In_Addr --
-   ----------------
+   -------------------
+   -- To_Host_Entry --
+   -------------------
 
-   function To_In_Addr (Addr : Address) return In_Addr
+   function To_Host_Entry (H : Host_Entry_Type) return Host_Entry
    is
+      R : Host_Entry (Aliases_Length (H), Addresses_Length (H));
    begin
-      return (S_B1 => unsigned_char (Addr.H1),
-              S_B2 => unsigned_char (Addr.H2),
-              S_B3 => unsigned_char (Addr.H3),
-              S_B4 => unsigned_char (Addr.H4));
-   end To_In_Addr;
+      R.Name := new String'(Official_Name (H));
+      for I in 1 .. R.N_Aliases loop
+         R.Aliases (I) := new String'(Aliases (H, I));
+      end loop;
+      for I in 1 .. R.N_Addresses loop
+         R.Addresses (I) := To_Address (Addresses (H, I));
+      end loop;
+      return R;
+   end To_Host_Entry;
 
    -----------
    -- Value --
    -----------
 
    function Value (Add : String) return Address is
-      C_Add     : chars_ptr        := New_String (Add);
-      Converted : aliased In_Addr;
+
+      Norm : constant String := Image (Inet_Addr (Add));
+      --  Normalized address (for example, 127.1 will be transformed
+      --  into 127.0.0.1).
+
+      Dot  : Natural := Add'First - 1;
+      --  Position of the last dot encountered or Add'First - 1
+
+      function First_Numeric_String (S : String) return String;
+      --  Return the first numeric string in S
+
+      function Next_Number return Natural;
+      --  Return the next numerical value after Dot and position Dot
+
+      --------------------------
+      -- First_Numeric_String --
+      --------------------------
+
+      function First_Numeric_String (S : String) return String is
+      begin
+         for I in S'Range loop
+            if S (I) not in '0' .. '9' then
+               return S (S'First .. I - 1);
+            end if;
+         end loop;
+         return S;
+      end First_Numeric_String;
+
+      -----------------
+      -- Next_Number --
+      -----------------
+
+      function Next_Number return Natural is
+         SS : constant String :=
+           First_Numeric_String (Norm (Dot + 1 .. Norm'Last));
+      begin
+         Dot := SS'Last + 1;
+         return Integer'Value (SS);
+      end Next_Number;
+
+      A : Address;
+
    begin
-      if C_Inet_Aton (C_Add, Converted'Unchecked_Access) = 0 then
-         Ada.Exceptions.Raise_Exception (Naming_Error'Identity,
-                                         Add & " is not an IP address");
-      end if;
-      Free (C_Add);
-      return (H1 => Address_Component (Converted.S_B1),
-              H2 => Address_Component (Converted.S_B2),
-              H3 => Address_Component (Converted.S_B3),
-              H4 => Address_Component (Converted.S_B4));
+      A.H1 := Next_Number;
+      A.H2 := Next_Number;
+      A.H3 := Next_Number;
+      A.H4 := Next_Number;
+      return A;
    end Value;
 
 end Sockets.Naming;
