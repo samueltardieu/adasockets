@@ -1,5 +1,14 @@
 -*- outline -*-
 
+* New in AdaSockets 1.8.7
+
+The configure flag --enable-debug has been renamed into
+--enable-maintainer-mode as it better reflects what it does. Also,
+it now turns on all GNAT and GCC warnings.
+
+This is probably one of the last release of AdaSockets not based on
+GNAT.Sockets.
+
 * New in AdaSockets 1.8.6
 
 Add RTEMS port from Joel Sherrill <joel.sherrill@oarcorp.com>.
