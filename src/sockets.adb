@@ -54,19 +54,6 @@ package body Sockets is
 
    package Constants renames GNAT.Sockets.Constants;
 
-   Socket_Domain_Match : constant array (Socket_Domain) of Family_Type :=
-     (PF_INET => Family_Inet,
-      AF_INET => Family_Inet);  --  They hold the same value
-
-   Socket_Type_Match : constant array (Socket_Type) of Mode_Type :=
-     (SOCK_STREAM => Socket_Stream,
-      SOCK_DGRAM  => Socket_Datagram);
-
-   Shutdown_Type_Match : constant array (Shutdown_Type) of Shutmode_Type :=
-     (Receive => Shut_Read,
-      Send    => Shut_Write,
-      Both    => Shut_Read_Write);
-
    Socket_Level_Match : constant array (Socket_Level) of int :=
      (SOL_SOCKET => Constants.SOL_SOCKET,
       IPPROTO_IP => Constants.IPPROTO_IP);
@@ -540,7 +527,7 @@ package body Sockets is
       else
          Socket.Shutdown := (others => True);
       end if;
-      Shutdown_Socket (Socket.FD, Shutdown_Type_Match (How));
+      Shutdown_Socket (Socket.FD, How);
       if Socket.Shutdown (Receive) and then Socket.Shutdown (Send) then
          Unset_Buffer (Socket);
          Close_Socket (Socket.FD);
@@ -557,9 +544,7 @@ package body Sockets is
       Typ    : in Socket_Type   := SOCK_STREAM)
    is
    begin
-      Create_Socket (Sock.FD,
-                     Socket_Domain_Match (Domain),
-                     Socket_Type_Match (Typ));
+      Create_Socket (Sock.FD, Domain, Typ);
       Sock.Shutdown := (others => False);
       Sock.Buffer   := null;
    end Socket;

@@ -45,14 +45,18 @@ package Sockets is
    type Socket_FD is tagged private;
    --  A socket
 
-   type Socket_Domain is (PF_INET, AF_INET);
+   subtype Socket_Domain is GNAT.Sockets.Family_Type;
+   function PF_INET return Socket_Domain renames GNAT.Sockets.Family_Inet;
+   function AF_INET return Socket_Domain renames GNAT.Sockets.Family_Inet;
    --  PF_INET: Internet sockets
    --  AF_INET: This entry is bogus and should never be used, but it is
    --  kept here for some time for compatibility reasons.
+   --  Those two entries are kept for compatibility
 
-   type Socket_Type is (SOCK_STREAM, SOCK_DGRAM);
-   --  SOCK_STREAM: Stream mode   (TCP)
-   --  SOCK_DGRAM:  Datagram mode (UDP, Multicast)
+   subtype Socket_Type is GNAT.Sockets.Mode_Type;
+   function SOCK_STREAM return Socket_Type renames GNAT.Sockets.Socket_Stream;
+   function SOCK_DGRAM return Socket_Type renames GNAT.Sockets.Socket_Datagram;
+   --  Those two entries are kept for compatibility
 
    procedure Socket
      (Sock   : out Socket_FD;
@@ -143,7 +147,11 @@ package Sockets is
    --  Get some data from a socket. The index of the last element will
    --  be placed in Last.
 
-   type Shutdown_Type is (Receive, Send, Both);
+   subtype Shutdown_Type is GNAT.Sockets.Shutmode_Type;
+   function Receive return Shutdown_Type renames GNAT.Sockets.Shut_Read;
+   function Send return Shutdown_Type renames GNAT.Sockets.Shut_Write;
+   function Both return Shutdown_Type renames GNAT.Sockets.Shut_Read_Write;
+   --  Those three entries are kept for compatibility
 
    procedure Shutdown (Socket : in out Socket_FD;
                        How    : in Shutdown_Type := Both);
