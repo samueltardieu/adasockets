@@ -54,7 +54,7 @@ package body Sockets.Multicast is
       Local_Port : Natural;
       TTL        : Positive := 16;
       Self_Loop  : Boolean  := True;
-      Local_If   : String   := "0.0.0.0")
+      Local_If   : String   := "")
      return Multicast_Socket_FD;
 
    -----------------------------
@@ -67,7 +67,7 @@ package body Sockets.Multicast is
       Local_Port : Natural;
       TTL        : Positive := 16;
       Self_Loop  : Boolean  := True;
-      Local_If   : String   := "0.0.0.0")
+      Local_If   : String   := "")
      return Multicast_Socket_FD
    is
       Result      : Multicast_Socket_FD;
@@ -82,7 +82,9 @@ package body Sockets.Multicast is
 
       function Address_Of (Host : String) return Inet_Addr_Type is
       begin
-         if Is_IP_Address (Host) then
+         if Host = "" then
+            return Any_Inet_Addr;
+         elsif Is_IP_Address (Host) then
             return Inet_Addr (Host);
          else
             return Addresses (Get_Host_By_Name (Host), 1);
@@ -95,7 +97,7 @@ package body Sockets.Multicast is
       Result.Target.Port := Port_Type (Port);
       Set_Socket_Option
         (Result.FD, GNAT.Sockets.Socket_Level, (Reuse_Address, True));
-      Bind (Result, Local_Port);
+      Bind (Result, Local_Port, Local_If);
       Set_Socket_Option
         (Result.FD,
          IP_Protocol_For_IP_Level,
@@ -116,7 +118,7 @@ package body Sockets.Multicast is
       Port      : Positive;
       TTL       : Positive := 16;
       Self_Loop : Boolean  := True;
-      Local_If  : String   := "0.0.0.0")
+      Local_If  : String   := "")
      return Multicast_Socket_FD
    is
    begin
@@ -138,7 +140,7 @@ package body Sockets.Multicast is
       Port       : Positive;
       Local_Port : Natural;
       TTL        : Positive := 16;
-      Local_If   : String   := "0.0.0.0")
+      Local_If   : String   := "")
      return Multicast_Socket_FD
    is
    begin
