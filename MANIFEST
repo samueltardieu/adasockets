@@ -35,7 +35,6 @@ src/Makefile.am
 src/Makefile.in
 src/sockets.ads
 src/sockets.adb
-src/sockets-constants.ads
 src/sockets-thin.ads.unix
 src/sockets-thin.ads.win32
 src/sockets-thin.adb.win32

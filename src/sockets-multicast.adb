@@ -36,19 +36,23 @@
 --                                                                         --
 -----------------------------------------------------------------------------
 
-with Ada.Exceptions;    use Ada.Exceptions;
-with Interfaces.C;      use Interfaces.C;
+with Ada.Exceptions;         use Ada.Exceptions;
+with Interfaces.C;           use Interfaces.C;
 with Sockets;
 pragma Elaborate_All (Sockets);
-with Sockets.Constants;
-with Sockets.Naming;    use Sockets.Naming;
-with Sockets.Thin;      use Sockets.Thin;
-with Sockets.Types;     use Sockets.Types;
-with Sockets.Utils;     use Sockets.Utils;
+pragma Warnings (Off);
+with GNAT.Sockets.Constants;
+pragma Warnings (On);
+with Sockets.Naming;         use Sockets.Naming;
+with Sockets.Thin;           use Sockets.Thin;
+with Sockets.Types;          use Sockets.Types;
+with Sockets.Utils;          use Sockets.Utils;
 
 package body Sockets.Multicast is
 
    use Ada.Streams;
+
+   package Constants renames GNAT.Sockets.Constants;
 
    procedure Setsockopt_Add_Membership is
       new Customized_Setsockopt (IPPROTO_IP, IP_ADD_MEMBERSHIP, Ip_Mreq);

@@ -38,7 +38,9 @@
 
 with Ada.Characters.Latin_1;     use Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
-with Sockets.Constants;
+pragma Warnings (Off);
+with GNAT.Sockets.Constants;
+pragma Warnings (On);
 with Sockets.Link;
 pragma Warnings (Off, Sockets.Link);
 with Sockets.Naming;             use Sockets.Naming;
@@ -49,6 +51,8 @@ with Sockets.Utils;              use Sockets.Utils;
 package body Sockets is
 
    use Ada.Streams, Interfaces.C, GNAT.Sockets;
+
+   package Constants renames GNAT.Sockets.Constants;
 
    Socket_Domain_Match : constant array (Socket_Domain) of Family_Type :=
      (PF_INET => Family_Inet,

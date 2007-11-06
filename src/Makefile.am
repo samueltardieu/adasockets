@@ -9,7 +9,6 @@ libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
 	-o libadasockets.la
 
 ADA_SRCS = \
-	sockets-constants.ads \
 	sockets-link.ads \
 	sockets-multicast.ads \
 	sockets-multicast.adb \
@@ -26,7 +25,6 @@ ADA_SRCS = \
 	$(ADA_SRCS_WIN)
 
 ADA_OBJECTS = \
-	sockets-constants.o \
 	sockets-link.o \
 	sockets-multicast.o \
 	sockets-naming.o \
@@ -89,13 +87,12 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(privatelibdir)
 
 ### DO NOT REMOVE THIS LINE, IT IS USED BY MAKEDEPEND ###
-sockets-multicast.lo : sockets.ads sockets.adb sockets-constants.ads \
+sockets-multicast.lo : sockets.ads sockets.adb \
  sockets-link.ads sockets-multicast.ads sockets-multicast.adb \
  sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets.lo : sockets.ads sockets.adb sockets-constants.ads sockets-link.ads \
+sockets.lo : sockets.ads sockets.adb sockets-link.ads \
  sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets-constants.lo : sockets.ads sockets-constants.ads
-sockets-naming.lo : sockets.ads sockets-constants.ads sockets-naming.ads \
+sockets-naming.lo : sockets.ads sockets-naming.ads \
  sockets-naming.adb sockets-thin.ads sockets-types.ads sockets-utils.ads
 sockets-thin.lo : sockets.ads sockets-thin.ads sockets-types.ads
 sockets-types.lo : sockets.ads sockets-types.ads

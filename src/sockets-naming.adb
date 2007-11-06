@@ -41,12 +41,16 @@ with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Interfaces.C;               use Interfaces.C;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
-with Sockets.Constants;          use Sockets.Constants;
+pragma Warnings (Off);
+with GNAT.Sockets.Constants;     use GNAT.Sockets.Constants;
+pragma Warnings (On);
 with Sockets.Thin;               use Sockets.Thin;
 with Sockets.Types;              use Sockets.Types;
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets.Naming is
+
+   package Constants renames GNAT.Sockets.Constants;
 
    Default_Buffer_Size : constant := 16384;
 
