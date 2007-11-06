@@ -36,7 +36,7 @@
 --                                                                         --
 -----------------------------------------------------------------------------
 
-with Sockets.Types;
+with GNAT.Sockets;
 
 package Sockets.Multicast is
 
@@ -80,7 +80,7 @@ private
    --  Do not call this one, it will raise Program_Error
 
    type Multicast_Socket_FD is new Socket_FD with record
-      Target : Sockets.Types.Sockaddr_In;
+      Target : GNAT.Sockets.Sock_Addr_Type;
    end record;
 
 end Sockets.Multicast;

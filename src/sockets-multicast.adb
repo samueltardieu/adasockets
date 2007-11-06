@@ -37,25 +37,16 @@
 -----------------------------------------------------------------------------
 
 with Ada.Exceptions;         use Ada.Exceptions;
-with Interfaces.C;           use Interfaces.C;
 with Sockets;
 pragma Elaborate_All (Sockets);
 pragma Warnings (Off);
 with GNAT.Sockets.Constants;
 pragma Warnings (On);
-with Sockets.Naming;         use Sockets.Naming;
-with Sockets.Thin;           use Sockets.Thin;
-with Sockets.Types;          use Sockets.Types;
 with Sockets.Utils;          use Sockets.Utils;
 
 package body Sockets.Multicast is
 
-   use Ada.Streams;
-
-   package Constants renames GNAT.Sockets.Constants;
-
-   procedure Setsockopt_Add_Membership is
-      new Customized_Setsockopt (IPPROTO_IP, IP_ADD_MEMBERSHIP, Ip_Mreq);
+   use Ada.Streams, GNAT.Sockets;
 
    function Create_Multicast_Socket
      (Group      : String;
@@ -80,25 +71,39 @@ package body Sockets.Multicast is
      return Multicast_Socket_FD
    is
       Result      : Multicast_Socket_FD;
-      Mreq        : aliased Ip_Mreq;
-      C_Self_Loop : Integer;
+
+      function Address_Of (Host : String) return Inet_Addr_Type;
+      --  Return IP address of Host which may be a host name or
+      --  an address in dotted form.
+
+      ----------------
+      -- Address_Of --
+      ----------------
+
+      function Address_Of (Host : String) return Inet_Addr_Type is
+      begin
+         if Is_IP_Address (Host) then
+            return Inet_Addr (Host);
+         else
+            return Addresses (Get_Host_By_Name (Host), 1);
+         end if;
+      end Address_Of;
+
    begin
-      Socket (Socket_FD (Result), PF_INET, SOCK_DGRAM);
-      if Self_Loop then
-         C_Self_Loop := 1;
-      else
-         C_Self_Loop := 0;
-      end if;
-      Setsockopt (Result, SOL_SOCKET, SO_REUSEADDR, 1);
+      Socket (Socket_FD (Result), Family_Inet, Socket_Datagram);
+      Result.Target.Addr := Address_Of (Group);
+      Result.Target.Port := Port_Type (Port);
+      Set_Socket_Option
+        (Result.FD, GNAT.Sockets.Socket_Level, (Reuse_Address, True));
       Bind (Result, Local_Port);
-      Mreq.Imr_Multiaddr := To_In_Addr (Address_Of (Group));
-      Mreq.Imr_Interface := To_In_Addr (Address_Of (Local_If));
-      Setsockopt_Add_Membership (Result, Mreq);
-      Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_TTL, TTL);
-      Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_LOOP, C_Self_Loop);
-      Result.Target.Sin_Family := Constants.AF_INET;
-      Result.Target.Sin_Port := Port_To_Network (unsigned_short (Port));
-      Result.Target.Sin_Addr := To_In_Addr (Address_Of (Group));
+      Set_Socket_Option
+        (Result.FD,
+         IP_Protocol_For_IP_Level,
+         (Add_Membership, Result.Target.Addr, Address_Of (Local_If)));
+      Set_Socket_Option
+        (Result.FD, IP_Protocol_For_IP_Level, (Multicast_TTL, TTL));
+      Set_Socket_Option
+        (Result.FD, IP_Protocol_For_IP_Level, (Multicast_Loop, Self_Loop));
       return Result;
    end Create_Multicast_Socket;
 
@@ -153,26 +158,8 @@ package body Sockets.Multicast is
    procedure Send (Socket : in Multicast_Socket_FD;
                    Data   : in Stream_Element_Array)
    is
-      Sin   : aliased Sockaddr_In   := Socket.Target;
-      Index : Stream_Element_Offset := Data'First;
-      Rest  : Stream_Element_Count  := Data'Length;
-      Count : int;
    begin
-      while Rest > 0 loop
-         Count := C_Sendto (Get_FD (Socket),
-                            Data (Index) 'Address,
-                            int (Rest),
-                            0,
-                            Sin'Address,
-                            Sin'Size / 8);
-         if Count < 0 then
-            Raise_With_Message ("Send failed");
-         elsif Count = 0 then
-            raise Connection_Closed;
-         end if;
-         Index := Index + Stream_Element_Count (Count);
-         Rest  := Rest - Stream_Element_Count (Count);
-      end loop;
+      Send (Socket, Data, Socket.Target);
    end Send;
 
    ------------
