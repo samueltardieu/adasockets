@@ -116,6 +116,8 @@ package body Sockets is
    begin
       if Host = "" then
          Address.Addr := Any_Inet_Addr;
+      elsif Is_IP_Address (Host) then
+         Address.Addr := Inet_Addr (Host);
       else
          Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
       end if;
@@ -134,8 +136,12 @@ package body Sockets is
    is
       Address : Sock_Addr_Type;
    begin
-      Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
       Address.Port := Port_Type (Port);
+      if Is_IP_Address (Host) then
+         Address.Addr := Inet_Addr (Host);
+      else
+         Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
+      end if;
       Connect_Socket (Socket.FD, Address);
    end Connect;
 
