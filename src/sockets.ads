@@ -164,7 +164,7 @@ package Sockets is
                        How    : in Shutdown_Type := Both);
    --  Close a previously opened socket
 
-   function Get_FD (Socket : in Socket_FD)
+   function Get_FD (Socket : Socket_FD)
      return Interfaces.C.int;
    pragma Inline (Get_FD);
    --  Get a socket's FD field

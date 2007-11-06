@@ -240,7 +240,7 @@ package body Sockets is
    -- Get FD --
    ------------
 
-   function Get_FD (Socket : in Socket_FD)
+   function Get_FD (Socket : Socket_FD)
      return Interfaces.C.int
    is
    begin
