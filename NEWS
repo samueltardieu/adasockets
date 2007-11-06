@@ -1,5 +1,18 @@
 -*- outline -*-
 
+* New in AdaSockets 1.9
+
+AdaSockets 1.9 is a rewrite of large parts of AdaSockets. It is based on
+GNAT.Sockets while keeping an interface compatible with the 1.8.x branch
+of AdaSockets.
+
+Some rarely used user-visible subprograms and constants have been removed:
+  - Sockets.Customized_Setsockopt
+  - Sockets.Socketpair
+  - Sockets.SO_REUSEPORT
+  - Function depending on internal type Sockets.Types.In_Addr in
+    package Sockets.Naming
+
 * New in AdaSockets 1.8.7
 
 The configure flag --enable-debug has been renamed into
