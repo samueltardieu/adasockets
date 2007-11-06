@@ -44,7 +44,6 @@ pragma Warnings (On);
 with Sockets.Link;
 pragma Warnings (Off, Sockets.Link);
 with Sockets.Thin;               use Sockets.Thin;
-with Sockets.Types;              use Sockets.Types;
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets is
