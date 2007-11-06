@@ -35,16 +35,12 @@ src/Makefile.am
 src/Makefile.in
 src/sockets.ads
 src/sockets.adb
-src/sockets-thin.ads.unix
-src/sockets-thin.ads.win32
-src/sockets-thin.adb.win32
 src/sockets-multicast.ads
 src/sockets-multicast.adb
 src/sockets-naming.ads
 src/sockets-naming.adb
 src/sockets-stream_io.ads
 src/sockets-stream_io.adb
-src/sockets-types.ads.in
 src/sockets-utils.ads
 src/sockets-utils.adb
 src/sockets-windows_link.ads
@@ -73,8 +69,6 @@ contrib/vms/sockets-constants.ads
 examples/Makefile.VMS
 src/Makefile.VMS
 src/sockets-link.ads.vms
-src/sockets-thin.adb.vms
-src/sockets-thin.ads.vms
 src/sockets-vms_link.ads
 vms/Makefile.VMS
 vms/constants.c_pre

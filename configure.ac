@@ -100,7 +100,6 @@ AC_CONFIG_FILES([Makefile
            src/Makefile
            src/sockets-link.ads
            src/adasockets-config
-           src/sockets-types.ads
            man/Makefile
            examples/Makefile
            doc/Makefile])

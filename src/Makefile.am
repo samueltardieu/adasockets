@@ -16,8 +16,6 @@ ADA_SRCS = \
 	sockets-naming.adb \
 	sockets-stream_io.ads \
 	sockets-stream_io.adb \
-	sockets-thin.ads \
-	sockets-types.ads \
 	sockets-utils.ads \
 	sockets-utils.adb \
 	sockets.ads \
@@ -29,8 +27,6 @@ ADA_OBJECTS = \
 	sockets-multicast.o \
 	sockets-naming.o \
 	sockets-stream_io.o \
-	sockets-thin.o \
-	sockets-types.o \
 	sockets-utils.o \
 	sockets.o
 
@@ -41,20 +37,11 @@ ADACOMPILER = $(top_srcdir)/support/adacompiler
 ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali
-DISTCLEANFILES = sockets-thin.ads sockets-thin.adb
 
 if WIN32
-ADA_SRCS_WIN=	sockets-windows_link.ads sockets-windows_link.adb \
-			sockets-thin.adb
+ADA_SRCS_WIN=	sockets-windows_link.ads sockets-windows_link.adb
 ADA_OBJECTS_WIN=	sockets-windows_link.o
 ADA_OBJECTS_WIN_LO=	$(ADA_OBJECTS_WIN:.o=.lo)
-
-sockets-thin.ads: $(srcdir)/sockets-thin.ads.win32
-	cp $(srcdir)/sockets-thin.ads.win32 sockets-thin.ads
-	cp $(srcdir)/sockets-thin.adb.win32 sockets-thin.adb
-else
-sockets-thin.ads: $(srcdir)/sockets-thin.ads.unix
-	cp -f $(srcdir)/sockets-thin.ads.unix sockets-thin.ads
 endif
 
 SUFFIXES = .ads .lo .ali
@@ -87,16 +74,9 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(privatelibdir)
 
 ### DO NOT REMOVE THIS LINE, IT IS USED BY MAKEDEPEND ###
-sockets-multicast.lo : sockets.ads sockets.adb \
- sockets-link.ads sockets-multicast.ads sockets-multicast.adb \
- sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets.lo : sockets.ads sockets.adb sockets-link.ads \
- sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets-naming.lo : sockets.ads sockets-naming.ads \
- sockets-naming.adb sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets-thin.lo : sockets.ads sockets-thin.ads sockets-types.ads
-sockets-types.lo : sockets.ads sockets-types.ads
-sockets-utils.lo : sockets.ads sockets-thin.ads sockets-types.ads \
- sockets-utils.ads sockets-utils.adb
-sockets-link.lo : sockets.ads sockets-link.ads
-sockets-stream_io.lo : sockets.ads sockets-stream_io.ads sockets-stream_io.adb
+sockets-multicast.o : sockets.ads sockets-multicast.ads sockets-multicast.adb \
+ sockets-utils.ads
+sockets.o : sockets.ads sockets.adb sockets-link.ads sockets-utils.ads
+sockets-utils.o : sockets.ads sockets-utils.ads sockets-utils.adb
+sockets-link.o : sockets.ads sockets-link.ads
+sockets-stream_io.o : sockets.ads sockets-stream_io.ads sockets-stream_io.adb
