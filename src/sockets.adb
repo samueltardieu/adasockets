@@ -340,6 +340,9 @@ package body Sockets is
          raise Connection_Closed;
       end if;
       Receive_Socket (Socket.FD, Buffer, Last);
+      if Last = Buffer'First - 1 then
+         raise Connection_Closed;
+      end if;
       return Buffer (1 .. Last);
    end Receive;
 
