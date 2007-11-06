@@ -39,9 +39,6 @@
 with Ada.Exceptions;         use Ada.Exceptions;
 with Sockets;
 pragma Elaborate_All (Sockets);
-pragma Warnings (Off);
-with GNAT.Sockets.Constants;
-pragma Warnings (On);
 with Sockets.Utils;          use Sockets.Utils;
 
 package body Sockets.Multicast is
