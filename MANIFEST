@@ -65,11 +65,6 @@ contrib/vms/README
 contrib/vms/sockets-constants.ads
 examples/Makefile.VMS
 src/Makefile.VMS
-vms/Makefile.VMS
-vms/constants.c_pre
-vms/constants.list
-vms/create_constants_ads.com
-vms/create_constants_c.com
 README.RTEMS
 examples/Makefile.RTEMS
 examples/rtems_init.c
