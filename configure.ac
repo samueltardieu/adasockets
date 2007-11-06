@@ -1,7 +1,6 @@
 AC_INIT(src/sockets.ads)
 AC_CONFIG_AUX_DIR(support)
-AM_INIT_AUTOMAKE([adasockets],[1.8.7])
-AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE([adasockets],[1.9-alpha1])
 #
 # Package description
 #
