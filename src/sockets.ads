@@ -112,14 +112,6 @@ package Sockets is
       Optval  : in Integer);
    --  Set a socket option
 
-   generic
-      Level   : Socket_Level;
-      Optname : Socket_Option;
-      type Opt_Type is private;
-   procedure Customized_Setsockopt (Socket : in Socket_FD'Class;
-                                    Optval : in Opt_Type);
-   --  Low level control on setsockopt
-
    procedure Accept_Socket (Socket     : in Socket_FD;
                             New_Socket : out Socket_FD);
    --  Accept a connection on a socket

@@ -162,24 +162,6 @@ package body Sockets is
       end if;
    end Connect;
 
-   ---------------------------
-   -- Customized_Setsockopt --
-   ---------------------------
-
-   procedure Customized_Setsockopt (Socket : in Socket_FD'Class;
-                                    Optval : in Opt_Type)
-   is
-   begin
-      pragma Assert (Optval'Size / 8 = Socket_Option_Size (Optname));
-      if C_Setsockopt (Get_FD (Socket),
-                       Socket_Level_Match (Level),
-                       Socket_Option_Match (Optname),
-                       Optval'Address, Optval'Size / 8) = Failure
-      then
-         Raise_With_Message ("Setsockopt failed");
-      end if;
-   end Customized_Setsockopt;
-
    ------------------
    -- Empty_Buffer --
    ------------------
