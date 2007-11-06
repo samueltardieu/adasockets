@@ -139,10 +139,28 @@ package body Sockets is
       Address.Port := Port_Type (Port);
       if Is_IP_Address (Host) then
          Address.Addr := Inet_Addr (Host);
+         Connect_Socket (Socket.FD, Address);
       else
-         Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
+         declare
+            E : constant Host_Entry_Type := Get_Host_By_Name (Host);
+         begin
+            for I in 1 .. Addresses_Length (E) loop
+               begin
+                  Address.Addr := Addresses (E, I);
+                  Connect_Socket (Socket.FD, Address);
+                  return;
+               exception
+                  when Socket_Error => null;
+               end;
+            end loop;
+         end;
+
+         --  We could not connect to any address corresponding to this
+         --  host.
+
+         Raise_With_Message
+           ("Unable to connect to any address for host " & Host);
       end if;
-      Connect_Socket (Socket.FD, Address);
    end Connect;
 
    ---------------------------
