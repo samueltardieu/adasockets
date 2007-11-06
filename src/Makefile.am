@@ -38,7 +38,7 @@ ALIS = $(ADA_OBJECTS:.o=.ali) $(ADA_OBJECTS_WIN:.o=.ali)
 
 ADACOMPILER = $(top_srcdir)/support/adacompiler
 
-ADAFLAGS = -I. -I$(srcdir)
+ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali
 DISTCLEANFILES = sockets-thin.ads sockets-thin.adb
