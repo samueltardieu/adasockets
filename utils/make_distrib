@@ -23,8 +23,10 @@ echo Generating ChangeLog
 git log --pretty=full > ChangeLog
 echo Generating auto-generated files
 autoreconf --verbose --install --force
+sleep 1
 echo Configuring
 ./configure
+sleep 1
 echo Extracting the version
 newdir=`make version`
 echo Version is $newdir
