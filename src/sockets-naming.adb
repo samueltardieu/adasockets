@@ -68,8 +68,8 @@ package body Sockets.Naming is
    --  Parse an entry
 
    procedure Raise_Naming_Error
-     (Errno   : in Integer;
-      Message : in String);
+     (Errno   : Integer;
+      Message : String);
    --  Raise the exception Naming_Error with an appropriate error message
 
    protected Naming_Lock is
@@ -441,8 +441,8 @@ package body Sockets.Naming is
    ------------------------
 
    procedure Raise_Naming_Error
-     (Errno   : in Integer;
-      Message : in String)
+     (Errno   : Integer;
+      Message : String)
    is
 
       function Error_Message return String;

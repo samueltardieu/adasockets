@@ -104,8 +104,8 @@ package body Sockets.Utils is
    -- Raise_With_Message --
    ------------------------
 
-   procedure Raise_With_Message (Message    : in String;
-                                 With_Errno : in Boolean := True)
+   procedure Raise_With_Message (Message    : String;
+                                 With_Errno : Boolean := True)
    is
       Current_Errno : constant Integer := Errno;
    begin

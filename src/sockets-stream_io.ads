@@ -44,7 +44,7 @@ package Sockets.Stream_IO is
 
    procedure Initialize
      (Stream : in out Socket_Stream_Type;
-      FD     : in Socket_FD);
+      FD     : Socket_FD);
    --  Initialize must be called with an opened socket as parameter before
    --  being used as a stream.
 
@@ -55,7 +55,7 @@ package Sockets.Stream_IO is
 
    procedure Write
      (Stream : in out Socket_Stream_Type;
-      Item   : in Ada.Streams.Stream_Element_Array);
+      Item   : Ada.Streams.Stream_Element_Array);
 
 private
 

@@ -66,16 +66,16 @@ package Sockets.Multicast is
    --  to the local port Local_Port. Use 0 if you do not care about
    --  the local port.
 
-   procedure Send (Socket : in Multicast_Socket_FD;
-                   Data   : in Ada.Streams.Stream_Element_Array);
+   procedure Send (Socket : Multicast_Socket_FD;
+                   Data   : Ada.Streams.Stream_Element_Array);
    --  Send data over a multicast socket
 
 private
 
    procedure Socket
      (Sock   : out Multicast_Socket_FD;
-      Domain : in Socket_Domain := PF_INET;
-      Typ    : in Socket_Type   := SOCK_STREAM);
+      Domain : Socket_Domain := PF_INET;
+      Typ    : Socket_Type   := SOCK_STREAM);
    pragma No_Return (Socket);
    --  Do not call this one, it will raise Program_Error
 

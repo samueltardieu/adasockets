@@ -89,7 +89,7 @@ package body Sockets is
 
    CRLF : constant String := CR & LF;
 
-   procedure Refill (Socket : in Socket_FD'Class);
+   procedure Refill (Socket : Socket_FD'Class);
    --  Refill the socket when in buffered mode by receiving one packet
    --  and putting it in the buffer.
 
@@ -102,7 +102,7 @@ package body Sockets is
    -- Accept_Socket --
    -------------------
 
-   procedure Accept_Socket (Socket     : in Socket_FD;
+   procedure Accept_Socket (Socket     : Socket_FD;
                             New_Socket : out Socket_FD)
    is
       Sin  : aliased Sockaddr_In;
@@ -125,9 +125,9 @@ package body Sockets is
    ----------
 
    procedure Bind
-     (Socket : in Socket_FD;
-      Port   : in Natural;
-      Host   : in String := "")
+     (Socket : Socket_FD;
+      Port   : Natural;
+      Host   : String := "")
    is
       Sin : aliased Sockaddr_In;
    begin
@@ -146,9 +146,9 @@ package body Sockets is
    -------------
 
    procedure Connect
-     (Socket : in Socket_FD;
-      Host   : in String;
-      Port   : in Positive)
+     (Socket : Socket_FD;
+      Host   : String;
+      Port   : Positive)
    is
       Sin           : aliased Sockaddr_In;
       Current_Errno : Integer;
@@ -173,8 +173,8 @@ package body Sockets is
    -- Customized_Setsockopt --
    ---------------------------
 
-   procedure Customized_Setsockopt (Socket : in Socket_FD'Class;
-                                    Optval : in Opt_Type)
+   procedure Customized_Setsockopt (Socket : Socket_FD'Class;
+                                    Optval : Opt_Type)
    is
    begin
       pragma Assert (Optval'Size / 8 = Socket_Option_Size (Optname));
@@ -246,7 +246,7 @@ package body Sockets is
    -- Get FD --
    ------------
 
-   function Get_FD (Socket : in Socket_FD)
+   function Get_FD (Socket : Socket_FD)
      return Interfaces.C.int
    is
    begin
@@ -301,9 +301,9 @@ package body Sockets is
    ----------------
 
    procedure Getsockopt
-     (Socket  : in  Socket_FD'Class;
-      Level   : in  Socket_Level := SOL_SOCKET;
-      Optname : in  Socket_Option;
+     (Socket  :  Socket_FD'Class;
+      Level   :  Socket_Level := SOL_SOCKET;
+      Optname :  Socket_Option;
       Optval  : out Integer)
    is
       Len : aliased int;
@@ -353,8 +353,8 @@ package body Sockets is
    ------------
 
    procedure Listen
-     (Socket     : in Socket_FD;
-      Queue_Size : in Positive := 5)
+     (Socket     : Socket_FD;
+      Queue_Size : Positive := 5)
    is
    begin
       if C_Listen (Socket.FD, int (Queue_Size)) = Failure then
@@ -366,8 +366,8 @@ package body Sockets is
    -- New_Line --
    --------------
 
-   procedure New_Line (Socket : in Socket_FD'Class;
-                       Count  : in Natural := 1)
+   procedure New_Line (Socket : Socket_FD'Class;
+                       Count  : Natural := 1)
    is
    begin
       Put (Socket, CRLF * Count);
@@ -377,8 +377,8 @@ package body Sockets is
    -- Put --
    ---------
 
-   procedure Put (Socket : in Socket_FD'Class;
-                  Str    : in String)
+   procedure Put (Socket : Socket_FD'Class;
+                  Str    : String)
    is
       Stream : Stream_Element_Array (Stream_Element_Offset (Str'First) ..
                                      Stream_Element_Offset (Str'Last));
@@ -394,7 +394,7 @@ package body Sockets is
    -- Put_Line --
    --------------
 
-   procedure Put_Line (Socket : in Socket_FD'Class; Str : in String)
+   procedure Put_Line (Socket : Socket_FD'Class; Str : String)
    is
    begin
       Put (Socket, Str & CRLF);
@@ -429,7 +429,7 @@ package body Sockets is
    -- Receive --
    -------------
 
-   procedure Receive (Socket : in Socket_FD'Class;
+   procedure Receive (Socket : Socket_FD'Class;
                       Data   : out Stream_Element_Array)
    is
       Index   : Stream_Element_Offset := Data'First;
@@ -457,7 +457,7 @@ package body Sockets is
    -- Receive_Some --
    ------------------
 
-   procedure Receive_Some (Socket : in Socket_FD'Class;
+   procedure Receive_Some (Socket : Socket_FD'Class;
                            Data   : out Stream_Element_Array;
                            Last   : out Stream_Element_Offset)
    is
@@ -481,7 +481,7 @@ package body Sockets is
    ------------
 
    procedure Refill
-     (Socket : in Socket_FD'Class)
+     (Socket : Socket_FD'Class)
    is
    begin
       pragma Assert (Socket.Buffer /= null);
@@ -493,8 +493,8 @@ package body Sockets is
    -- Send --
    ----------
 
-   procedure Send (Socket : in Socket_FD;
-                   Data   : in Stream_Element_Array)
+   procedure Send (Socket : Socket_FD;
+                   Data   : Stream_Element_Array)
    is
       Index : Stream_Element_Offset  := Data'First;
       Rest  : Stream_Element_Count   := Data'Length;
@@ -523,7 +523,7 @@ package body Sockets is
 
    procedure Set_Buffer
      (Socket : in out Socket_FD'Class;
-      Length : in Positive := 1500)
+      Length : Positive := 1500)
    is
    begin
       Unset_Buffer (Socket);
@@ -535,10 +535,10 @@ package body Sockets is
    ----------------
 
    procedure Setsockopt
-     (Socket  : in Socket_FD'Class;
-      Level   : in Socket_Level := Sol_Socket;
-      Optname : in Socket_Option;
-      Optval  : in Integer)
+     (Socket  : Socket_FD'Class;
+      Level   : Socket_Level := Sol_Socket;
+      Optname : Socket_Option;
+      Optval  : Integer)
    is
    begin
       case Socket_Option_Size (Optname) is
@@ -581,7 +581,7 @@ package body Sockets is
    --------------
 
    procedure Shutdown (Socket : in out Socket_FD;
-                       How    : in Shutdown_Type := Both)
+                       How    : Shutdown_Type := Both)
    is
    begin
       if How /= Both then
@@ -606,8 +606,8 @@ package body Sockets is
 
    procedure Socket
      (Sock   : out Socket_FD;
-      Domain : in Socket_Domain := PF_INET;
-      Typ    : in Socket_Type   := SOCK_STREAM)
+      Domain : Socket_Domain := PF_INET;
+      Typ    : Socket_Type   := SOCK_STREAM)
    is
       Result : constant int :=
         C_Socket (Socket_Domain_Match (Domain), Socket_Type_Match (Typ), 0);
@@ -625,8 +625,8 @@ package body Sockets is
    procedure Socketpair
      (Read_End  : out Socket_FD;
       Write_End : out Socket_FD;
-      Domain    : in Socket_Domain := PF_INET;
-      Typ       : in Socket_Type   := SOCK_STREAM)
+      Domain    : Socket_Domain := PF_INET;
+      Typ       : Socket_Type   := SOCK_STREAM)
    is
       Filedes : aliased Two_Int;
       Result  : constant int :=

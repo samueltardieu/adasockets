@@ -55,25 +55,25 @@ package Sockets is
 
    procedure Socket
      (Sock   : out Socket_FD;
-      Domain : in Socket_Domain := PF_INET;
-      Typ    : in Socket_Type   := SOCK_STREAM);
+      Domain : Socket_Domain := PF_INET;
+      Typ    : Socket_Type   := SOCK_STREAM);
    --  Create a socket of the given mode
 
    Connection_Refused : exception;
    Socket_Error       : exception;
 
    procedure Connect
-     (Socket : in Socket_FD;
-      Host   : in String;
-      Port   : in Positive);
+     (Socket : Socket_FD;
+      Host   : String;
+      Port   : Positive);
    --  Connect a socket on a given host/port. Raise Connection_Refused if
    --  the connection has not been accepted by the other end, or
    --  Socket_Error (with a more precise exception message) for another error.
 
    procedure Bind
-     (Socket : in Socket_FD;
-      Port   : in Natural;
-      Host   : in String := "");
+     (Socket : Socket_FD;
+      Port   : Natural;
+      Host   : String := "");
    --  Bind a socket on a given port. Using 0 for the port will tell the
    --  OS to allocate a non-privileged free port. The port can be later
    --  retrieved using Get_Sock_Port on the bound socket.
@@ -82,8 +82,8 @@ package Sockets is
    --  Socket_Error can be raised if the system refuses to bind the port.
 
    procedure Listen
-     (Socket     : in Socket_FD;
-      Queue_Size : in Positive := 5);
+     (Socket     : Socket_FD;
+      Queue_Size : Positive := 5);
    --  Create a socket's listen queue
 
    type Socket_Level is (SOL_SOCKET, IPPROTO_IP);
@@ -93,35 +93,35 @@ package Sockets is
                           IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF);
 
    procedure Getsockopt
-     (Socket  : in  Socket_FD'Class;
-      Level   : in  Socket_Level := SOL_SOCKET;
-      Optname : in  Socket_Option;
+     (Socket  :  Socket_FD'Class;
+      Level   :  Socket_Level := SOL_SOCKET;
+      Optname :  Socket_Option;
       Optval  : out Integer);
    --  Get a socket option
 
    procedure Setsockopt
-     (Socket  : in Socket_FD'Class;
-      Level   : in Socket_Level := SOL_SOCKET;
-      Optname : in Socket_Option;
-      Optval  : in Integer);
+     (Socket  : Socket_FD'Class;
+      Level   : Socket_Level := SOL_SOCKET;
+      Optname : Socket_Option;
+      Optval  : Integer);
    --  Set a socket option
 
    generic
       Level   : Socket_Level;
       Optname : Socket_Option;
       type Opt_Type is private;
-   procedure Customized_Setsockopt (Socket : in Socket_FD'Class;
-                                    Optval : in Opt_Type);
+   procedure Customized_Setsockopt (Socket : Socket_FD'Class;
+                                    Optval : Opt_Type);
    --  Low level control on setsockopt
 
-   procedure Accept_Socket (Socket     : in Socket_FD;
+   procedure Accept_Socket (Socket     : Socket_FD;
                             New_Socket : out Socket_FD);
    --  Accept a connection on a socket
 
    Connection_Closed : exception;
 
-   procedure Send (Socket : in Socket_FD;
-                   Data   : in Ada.Streams.Stream_Element_Array);
+   procedure Send (Socket : Socket_FD;
+                   Data   : Ada.Streams.Stream_Element_Array);
    --  Send data on a socket. Raise Connection_Closed if the socket
    --  has been closed.
 
@@ -130,13 +130,13 @@ package Sockets is
      return Ada.Streams.Stream_Element_Array;
    --  Receive data from a socket. May raise Connection_Closed
 
-   procedure Receive (Socket : in Socket_FD'Class;
+   procedure Receive (Socket : Socket_FD'Class;
                       Data   : out Ada.Streams.Stream_Element_Array);
    --  Get data from a socket. Raise Connection_Closed if the socket has
    --  been closed before the end of the array.
 
    procedure Receive_Some
-     (Socket : in Socket_FD'Class;
+     (Socket : Socket_FD'Class;
       Data   : out Ada.Streams.Stream_Element_Array;
       Last   : out Ada.Streams.Stream_Element_Offset);
    --  Get some data from a socket. The index of the last element will
@@ -145,17 +145,17 @@ package Sockets is
    type Shutdown_Type is (Receive, Send, Both);
 
    procedure Shutdown (Socket : in out Socket_FD;
-                       How    : in Shutdown_Type := Both);
+                       How    : Shutdown_Type := Both);
    --  Close a previously opened socket
 
    procedure Socketpair
      (Read_End  : out Socket_FD;
       Write_End : out Socket_FD;
-      Domain    : in Socket_Domain := PF_INET;
-      Typ       : in Socket_Type   := SOCK_STREAM);
+      Domain    : Socket_Domain := PF_INET;
+      Typ       : Socket_Type   := SOCK_STREAM);
    --  Create a socketpair.
 
-   function Get_FD (Socket : in Socket_FD)
+   function Get_FD (Socket : Socket_FD)
      return Interfaces.C.int;
    pragma Inline (Get_FD);
    --  Get a socket's FD field
@@ -164,16 +164,16 @@ package Sockets is
    -- String-oriented subprograms --
    ---------------------------------
 
-   procedure Put (Socket : in Socket_FD'Class;
-                  Str    : in String);
+   procedure Put (Socket : Socket_FD'Class;
+                  Str    : String);
    --  Send a string on the socket
 
-   procedure New_Line (Socket : in Socket_FD'Class;
-                       Count  : in Natural := 1);
+   procedure New_Line (Socket : Socket_FD'Class;
+                       Count  : Natural := 1);
    --  Send CR/LF sequences on the socket
 
-   procedure Put_Line (Socket : in Socket_FD'Class;
-                       Str    : in String);
+   procedure Put_Line (Socket : Socket_FD'Class;
+                       Str    : String);
    --  Send a string + CR/LF on the socket
 
    function Get (Socket : Socket_FD'Class) return String;
@@ -194,7 +194,7 @@ package Sockets is
    --  Function form for the former procedure
 
    procedure Set_Buffer (Socket : in out Socket_FD'Class;
-                         Length : in Positive := 1500);
+                         Length : Positive := 1500);
    --  Put socket in buffered mode. If the socket is already buffered,
    --  the content of the previous buffer will be lost. The buffered mode
    --  only affects read operation, through Get, Get_Char and Get_Line. Other
@@ -212,7 +212,7 @@ private
    use type Ada.Streams.Stream_Element_Count;
 
    type Buffer_Type
-     (Length : Ada.Streams.Stream_Element_Count := 1500)
+     (Length : Ada.Streams.Stream_Element_Count)
    is record
       Content : Ada.Streams.Stream_Element_Array (0 .. Length);
       --  One byte will stay unused, but this does not have any consequence

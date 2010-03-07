@@ -88,7 +88,7 @@ package body Sockets.Multicast is
       Setsockopt (Result, SOL_SOCKET, SO_REUSEADDR, 1);
       pragma Warnings (Off);    --  Statically determined
       if Constants.So_Reuseport /= -1 then
-        Setsockopt (Result, SOL_SOCKET, SO_REUSEPORT, 1);
+         Setsockopt (Result, SOL_SOCKET, SO_REUSEPORT, 1);
       end if;
       pragma Warnings (On);
       Bind (Result, Local_Port);
@@ -151,8 +151,8 @@ package body Sockets.Multicast is
    -- Send --
    ----------
 
-   procedure Send (Socket : in Multicast_Socket_FD;
-                   Data   : in Stream_Element_Array)
+   procedure Send (Socket : Multicast_Socket_FD;
+                   Data   : Stream_Element_Array)
    is
       Sin   : aliased Sockaddr_In   := Socket.Target;
       Index : Stream_Element_Offset := Data'First;
@@ -182,8 +182,8 @@ package body Sockets.Multicast is
 
    procedure Socket
      (Sock   : out Multicast_Socket_FD;
-      Domain : in Socket_Domain := PF_INET;
-      Typ    : in Socket_Type   := SOCK_STREAM)
+      Domain : Socket_Domain := PF_INET;
+      Typ    : Socket_Type   := SOCK_STREAM)
    is
    begin
       Raise_Exception (Program_Error'Identity,

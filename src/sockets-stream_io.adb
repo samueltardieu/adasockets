@@ -44,7 +44,7 @@ package body Sockets.Stream_IO is
 
    procedure Initialize
      (Stream : in out Socket_Stream_Type;
-      FD     : in Socket_FD)
+      FD     : Socket_FD)
    is
    begin
       Stream.FD := FD;
@@ -70,7 +70,7 @@ package body Sockets.Stream_IO is
 
    procedure Write
      (Stream : in out Socket_Stream_Type;
-      Item   : in Ada.Streams.Stream_Element_Array)
+      Item   : Ada.Streams.Stream_Element_Array)
    is
    begin
       Send (Stream.FD, Item);

@@ -48,7 +48,7 @@ procedure Stream_Listener is
    --  then stream_sender localhost 5000
 
    task type Echo is
-      entry Start (FD : in Socket_FD);
+      entry Start (FD : Socket_FD);
    end Echo;
 
    ----------
@@ -60,7 +60,7 @@ procedure Stream_Listener is
       Stream : aliased Socket_Stream_Type;
    begin
       select
-         accept Start (FD : in Socket_FD) do
+         accept Start (FD : Socket_FD) do
             Sock := FD;
             Initialize (Stream, Sock);
          end Start;

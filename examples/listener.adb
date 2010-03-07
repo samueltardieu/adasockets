@@ -48,7 +48,7 @@ procedure Listener is
    --  then telnet localhost 5000
 
    task type Echo is
-      entry Start (FD : in Socket_FD);
+      entry Start (FD : Socket_FD);
    end Echo;
 
    function Rev (S : String) return String;
@@ -62,7 +62,7 @@ procedure Listener is
       Sock : Socket_FD;
    begin
       select
-         accept Start (FD : in Socket_FD) do
+         accept Start (FD : Socket_FD) do
             Sock := FD;
          end Start;
       or

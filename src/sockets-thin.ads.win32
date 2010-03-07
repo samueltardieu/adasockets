@@ -360,8 +360,8 @@ package Sockets.Thin is
      return C.int;
 
    procedure C_Shutdown
-     (S   : in C.int;
-      How : in C.int);
+     (S   : C.int;
+      How : C.int);
 
    function C_Socket (Domain, Typ, Protocol : C.int) return C.int;
 
