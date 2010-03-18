@@ -13,7 +13,9 @@
  * doc:
  *    The @code{Multicast_Socket_FD} tagged type derives from the
  *    @code{Socket_FD} type. It gets initialized by calling
- *    @ref{Create_Multicast_Socket (function)}.
+ *    @ref{Create_Multicast_Socket (function)}. An uninitialized
+ *    @code{Multicast_Socket_FD} can be succesfully compared to
+ *    @code{Null_Multicast_Socket_FD}.
 =*/
 
 /*=subprogram Create_Multicast_Socket

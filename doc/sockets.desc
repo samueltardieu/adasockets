@@ -13,6 +13,8 @@
  * doc:
  *    The @code{Socket_FD} tagged type is the root type of all
  *    sockets. It gets initialized by calling @ref{Socket (procedure)}.
+ *    An uninitialized @code{Socket_FD} can be succesfully compared to
+ *    @code{Null_Socket_FD}.
 =*/
 
 /*=subprogram Socket
