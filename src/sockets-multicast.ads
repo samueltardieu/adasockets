@@ -82,11 +82,11 @@ private
    --  Do not call this one, it will raise Program_Error
 
    type Multicast_Socket_FD is new Socket_FD with record
-      Target : GNAT.Sockets.Sock_Addr_Type;
+      Target : GNAT.Sockets.Sock_Addr_Type := GNAT.Sockets.No_Sock_Addr;
    end record;
 
    Null_Multicast_Socket_FD : constant Multicast_Socket_FD :=
      (Sockets.Null_Socket_FD with
-      Target => Sockets.Types.Null_Sockaddr_In);
+      Target => GNAT.Sockets.No_Sock_Addr);
 
 end Sockets.Multicast;

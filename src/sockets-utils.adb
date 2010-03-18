@@ -103,7 +103,7 @@ package body Sockets.Utils is
    -- Raise_With_Message --
    ------------------------
 
-   procedure Raise_With_Message (Message : in String) is
+   procedure Raise_With_Message (Message : String) is
    begin
       Raise_Exception (Socket_Error'Identity, Message);
    end Raise_With_Message;

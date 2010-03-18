@@ -129,7 +129,7 @@ package Sockets is
       Optval  : Integer);
    --  Set a socket option
 
-   procedure Accept_Socket (Socket     : in Socket_FD;
+   procedure Accept_Socket (Socket     : Socket_FD;
                             New_Socket : out Socket_FD);
    --  Accept a connection on a socket
 
@@ -140,9 +140,9 @@ package Sockets is
    --  Send data on a socket. Raise Connection_Closed if the socket
    --  has been closed.
 
-   procedure Send (Socket : in Socket_FD;
-                   Data   : in Ada.Streams.Stream_Element_Array;
-                   Target : in GNAT.Sockets.Sock_Addr_Type);
+   procedure Send (Socket : Socket_FD;
+                   Data   : Ada.Streams.Stream_Element_Array;
+                   Target : GNAT.Sockets.Sock_Addr_Type);
    --  Send data on a socket with an explicit target. The socket must
    --  not be connected.
 
@@ -247,14 +247,14 @@ private
    type Shutdown_Array is array (Receive .. Send) of Boolean;
 
    type Socket_FD is tagged record
-      FD       : GNAT.Sockets.Socket_Type;
-      Shutdown : Shutdown_Array;
+      FD       : GNAT.Sockets.Socket_Type := GNAT.Sockets.No_Socket;
+      Shutdown : Shutdown_Array           := (others => False);
       Buffer   : Buffer_Access;
    end record;
 
    Null_Socket_FD : constant Socket_FD :=
-     (FD => Interfaces.C."-" (1),
+     (FD       => GNAT.Sockets.No_Socket,
       Shutdown => (others => False),
-      Buffer => null);
+      Buffer   => null);
 
 end Sockets;

@@ -15,16 +15,12 @@ SUBDIRS_EXAMPLES =
 endif
 
 EXTRA_DIST = AUTHORS COPYING GMGPL INSTALL NEWS README README.RTEMS \
-	rtems/ChangeLog rtems/create_constants_c.sh rtems/Makefile.RTEMS \
-	rtems/README rtems/rtems_main.c rtems/sockets-constants-rtems.ads \
 	ChangeLog Makefile.VMS \
-	contrib/vms/README contrib/vms/sockets-constants.ads \
+	contrib/vms/README \
 	contrib/win32/adasockets/build.bat contrib/win32/adasockets/clean.bat \
 	contrib/win32/adasockets/Readme.txt contrib/win32/distr \
 	contrib/win32/Readme.txt \
-	support/adacompiler \
-	vms/constants.c_pre vms/constants.list vms/create_constants_ads.com \
-	vms/create_constants_c.com vms/Makefile.VMS
+	support/adacompiler
 
 CLEANFILES = ChangeLog
 

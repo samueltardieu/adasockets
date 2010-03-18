@@ -414,9 +414,9 @@ package body Sockets is
    -- Send --
    ----------
 
-   procedure Send (Socket : in Socket_FD;
-                   Data   : in Stream_Element_Array;
-                   Target : in Sock_Addr_Type)
+   procedure Send (Socket : Socket_FD;
+                   Data   : Stream_Element_Array;
+                   Target : Sock_Addr_Type)
    is
       Last     : Stream_Element_Offset := Data'First - 1;
       Old_Last : Stream_Element_Offset;
@@ -448,10 +448,10 @@ package body Sockets is
    ----------------
 
    procedure Setsockopt
-     (Socket  : in Socket_FD'Class;
-      Level   : in Socket_Level := SOL_SOCKET;
-      Optname : in Socket_Option;
-      Optval  : in Integer)
+     (Socket  : Socket_FD'Class;
+      Level   : Socket_Level := SOL_SOCKET;
+      Optname : Socket_Option;
+      Optval  : Integer)
    is
    begin
       case Optname is
