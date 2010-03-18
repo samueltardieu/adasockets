@@ -1,5 +1,12 @@
 -*- outline -*-
 
+* New in AdaSockets 1.8.8
+
+New constants Null_Socket_FD and Null_Multicast_Socket_FD have been
+defined.
+
+Use `pkg-config' for post-installation configuration.
+
 * New in AdaSockets 1.8.7
 
 The configure flag --enable-debug has been renamed into

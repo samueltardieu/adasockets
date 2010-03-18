@@ -111,8 +111,8 @@ AC_SUBST(WINNEEDED)
 AC_CONFIG_FILES([Makefile
            src/Makefile
            src/sockets-link.ads
-           src/adasockets-config
            src/sockets-types.ads
+	   src/adasockets.pc
            man/Makefile
            examples/Makefile
            doc/Makefile])

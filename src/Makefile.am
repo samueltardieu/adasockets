@@ -29,7 +29,7 @@ EXTRA_DIST = Makefile.RTEMS Makefile.VMS sockets-vms_link.ads \
 	sockets-thin.adb.vms sockets-thin.adb.win32 \
 	sockets-thin.ads.unix sockets-thin.ads.vms sockets-thin.ads.win32 \
 	constants.c constants.sh \
-	split.adb
+	split.adb adasockets-config
 
 ADA_OBJECTS = \
 	sockets-constants.o \
@@ -62,6 +62,9 @@ sockets-constants.ads: $(srcdir)/constants.sh split constants_nodef
 
 split: $(srcdir)/split.adb
 	$(GNATMAKE) -g -O2 $(srcdir)/split.adb
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = adasockets.pc
 
 if WIN32
 nodist_libadasockets_la_SOURCES += \

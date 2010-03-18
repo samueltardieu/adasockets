@@ -1,3 +1,4 @@
+*~
 Makefile.in
 Makefile
 aclocal.m4
@@ -36,7 +37,6 @@ man/Makefile
 man/Makefile.in
 src/Makefile
 src/Makefile.in
-src/adasockets-config
 src/config.h
 src/config.h.in
 src/sockets-link.ads
@@ -92,3 +92,4 @@ src/split
 src/.libs
 ChangeLog
 adasockets-*.tar.gz
+src/adasockets.pc
