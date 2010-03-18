@@ -6,7 +6,7 @@ ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 	  --subblock=exc=excname,excdesc \
 	  --template=${srcdir}/adadoc
 
-CLEANFILES=	*.defs ${adasockets_TEXINFOS}
+DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS}
 
 all-local:: adasockets.ps adasockets.pdf
 
