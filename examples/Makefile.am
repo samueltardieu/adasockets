@@ -21,4 +21,8 @@ value: never
 DISTCLEANFILES = tcprelay listener multi stream_listener stream_sender value
 CLEANFILES = *.o *.ali b_*.c b~*.ad[bs]
 
+EXTRA_DIST = Makefile.RTEMS Makefile.VMS \
+	multi.adb rtems_init.c rtems_networkconfig.h stream_listener.adb \
+	listener.adb stream_sender.adb tcprelay.adb value.adb
+
 never::

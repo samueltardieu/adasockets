@@ -3,27 +3,33 @@ privatelibdir = $(libdir)/adasockets
 bin_SCRIPTS = adasockets-config
 
 lib_LTLIBRARIES = libadasockets.la
-libadasockets_la_SOURCES = $(ADA_SRCS)
-libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
-libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
-	-o libadasockets.la
-
-ADA_SRCS = \
-	sockets-constants.ads \
-	sockets-link.ads \
+dist_libadasockets_la_SOURCES = \
 	sockets-multicast.ads \
 	sockets-multicast.adb \
 	sockets-naming.ads \
 	sockets-naming.adb \
 	sockets-stream_io.ads \
 	sockets-stream_io.adb \
-	sockets-thin.ads \
-	sockets-types.ads \
 	sockets-utils.ads \
 	sockets-utils.adb \
 	sockets.ads \
-	sockets.adb \
-	$(ADA_SRCS_WIN)
+	sockets.adb
+nodist_libadasockets_la_SOURCES = \
+	sockets-thin.ads \
+	sockets-constants.ads \
+	sockets-link.ads \
+	sockets-types.ads
+libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
+libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
+	-o libadasockets.la
+
+EXTRA_DIST = Makefile.RTEMS Makefile.VMS sockets-vms_link.ads \
+	sockets-windows_link.ads sockets-windows_link.adb \
+	sockets-link.ads.vms \
+	sockets-thin.adb.vms sockets-thin.adb.win32 \
+	sockets-thin.ads.unix sockets-thin.ads.vms sockets-thin.ads.win32 \
+	constants.c constants.sh \
+	split.adb
 
 ADA_OBJECTS = \
 	sockets-constants.o \
@@ -36,7 +42,7 @@ ADA_OBJECTS = \
 	sockets-utils.o \
 	sockets.o
 
-ALIS = $(ADA_OBJECTS:.o=.ali) $(ADA_OBJECTS_WIN:.o=.ali)
+ALIS = $(ADA_OBJECTS:.o=.ali)
 
 ADACOMPILER = $(top_srcdir)/support/adacompiler
 
@@ -44,7 +50,8 @@ ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali b~*
 DISTCLEANFILES = b_split.c split constants_nodef \
-		sockets-thin.ads sockets-thin.adb
+		sockets-thin.ads sockets-thin.adb \
+		sockets-constants.ads
 
 constants_nodef: constants.c config.h
 	$(CC) -I. -o constants_nodef $(srcdir)/constants.c
@@ -57,10 +64,10 @@ split: $(srcdir)/split.adb
 	$(GNATMAKE) -g -O2 $(srcdir)/split.adb
 
 if WIN32
-ADA_SRCS_WIN=	sockets-windows_link.ads sockets-windows_link.adb \
-			sockets-thin.adb
-ADA_OBJECTS_WIN=	sockets-windows_link.o
-ADA_OBJECTS_WIN_LO=	$(ADA_OBJECTS_WIN:.o=.lo)
+nodist_libadasockets_la_SOURCES += \
+	sockets-windows_link.ads sockets-windows_link.adb \
+	sockets-thin.adb
+ADA_OBJECTS +=	sockets-windows_link.o
 
 sockets-thin.ads: $(srcdir)/sockets-thin.ads.win32
 	cp $(srcdir)/sockets-thin.ads.win32 sockets-thin.ads
@@ -88,7 +95,7 @@ install-data-local: all
 	rm -rf $(DESTDIR)$(privatelibdir)
 	$(mkinstalldirs) $(DESTDIR)$(privatelibdir)
 	$(INSTALL) -m 444 $(ALIS) $(DESTDIR)$(privatelibdir)
-	for i in $(ADA_SRCS); do \
+	for i in $(dist_libadasockets_la_SOURCES) $(nodist_libadasockets_la_SOURCES); do \
 	  if test -f $$i; then \
 	    $(INSTALL) -m 644 $$i $(DESTDIR)$(privatelibdir); \
 	  else \

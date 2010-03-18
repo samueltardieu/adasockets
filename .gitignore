@@ -90,3 +90,5 @@ src/sockets-constants.ads
 src/sockets-thin.ads
 src/split
 src/.libs
+ChangeLog
+adasockets-*.tar.gz
