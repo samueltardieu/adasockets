@@ -70,14 +70,21 @@ package Sockets.Types is
 
    type Sockaddr_In is record
 @SA_LEN@      Sin_Len    : C.unsigned_char := 18;
-@SA_LEN@      Sin_Family : C.unsigned_char;
-@NO_SA_LEN@      Sin_Family : C.unsigned_short;
+@SA_LEN@      Sin_Family : C.unsigned_char := 0;
+@NO_SA_LEN@      Sin_Family : C.unsigned_short := 0;
       Sin_Port   : C.unsigned_short      := 0;
       Sin_Addr   : In_Addr               := Inaddr_Any;
       Sin_Zero   : C.char_array (1 .. 8) := (others => C.char'Val (0));
    end record;
    pragma Convention (C, Sockaddr_In);
    --  Internet socket address
+
+   Null_Sockaddr_In : constant Sockaddr_In := (
+@SA_LEN@      Sin_Len    => 18,
+      Sin_Family => 0,
+      Sin_Port   => 0,
+      Sin_Addr   => Inaddr_Any,
+      Sin_Zero   => (others => C.char'Val (0)));
 
    type Sockaddr_In_Access is access all Sockaddr_In;
    pragma Convention (C, Sockaddr_In_Access);

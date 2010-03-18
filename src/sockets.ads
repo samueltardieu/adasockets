@@ -44,6 +44,9 @@ package Sockets is
    type Socket_FD is tagged private;
    --  A socket
 
+   Null_Socket_FD : constant Socket_FD;
+   --  An empty socket
+
    type Socket_Domain is (PF_INET, AF_INET);
    --  PF_INET: Internet sockets
    --  AF_INET: This entry is bogus and should never be used, but it is
@@ -226,9 +229,14 @@ private
    type Shutdown_Array is array (Receive .. Send) of Boolean;
 
    type Socket_FD is tagged record
-      FD       : Interfaces.C.int;
-      Shutdown : Shutdown_Array;
+      FD       : Interfaces.C.int := Interfaces.C."-" (1);
+      Shutdown : Shutdown_Array := (others => False);
       Buffer   : Buffer_Access;
    end record;
+
+   Null_Socket_FD : constant Socket_FD :=
+     (FD => Interfaces.C."-" (1),
+      Shutdown => (others => False),
+      Buffer => null);
 
 end Sockets;

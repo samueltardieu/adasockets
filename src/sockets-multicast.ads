@@ -46,6 +46,8 @@ package Sockets.Multicast is
 
    type Multicast_Socket_FD is new Socket_FD with private;
 
+   Null_Multicast_Socket_FD : constant Multicast_Socket_FD;
+
    function Create_Multicast_Socket
      (Group     : String;
       Port      : Positive;
@@ -82,5 +84,9 @@ private
    type Multicast_Socket_FD is new Socket_FD with record
       Target : Sockets.Types.Sockaddr_In;
    end record;
+
+   Null_Multicast_Socket_FD : constant Multicast_Socket_FD :=
+     (Sockets.Null_Socket_FD with
+      Target => Sockets.Types.Null_Sockaddr_In);
 
 end Sockets.Multicast;
