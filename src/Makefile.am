@@ -42,7 +42,7 @@ ADACOMPILER = $(top_srcdir)/support/adacompiler
 
 ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
-CLEANFILES = *.o *.ali
+CLEANFILES = *.o *.ali b~*
 DISTCLEANFILES = b_split.c split constants_nodef \
 		sockets-thin.ads sockets-thin.adb
 
