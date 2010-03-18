@@ -37,9 +37,14 @@
 -----------------------------------------------------------------------------
 
 with Ada.Finalization;
-with Sockets.Types;
+with GNAT.Sockets;
 
 package Sockets.Naming is
+
+   --  Warning: this package is considered obsolete. You should use
+   --  subprograms from GNAT.Sockets instead.
+
+   pragma Obsolescent ("use subprograms from GNAT.Sockets instead");
 
    type String_Access is access String;
 
@@ -66,14 +71,11 @@ package Sockets.Naming is
    procedure Adjust   (Object : in out Host_Entry);
    procedure Finalize (Object : in out Host_Entry);
 
-   Naming_Error : exception;
+   Naming_Error : exception renames GNAT.Sockets.Host_Error;
    --  This exception is raised when a name cannot be resolved
 
    function Image (Add : Address) return String;
    --  The dotted form corresponding to an IP address
-
-   function Image (Add : Types.In_Addr) return String;
-   --  The dotted form corresponding to the packed form of an IP address
 
    function Value (Add : String) return Address;
    --  The IP address corresponding to a dotted form
@@ -96,32 +98,20 @@ package Sockets.Naming is
    function Address_Of (Something : String) return Address;
    --  Address of an IP name or a dotted form
 
-   function Host_Name return String;
+   function Host_Name return String renames GNAT.Sockets.Host_Name;
    --  Return the name of the current host
 
    function Name_Of (Something : String) return String;
    --  Return the official name of an IP name or a dotted form
 
-   function To_In_Addr (Addr : Address) return Types.In_Addr;
-   --  Convert an IP address to a In_Addr structure
-
-   function To_Address (Addr : Types.In_Addr) return Address;
-   --  Convert a In_Addr structure to an IP address
-
    function Any_Address return Address;
    --  Return the value of inaddr_any
-
-   function Get_Peer_Addr (Socket : Socket_FD) return Types.In_Addr;
-   --  Return the address of the peer in a dotted form
 
    function Get_Peer_Addr (Socket : Socket_FD) return Address;
    --  Ditto
 
    function Get_Peer_Port (Socket : Socket_FD) return Positive;
    --  Return the port of the peer
-
-   function Get_Sock_Addr (Socket : Socket_FD) return Types.In_Addr;
-   --  Return the local address of a bound socket
 
    function Get_Sock_Addr (Socket : Socket_FD) return Address;
    --  Ditto

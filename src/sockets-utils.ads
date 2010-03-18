@@ -42,8 +42,7 @@ private package Sockets.Utils is
 
    pragma Elaborate_Body;
 
-   procedure Raise_With_Message (Message    : String;
-                                 With_Errno : Boolean := True);
+   procedure Raise_With_Message (Message : in String);
    pragma No_Return (Raise_With_Message);
    --  Raise Socket_Error with an associated error message
 

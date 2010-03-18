@@ -14,31 +14,17 @@ dist_libadasockets_la_SOURCES = \
 	sockets-utils.adb \
 	sockets.ads \
 	sockets.adb
-nodist_libadasockets_la_SOURCES = \
-	sockets-thin.ads \
-	sockets-constants.ads \
-	sockets-link.ads \
-	sockets-types.ads
+
 libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
 libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
 	-o libadasockets.la
 
-EXTRA_DIST = Makefile.RTEMS Makefile.VMS sockets-vms_link.ads \
-	sockets-windows_link.ads sockets-windows_link.adb \
-	sockets-link.ads.vms \
-	sockets-thin.adb.vms sockets-thin.adb.win32 \
-	sockets-thin.ads.unix sockets-thin.ads.vms sockets-thin.ads.win32 \
-	constants.c constants.sh \
-	split.adb adasockets-config
+EXTRA_DIST = Makefile.RTEMS Makefile.VMS adasockets-config
 
 ADA_OBJECTS = \
-	sockets-constants.o \
-	sockets-link.o \
 	sockets-multicast.o \
 	sockets-naming.o \
 	sockets-stream_io.o \
-	sockets-thin.o \
-	sockets-types.o \
 	sockets-utils.o \
 	sockets.o
 
@@ -49,36 +35,6 @@ ADACOMPILER = $(top_srcdir)/support/adacompiler
 ADAFLAGS = @ADAFLAGS@ -I. -I$(srcdir)
 
 CLEANFILES = *.o *.ali b~*
-DISTCLEANFILES = b_split.c split constants_nodef \
-		sockets-thin.ads sockets-thin.adb \
-		sockets-constants.ads
-
-constants_nodef: constants.c config.h
-	$(CC) -I. -o constants_nodef $(srcdir)/constants.c
-
-sockets-constants.ads: $(srcdir)/constants.sh split constants_nodef
-	$(SHELL) $(srcdir)/constants.sh Sockets.Constants $(srcdir) \
-	  sockets-constants.ads
-
-split: $(srcdir)/split.adb
-	$(GNATMAKE) -g -O2 $(srcdir)/split.adb
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = adasockets.pc
-
-if WIN32
-nodist_libadasockets_la_SOURCES += \
-	sockets-windows_link.ads sockets-windows_link.adb \
-	sockets-thin.adb
-ADA_OBJECTS +=	sockets-windows_link.o
-
-sockets-thin.ads: $(srcdir)/sockets-thin.ads.win32
-	cp $(srcdir)/sockets-thin.ads.win32 sockets-thin.ads
-	cp $(srcdir)/sockets-thin.adb.win32 sockets-thin.adb
-else
-sockets-thin.ads: $(srcdir)/sockets-thin.ads.unix
-	cp -f $(srcdir)/sockets-thin.ads.unix sockets-thin.ads
-endif
 
 SUFFIXES = .ads .lo .ali
 
@@ -110,17 +66,8 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(privatelibdir)
 
 ### DO NOT REMOVE THIS LINE, IT IS USED BY MAKEDEPEND ###
-sockets-multicast.lo : sockets.ads sockets.adb sockets-constants.ads \
- sockets-link.ads sockets-multicast.ads sockets-multicast.adb \
- sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets.lo : sockets.ads sockets.adb sockets-constants.ads sockets-link.ads \
- sockets-naming.ads sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets-constants.lo : sockets.ads sockets-constants.ads
-sockets-naming.lo : sockets.ads sockets-constants.ads sockets-naming.ads \
- sockets-naming.adb sockets-thin.ads sockets-types.ads sockets-utils.ads
-sockets-thin.lo : sockets.ads sockets-thin.ads sockets-types.ads
-sockets-types.lo : sockets.ads sockets-types.ads
-sockets-utils.lo : sockets.ads sockets-thin.ads sockets-types.ads \
- sockets-utils.ads sockets-utils.adb
-sockets-link.lo : sockets.ads sockets-link.ads
-sockets-stream_io.lo : sockets.ads sockets-stream_io.ads sockets-stream_io.adb
+sockets-multicast.o : sockets.ads sockets-multicast.ads sockets-multicast.adb \
+ sockets-utils.ads
+sockets.o : sockets.ads sockets.adb sockets-utils.ads
+sockets-utils.o : sockets.ads sockets-utils.ads sockets-utils.adb
+sockets-stream_io.o : sockets.ads sockets-stream_io.ads sockets-stream_io.adb

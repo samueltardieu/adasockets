@@ -37,6 +37,7 @@
 -----------------------------------------------------------------------------
 
 with Ada.Streams;
+with GNAT.Sockets;
 with Interfaces.C;
 
 package Sockets is
@@ -44,26 +45,28 @@ package Sockets is
    type Socket_FD is tagged private;
    --  A socket
 
-   Null_Socket_FD : constant Socket_FD;
-   --  An empty socket
-
-   type Socket_Domain is (PF_INET, AF_INET);
+   subtype Socket_Domain is GNAT.Sockets.Family_Type;
+   function PF_INET return Socket_Domain renames GNAT.Sockets.Family_Inet;
+   function AF_INET return Socket_Domain renames GNAT.Sockets.Family_Inet;
    --  PF_INET: Internet sockets
    --  AF_INET: This entry is bogus and should never be used, but it is
    --  kept here for some time for compatibility reasons.
+   --  Those two entries are kept for compatibility
 
-   type Socket_Type is (SOCK_STREAM, SOCK_DGRAM);
-   --  SOCK_STREAM: Stream mode   (TCP)
-   --  SOCK_DGRAM:  Datagram mode (UDP, Multicast)
+   subtype Socket_Type is GNAT.Sockets.Mode_Type;
+   function SOCK_STREAM return Socket_Type renames GNAT.Sockets.Socket_Stream;
+   function SOCK_DGRAM return Socket_Type renames GNAT.Sockets.Socket_Datagram;
+   --  Those two entries are kept for compatibility
 
    procedure Socket
      (Sock   : out Socket_FD;
       Domain : Socket_Domain := PF_INET;
       Typ    : Socket_Type   := SOCK_STREAM);
    --  Create a socket of the given mode
+   --  Kept for compatibility
 
    Connection_Refused : exception;
-   Socket_Error       : exception;
+   Socket_Error       : exception renames GNAT.Sockets.Socket_Error;
 
    procedure Connect
      (Socket : Socket_FD;
@@ -89,11 +92,28 @@ package Sockets is
       Queue_Size : Positive := 5);
    --  Create a socket's listen queue
 
-   type Socket_Level is (SOL_SOCKET, IPPROTO_IP);
+   subtype Socket_Level is GNAT.Sockets.Level_Type;
+   function SOL_SOCKET return Socket_Level renames GNAT.Sockets.Socket_Level;
+   function IPPROTO_IP return Socket_Level
+     renames GNAT.Sockets.IP_Protocol_For_IP_Level;
+   --  Those two entries are kept for compatibility
 
-   type Socket_Option is (SO_REUSEADDR, SO_REUSEPORT, IP_MULTICAST_TTL,
-                          IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
-                          IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF);
+   subtype Socket_Option is GNAT.Sockets.Option_Name;
+   function SO_REUSEADDR return Socket_Option
+     renames GNAT.Sockets.Reuse_Address;
+   function IP_MULTICAST_TTL return Socket_Option
+     renames GNAT.Sockets.Multicast_TTL;
+   function IP_ADD_MEMBERSHIP return Socket_Option
+     renames GNAT.Sockets.Add_Membership;
+   function IP_DROP_MEMBERSHIP return Socket_Option
+     renames GNAT.Sockets.Drop_Membership;
+   function IP_MULTICAST_LOOP return Socket_Option
+     renames GNAT.Sockets.Multicast_Loop;
+   function SO_SNDBUF return Socket_Option
+     renames GNAT.Sockets.Send_Buffer;
+   function SO_RCVBUF return Socket_Option
+     renames GNAT.Sockets.Receive_Buffer;
+   --  Those seven entries are kept for compatibility
 
    procedure Getsockopt
      (Socket  :  Socket_FD'Class;
@@ -109,15 +129,7 @@ package Sockets is
       Optval  : Integer);
    --  Set a socket option
 
-   generic
-      Level   : Socket_Level;
-      Optname : Socket_Option;
-      type Opt_Type is private;
-   procedure Customized_Setsockopt (Socket : Socket_FD'Class;
-                                    Optval : Opt_Type);
-   --  Low level control on setsockopt
-
-   procedure Accept_Socket (Socket     : Socket_FD;
+   procedure Accept_Socket (Socket     : in Socket_FD;
                             New_Socket : out Socket_FD);
    --  Accept a connection on a socket
 
@@ -127,6 +139,12 @@ package Sockets is
                    Data   : Ada.Streams.Stream_Element_Array);
    --  Send data on a socket. Raise Connection_Closed if the socket
    --  has been closed.
+
+   procedure Send (Socket : in Socket_FD;
+                   Data   : in Ada.Streams.Stream_Element_Array;
+                   Target : in GNAT.Sockets.Sock_Addr_Type);
+   --  Send data on a socket with an explicit target. The socket must
+   --  not be connected.
 
    function Receive (Socket : Socket_FD;
                      Max    : Ada.Streams.Stream_Element_Count := 4096)
@@ -145,21 +163,21 @@ package Sockets is
    --  Get some data from a socket. The index of the last element will
    --  be placed in Last.
 
-   type Shutdown_Type is (Receive, Send, Both);
+   subtype Shutdown_Type is GNAT.Sockets.Shutmode_Type;
+   function Receive return Shutdown_Type renames GNAT.Sockets.Shut_Read;
+   function Send return Shutdown_Type renames GNAT.Sockets.Shut_Write;
+   function Both return Shutdown_Type renames GNAT.Sockets.Shut_Read_Write;
+   --  Those three entries are kept for compatibility
 
    procedure Shutdown (Socket : in out Socket_FD;
                        How    : Shutdown_Type := Both);
    --  Close a previously opened socket
 
-   procedure Socketpair
-     (Read_End  : out Socket_FD;
-      Write_End : out Socket_FD;
-      Domain    : Socket_Domain := PF_INET;
-      Typ       : Socket_Type   := SOCK_STREAM);
-   --  Create a socketpair.
+   function Get_FD (Socket : Socket_FD) return GNAT.Sockets.Socket_Type;
+   pragma Inline (Get_FD);
+   --  Get a Socket_Type from a Socket_FD
 
-   function Get_FD (Socket : Socket_FD)
-     return Interfaces.C.int;
+   function Get_FD (Socket : Socket_FD) return Interfaces.C.int;
    pragma Inline (Get_FD);
    --  Get a socket's FD field
 
@@ -229,8 +247,8 @@ private
    type Shutdown_Array is array (Receive .. Send) of Boolean;
 
    type Socket_FD is tagged record
-      FD       : Interfaces.C.int := Interfaces.C."-" (1);
-      Shutdown : Shutdown_Array := (others => False);
+      FD       : GNAT.Sockets.Socket_Type;
+      Shutdown : Shutdown_Array;
       Buffer   : Buffer_Access;
    end record;
 

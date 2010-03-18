@@ -37,7 +37,6 @@
 -----------------------------------------------------------------------------
 
 with Ada.Exceptions; use Ada.Exceptions;
-with Sockets.Thin;   use Sockets.Thin;
 with System;         use System;
 
 package body Sockets.Utils is
@@ -104,31 +103,9 @@ package body Sockets.Utils is
    -- Raise_With_Message --
    ------------------------
 
-   procedure Raise_With_Message (Message    : String;
-                                 With_Errno : Boolean := True)
-   is
-      Current_Errno : constant Integer := Errno;
+   procedure Raise_With_Message (Message : in String) is
    begin
-      if With_Errno then
-         declare
-            --  Using a local block avoids implicit memory allocation,
-            --  which would erase the Errno value on Win32.
-
-            Message_Text : constant String := Message & " (errno is" &
-              Integer'Image (Current_Errno) & ")";
-         begin
-            Raise_Exception (Socket_Error'Identity, Message_Text);
-         end;
-      else
-         Raise_Exception (Socket_Error'Identity, Message);
-      end if;
-
-      --  The following line works around a bug in GNAT that does not
-      --  recognize Ada.Exceptions.Raise_Exception as raising an exception,
-      --  even if it can compute statically that the occurrence cannot
-      --  be Null_Occurrence ???
-
-      raise Program_Error;
+      Raise_Exception (Socket_Error'Identity, Message);
    end Raise_With_Message;
 
 end Sockets.Utils;

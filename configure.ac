@@ -1,7 +1,6 @@
 AC_INIT([src/sockets.ads])
 AC_CONFIG_AUX_DIR([support])
-AM_INIT_AUTOMAKE([adasockets],[1.8.8])
-AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE([adasockets],[1.9-alpha2])
 #
 # Package description
 #
@@ -47,10 +46,6 @@ AC_CHECK_PROG(GETDEFS, getdefs, getdefs)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo)
 AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi)
 #
-# Look for the C compiler
-#
-AC_PROG_CC
-#
 # Look for the Ada compiler
 #
 AC_CHECK_PROG([GNATMAKE], [gnatmake], [gnatmake])
@@ -62,55 +57,10 @@ fi
 #
 AC_PROG_LIBTOOL
 #
-# Test for -lnsl, -lsocket and -lresolv
-#
-AC_CHECK_FUNC(gethostbyname,NSLNEEDED="--  ",
-  AC_CHECK_LIB(nsl,gethostbyname,,NSLNEEDED="--  "))
-AC_SUBST(NSLNEEDED)
-AC_CHECK_FUNC(connect,SOCKETNEEDED="--  ",
-  AC_CHECK_LIB(socket,connect,,SOCKETNEEDED="--  "))
-AC_SUBST(SOCKETNEEDED)
-AC_CHECK_FUNC(inet_aton,RESOLVNEEDED="--  ",
-  AC_CHECK_LIB(resolv,inet_aton,,RESOLVNEEDED="--  "))
-AC_SUBST(RESOLVNEEDED)
-#
-# Extra libraries
-#
-AC_ARG_WITH(extra-libs,
- [  --with-extra-libs=libs  Add extra libraries when building a program],
- [EXTRA_LIBS="${withval}"])
-AC_SUBST(EXTRA_LIBS)
-#
-# Header files
-#
-AC_CHECK_HEADERS([stdio.h sys/types.h sys/socket.h errno.h netdb.h stdlib.h])
-AC_CHECK_HEADERS([netinet/in.h signal.h fcntl.h termio.h termios.h sys/file.h])
-AC_CHECK_HEADERS([sys/ioctl.h netinet/tcp.h sys/systeminfo.h poll.h stropts.h])
-AC_CHECK_HEADERS([sys/conf.h sys/param.h time.h windows.h string.h])
-AC_CHECK_HEADERS(windows.h, [usewin32=true useunix=false],
-                            [usewin32=false useunix=true])
-#
-# sa_len field ?
-#
-AC_CHECK_MEMBER(struct sockaddr.sa_len,[SA_LEN="" NO_SA_LEN="--  "],[SA_LEN="--  " NO_SA_LEN=""],[#include <sys/types.h>
-AC_SUBST(SA_LEN)
-AC_SUBST(NO_SA_LEN)
-#include <sys/socket.h>])
-#
-# Conditional import for Win32 and substitution
-#
-AM_CONDITIONAL(WIN32, $usewin32)
-if $useunix; then
-  WINNEEDED="--  "
-fi
-AC_SUBST(WINNEEDED)
-#
 # Output
 #
 AC_CONFIG_FILES([Makefile
            src/Makefile
-           src/sockets-link.ads
-           src/sockets-types.ads
 	   src/adasockets.pc
            man/Makefile
            examples/Makefile

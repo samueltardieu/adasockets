@@ -38,54 +38,11 @@
 
 with Ada.Characters.Latin_1;     use Ada.Characters.Latin_1;
 with Ada.Unchecked_Deallocation;
-with Sockets.Constants;          use Sockets.Constants;
-with Sockets.Link;
-pragma Warnings (Off, Sockets.Link);
-with Sockets.Naming;             use Sockets.Naming;
-with Sockets.Thin;               use Sockets.Thin;
-with Sockets.Types;              use Sockets.Types;
 with Sockets.Utils;              use Sockets.Utils;
 
 package body Sockets is
 
-   use Ada.Streams, Interfaces.C;
-
-   Socket_Domain_Match : constant array (Socket_Domain) of int :=
-     (PF_INET => Constants.Af_Inet,
-      AF_INET => Constants.Af_Inet);  --  They hold the same value
-
-   Socket_Type_Match : constant array (Socket_Type) of int :=
-     (SOCK_STREAM => Constants.Sock_Stream,
-      SOCK_DGRAM  => Constants.Sock_Dgram);
-
-   Shutdown_Type_Match : constant array (Shutdown_Type) of int :=
-     (Receive => 0,
-      Send    => 1,
-      Both    => 2);
-
-   Socket_Level_Match : constant array (Socket_Level) of int :=
-     (SOL_SOCKET => Constants.Sol_Socket,
-      IPPROTO_IP => Constants.Ipproto_Ip);
-
-   Socket_Option_Match : constant array (Socket_Option) of int :=
-     (SO_REUSEADDR       => Constants.So_Reuseaddr,
-      SO_REUSEPORT       => Constants.So_Reuseport,
-      IP_MULTICAST_TTL   => Constants.Ip_Multicast_Ttl,
-      IP_ADD_MEMBERSHIP  => Constants.Ip_Add_Membership,
-      IP_DROP_MEMBERSHIP => Constants.Ip_Drop_Membership,
-      IP_MULTICAST_LOOP  => Constants.Ip_Multicast_Loop,
-      SO_SNDBUF          => Constants.So_Sndbuf,
-      SO_RCVBUF          => Constants.So_Rcvbuf);
-
-   Socket_Option_Size  : constant array (Socket_Option) of Natural :=
-     (SO_REUSEADDR       => 4,
-      SO_REUSEPORT       => 4,
-      IP_MULTICAST_TTL   => 1,
-      IP_ADD_MEMBERSHIP  => 8,
-      IP_DROP_MEMBERSHIP => 8,
-      IP_MULTICAST_LOOP  => 1,
-      SO_SNDBUF          => 4,
-      SO_RCVBUF          => 4);
+   use Ada.Streams, Interfaces.C, GNAT.Sockets;
 
    CRLF : constant String := CR & LF;
 
@@ -105,19 +62,14 @@ package body Sockets is
    procedure Accept_Socket (Socket     : Socket_FD;
                             New_Socket : out Socket_FD)
    is
-      Sin  : aliased Sockaddr_In;
-      Size : aliased int := Sin'Size / 8;
-      Code : int;
+      New_FD   : GNAT.Sockets.Socket_Type;
+      New_Addr : Sock_Addr_Type;
    begin
-      Code := C_Accept (Socket.FD, Sin'Address, Size'Access);
-      if Code = Failure then
-         Raise_With_Message ("Accept system call failed");
-      else
-         New_Socket :=
-           (FD       => Code,
-            Shutdown => (others => False),
-            Buffer   => null);
-      end if;
+      Accept_Socket (Socket.FD, New_FD, New_Addr);
+      New_Socket :=
+        (FD       => New_FD,
+         Shutdown => (others => False),
+         Buffer   => null);
    end Accept_Socket;
 
    ----------
@@ -129,16 +81,17 @@ package body Sockets is
       Port   : Natural;
       Host   : String := "")
    is
-      Sin : aliased Sockaddr_In;
+      Address : Sock_Addr_Type;
    begin
-      Sin.Sin_Family := Constants.Af_Inet;
-      if Host /= "" then
-         Sin.Sin_Addr   := To_In_Addr (Address_Of (Host));
+      if Host = "" then
+         Address.Addr := Any_Inet_Addr;
+      elsif Is_IP_Address (Host) then
+         Address.Addr := Inet_Addr (Host);
+      else
+         Address.Addr := Addresses (Get_Host_By_Name (Host), 1);
       end if;
-      Sin.Sin_Port   := Port_To_Network (unsigned_short (Port));
-      if C_Bind (Socket.FD, Sin'Address, Sin'Size / 8) = Failure then
-         Raise_With_Message ("Bind failed");
-      end if;
+      Address.Port := Port_Type (Port);
+      Bind_Socket (Socket.FD, Address);
    end Bind;
 
    -------------
@@ -150,41 +103,34 @@ package body Sockets is
       Host   : String;
       Port   : Positive)
    is
-      Sin           : aliased Sockaddr_In;
-      Current_Errno : Integer;
+      Address : Sock_Addr_Type;
    begin
-      Sin.Sin_Family := Constants.Af_Inet;
-      Sin.Sin_Addr   := To_In_Addr (Address_Of (Host));
-      Sin.Sin_Port   := Port_To_Network (unsigned_short (Port));
-      if C_Connect (Socket.FD, Sin'Address, Sin'Size / 8) = Failure then
-         Current_Errno := Thin.Errno;
-         if Current_Errno = Constants.Econnrefused then
-            raise Connection_Refused;
-         else
-            Raise_With_Message
-              ("Connection failed (errno was" &
-               Integer'Image (Current_Errno) & ')',
-              False);
-         end if;
+      Address.Port := Port_Type (Port);
+      if Is_IP_Address (Host) then
+         Address.Addr := Inet_Addr (Host);
+         Connect_Socket (Socket.FD, Address);
+      else
+         declare
+            E : constant Host_Entry_Type := Get_Host_By_Name (Host);
+         begin
+            for I in 1 .. Addresses_Length (E) loop
+               begin
+                  Address.Addr := Addresses (E, I);
+                  Connect_Socket (Socket.FD, Address);
+                  return;
+               exception
+                  when Socket_Error => null;
+               end;
+            end loop;
+         end;
+
+         --  We could not connect to any address corresponding to this
+         --  host.
+
+         Raise_With_Message
+           ("Unable to connect to any address for host " & Host);
       end if;
    end Connect;
-
-   ---------------------------
-   -- Customized_Setsockopt --
-   ---------------------------
-
-   procedure Customized_Setsockopt (Socket : Socket_FD'Class;
-                                    Optval : Opt_Type)
-   is
-   begin
-      pragma Assert (Optval'Size / 8 = Socket_Option_Size (Optname));
-      if C_Setsockopt (Socket.FD, Socket_Level_Match (Level),
-                       Socket_Option_Match (Optname),
-                       Optval'Address, Optval'Size / 8) = Failure
-      then
-         Raise_With_Message ("Setsockopt failed");
-      end if;
-   end Customized_Setsockopt;
 
    ------------------
    -- Empty_Buffer --
@@ -246,9 +192,16 @@ package body Sockets is
    -- Get FD --
    ------------
 
-   function Get_FD (Socket : Socket_FD)
-     return Interfaces.C.int
-   is
+   function Get_FD (Socket : Socket_FD) return Interfaces.C.int is
+   begin
+      return Interfaces.C.int (To_C (Get_FD (Socket)));
+   end Get_FD;
+
+   ------------
+   -- Get FD --
+   ------------
+
+   function Get_FD (Socket : Socket_FD) return GNAT.Sockets.Socket_Type is
    begin
       return Socket.FD;
    end Get_FD;
@@ -306,45 +259,18 @@ package body Sockets is
       Optname :  Socket_Option;
       Optval  : out Integer)
    is
-      Len : aliased int;
+      Result : constant Option_Type :=
+        Get_Socket_Option (Socket.FD, Level, Optname);
    begin
-      case Socket_Option_Size (Optname) is
-
-         when 1 =>
-            declare
-               C_Char_Optval : aliased char;
-            begin
-               pragma Assert (C_Char_Optval'Size = 8);
-               Len := 1;
-               if C_Getsockopt (Socket.FD, Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Char_Optval'Address, Len'Access) = Failure
-               then
-                  Raise_With_Message ("Getsockopt failed");
-               end if;
-               Optval := char'Pos (C_Char_Optval);
-            end;
-
-         when 4 =>
-            declare
-               C_Int_Optval : aliased int;
-            begin
-               pragma Assert (C_Int_Optval'Size = 32);
-               Len := 4;
-               if C_Getsockopt (Socket.FD, Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Int_Optval'Address, Len'Access) = Failure
-               then
-                  Raise_With_Message ("Getsockopt failed");
-               end if;
-               Optval := Integer (C_Int_Optval);
-
-            end;
-
+      case Optname is
+         when SO_REUSEADDR | IP_MULTICAST_LOOP =>
+            Optval := Boolean'Pos (Result.Enabled);
+         when IP_MULTICAST_TTL =>
+            Optval := Result.Time_To_Live;
+         when SO_SNDBUF | SO_RCVBUF =>
+            Optval := Result.Size;
          when others =>
-            Raise_With_Message ("Getsockopt called with wrong arguments",
-                                False);
-
+            Raise_With_Message ("Unimplemented option for Getsockopt");
       end case;
    end Getsockopt;
 
@@ -357,9 +283,7 @@ package body Sockets is
       Queue_Size : Positive := 5)
    is
    begin
-      if C_Listen (Socket.FD, int (Queue_Size)) = Failure then
-         Raise_With_Message ("Listen failed");
-      end if;
+      Listen_Socket (Socket.FD, Queue_Size);
    end Listen;
 
    --------------
@@ -408,21 +332,16 @@ package body Sockets is
      return Stream_Element_Array
    is
       Buffer  : Stream_Element_Array (1 .. Max);
-      Addr    : aliased Sockaddr_In;
-      Addrlen : aliased int := Addr'Size / 8;
-      Count   : int;
+      Last    : Stream_Element_Offset;
    begin
       if Socket.Shutdown (Receive) then
          raise Connection_Closed;
       end if;
-      Count := C_Recvfrom (Socket.FD, Buffer'Address, Buffer'Length, 0,
-                           Addr'Address, Addrlen'Access);
-      if Count < 0 then
-         Raise_With_Message ("Receive error");
-      elsif Count = 0 then
+      Receive_Socket (Socket.FD, Buffer, Last);
+      if Last = Buffer'First - 1 then
          raise Connection_Closed;
       end if;
-      return Buffer (1 .. Stream_Element_Offset (Count));
+      return Buffer (1 .. Last);
    end Receive;
 
    -------------
@@ -432,24 +351,15 @@ package body Sockets is
    procedure Receive (Socket : Socket_FD'Class;
                       Data   : out Stream_Element_Array)
    is
-      Index   : Stream_Element_Offset := Data'First;
-      Rest    : Stream_Element_Count  := Data'Length;
-      Addr    : aliased Sockaddr_In;
-      Addrlen : aliased int := Addr'Size / 8;
-      Count   : int;
+      Last     : Stream_Element_Offset := Data'First - 1;
+      Old_Last : Stream_Element_Offset;
    begin
-      while Rest > 0 loop
-         Count := C_Recvfrom (Socket.FD, Data (Index) 'Address,
-                              int (Rest), 0, Addr'Address, Addrlen'Access);
-
-         if Count < 0 then
-            Raise_With_Message ("Receive error");
-         elsif Count = 0 then
+      while Last < Data'Last loop
+         Old_Last := Last;
+         Receive_Socket (Socket.FD, Data (Last + 1 .. Data'Last), Last);
+         if Last = Old_Last then
             raise Connection_Closed;
          end if;
-
-         Index := Index + Stream_Element_Count (Count);
-         Rest  := Rest - Stream_Element_Count (Count);
       end loop;
    end Receive;
 
@@ -461,19 +371,11 @@ package body Sockets is
                            Data   : out Stream_Element_Array;
                            Last   : out Stream_Element_Offset)
    is
-      Addr    : aliased Sockaddr_In;
-      Addrlen : aliased int := Addr'Size / 8;
-      Count   : int;
    begin
-      Count := C_Recvfrom (Socket.FD, Data (Data'First) 'Address,
-                           int (Data'Length), 0,
-                           Addr'Address, Addrlen'Access);
-      if Count < 0 then
-         Raise_With_Message ("Receive error");
-      elsif Count = 0 then
+      Receive_Socket (Socket.FD, Data, Last);
+      if Last = Data'First - 1 then
          raise Connection_Closed;
       end if;
-      Last := Data'First + Stream_Element_Count (Count) - 1;
    end Receive_Some;
 
    ------------
@@ -496,24 +398,35 @@ package body Sockets is
    procedure Send (Socket : Socket_FD;
                    Data   : Stream_Element_Array)
    is
-      Index : Stream_Element_Offset  := Data'First;
-      Rest  : Stream_Element_Count   := Data'Length;
-      Count : int;
+      Last     : Stream_Element_Offset := Data'First - 1;
+      Old_Last : Stream_Element_Offset;
    begin
-      if Socket.Shutdown (Send) then
-         raise Connection_Closed;
-      end if;
-      while Rest > 0 loop
-         Count := C_Send (Socket.FD, Data (Index) 'Address, int (Rest), 0);
-         if Count <= 0 then
-            --  Count could be zero if the socket was in non-blocking mode
-            --  and the output buffers were full. Since we do not support
-            --  non-blocking mode, this is an error.
-
+      while Last /= Data'Last loop
+         Old_Last := Last;
+         Send_Socket (Socket.FD, Data (Last + 1 .. Data'Last), Last);
+         if Last = Old_Last then
             raise Connection_Closed;
          end if;
-         Index := Index + Stream_Element_Count (Count);
-         Rest  := Rest - Stream_Element_Count (Count);
+      end loop;
+   end Send;
+
+   ----------
+   -- Send --
+   ----------
+
+   procedure Send (Socket : in Socket_FD;
+                   Data   : in Stream_Element_Array;
+                   Target : in Sock_Addr_Type)
+   is
+      Last     : Stream_Element_Offset := Data'First - 1;
+      Old_Last : Stream_Element_Offset;
+   begin
+      while Last /= Data'Last loop
+         Old_Last := Last;
+         Send_Socket (Socket.FD, Data (Last + 1 .. Data'Last), Last, Target);
+         if Last = Old_Last then
+            raise Connection_Closed;
+         end if;
       end loop;
    end Send;
 
@@ -535,44 +448,30 @@ package body Sockets is
    ----------------
 
    procedure Setsockopt
-     (Socket  : Socket_FD'Class;
-      Level   : Socket_Level := Sol_Socket;
-      Optname : Socket_Option;
-      Optval  : Integer)
+     (Socket  : in Socket_FD'Class;
+      Level   : in Socket_Level := SOL_SOCKET;
+      Optname : in Socket_Option;
+      Optval  : in Integer)
    is
    begin
-      case Socket_Option_Size (Optname) is
-
-         when 1 =>
-            declare
-               C_Char_Optval : aliased char := char'Val (Optval);
-            begin
-               pragma Assert (C_Char_Optval'Size = 8);
-               if C_Setsockopt (Socket.FD, Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Char_Optval'Address, 1) = Failure
-               then
-                  Raise_With_Message ("Setsockopt failed");
-               end if;
-            end;
-
-         when 4 =>
-            declare
-               C_Int_Optval : aliased int := int (Optval);
-            begin
-               pragma Assert (C_Int_Optval'Size = 32);
-               if C_Setsockopt (Socket.FD, Socket_Level_Match (Level),
-                                Socket_Option_Match (Optname),
-                                C_Int_Optval'Address, 4) = Failure
-               then
-                  Raise_With_Message ("Setsockopt failed");
-               end if;
-            end;
-
+      case Optname is
+         when SO_REUSEADDR =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Reuse_Address, Boolean'Val (Optval)));
+         when IP_MULTICAST_TTL =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Multicast_TTL, Optval));
+         when IP_MULTICAST_LOOP =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Multicast_Loop, Boolean'Val (Optval)));
+         when SO_SNDBUF =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Send_Buffer, Optval));
+         when SO_RCVBUF =>
+            Set_Socket_Option
+              (Socket.FD, Level, (Receive_Buffer, Optval));
          when others =>
-            Raise_With_Message ("Setsockopt called with wrong arguments",
-                                False);
-
+            Raise_With_Message ("Unimplemented option for Setsockopt");
       end case;
    end Setsockopt;
 
@@ -589,14 +488,10 @@ package body Sockets is
       else
          Socket.Shutdown := (others => True);
       end if;
-      C_Shutdown (Socket.FD, Shutdown_Type_Match (How));
+      Shutdown_Socket (Socket.FD, How);
       if Socket.Shutdown (Receive) and then Socket.Shutdown (Send) then
-         declare
-            Result : constant int := C_Close (Socket.FD);
-            pragma Unreferenced (Result);
-         begin
-            Unset_Buffer (Socket);
-         end;
+         Unset_Buffer (Socket);
+         Close_Socket (Socket.FD);
       end if;
    end Shutdown;
 
@@ -609,39 +504,11 @@ package body Sockets is
       Domain : Socket_Domain := PF_INET;
       Typ    : Socket_Type   := SOCK_STREAM)
    is
-      Result : constant int :=
-        C_Socket (Socket_Domain_Match (Domain), Socket_Type_Match (Typ), 0);
    begin
-      if Result = Failure then
-         Raise_With_Message ("Unable to create socket");
-      end if;
-      Sock := (FD => Result, Shutdown => (others => False), Buffer => null);
+      Create_Socket (Sock.FD, Domain, Typ);
+      Sock.Shutdown := (others => False);
+      Sock.Buffer   := null;
    end Socket;
-
-   ----------------
-   -- Socketpair --
-   ----------------
-
-   procedure Socketpair
-     (Read_End  : out Socket_FD;
-      Write_End : out Socket_FD;
-      Domain    : Socket_Domain := PF_INET;
-      Typ       : Socket_Type   := SOCK_STREAM)
-   is
-      Filedes : aliased Two_Int;
-      Result  : constant int :=
-        C_Socketpair (Socket_Domain_Match (Domain),
-                      Socket_Type_Match (Typ), 0,
-                      Filedes'Address);
-   begin
-      if Result = Failure then
-         Raise_With_Message ("Unable to create socket");
-      end if;
-      Read_End  := (FD     => Filedes (0), Shutdown => (others => False),
-                    Buffer => null);
-      Write_End := (FD     => Filedes (1), Shutdown => (others => False),
-                    Buffer => null);
-   end Socketpair;
 
    ---------------
    -- To_String --

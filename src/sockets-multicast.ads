@@ -36,7 +36,7 @@
 --                                                                         --
 -----------------------------------------------------------------------------
 
-with Sockets.Types;
+with GNAT.Sockets;
 
 package Sockets.Multicast is
 
@@ -53,7 +53,7 @@ package Sockets.Multicast is
       Port      : Positive;
       TTL       : Positive := 16;
       Self_Loop : Boolean  := True;
-      Local_If  : String   := "0.0.0.0")
+      Local_If  : String   := "")
      return Multicast_Socket_FD;
    --  Create a multicast socket
 
@@ -62,7 +62,7 @@ package Sockets.Multicast is
       Port       : Positive;
       Local_Port : Natural;
       TTL        : Positive := 16;
-      Local_If   : String   := "0.0.0.0")
+      Local_If   : String   := "")
      return Multicast_Socket_FD;
    --  Create a multicast socket that can only send data and is bound
    --  to the local port Local_Port. Use 0 if you do not care about
@@ -82,7 +82,7 @@ private
    --  Do not call this one, it will raise Program_Error
 
    type Multicast_Socket_FD is new Socket_FD with record
-      Target : Sockets.Types.Sockaddr_In;
+      Target : GNAT.Sockets.Sock_Addr_Type;
    end record;
 
    Null_Multicast_Socket_FD : constant Multicast_Socket_FD :=

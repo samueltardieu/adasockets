@@ -137,7 +137,6 @@
  * @ctindex Sockets.SOL_SOCKET
  * @ctindex Sockets.IPPROTO_IP
  * @ctindex Sockets.SO_REUSEADDR
- * @ctindex Sockets.SO_REUSEPORT
  * @ctindex Sockets.IP_MULTICAST_TTL
  * @ctindex Sockets.IP_ADD_MEMBERSHIP
  * @ctindex Sockets.IP_DROP_MEMBERSHIP
@@ -147,7 +146,6 @@
  * @ctindex SOL_SOCKET
  * @ctindex IPPROTO_IP
  * @ctindex SO_REUSEADDR
- * @ctindex SO_REUSEPORT
  * @ctindex IP_MULTICAST_TTL
  * @ctindex IP_ADD_MEMBERSHIP
  * @ctindex IP_DROP_MEMBERSHIP
@@ -159,7 +157,7 @@
  *
  *    Two levels are defined: @code{SOL_SOCKET} (the default) and
  *    @code{IPPROTO_IP}. The options are @code{SO_REUSEADDR},
- *    @code{SO_REUSEPORT}, @code{IP_MULTICAST_TTL},
+ *    @code{IP_MULTICAST_TTL},
  *    @code{IP_ADD_MEMBERSHIP}, @code{IP_DROP_MEMBERSHIP},
  *    @code{IP_MULTICAST_LOOP}, @code{SO_SNDBUF} and
  *    @code{IP_RCVBUF}.
@@ -185,7 +183,6 @@
  * @ctindex Sockets.SOL_SOCKET
  * @ctindex Sockets.IPPROTO_IP
  * @ctindex Sockets.SO_REUSEADDR
- * @ctindex Sockets.SO_REUSEPORT
  * @ctindex Sockets.IP_MULTICAST_TTL
  * @ctindex Sockets.IP_ADD_MEMBERSHIP
  * @ctindex Sockets.IP_DROP_MEMBERSHIP
@@ -195,7 +192,6 @@
  * @ctindex SOL_SOCKET
  * @ctindex IPPROTO_IP
  * @ctindex SO_REUSEADDR
- * @ctindex SO_REUSEPORT
  * @ctindex IP_MULTICAST_TTL
  * @ctindex IP_ADD_MEMBERSHIP
  * @ctindex IP_DROP_MEMBERSHIP
@@ -207,7 +203,7 @@
  *
  *    Two levels are defined: @code{SOL_SOCKET} (the default) and
  *    @code{IPPROTO_IP}. The options are @code{SO_REUSEADDR},
- *    @code{SO_REUSEPORT}, @code{IP_MULTICAST_TTL},
+ *    @code{IP_MULTICAST_TTL},
  *    @code{IP_ADD_MEMBERSHIP}, @code{IP_DROP_MEMBERSHIP},
  *    @code{IP_MULTICAST_LOOP}, @code{SO_SNDBUF} and
  *    @code{IP_RCVBUF}.
@@ -215,7 +211,7 @@
  *    Note that unlike their C language counterpart, @code{Getsockopt}
  *    and @code{Setsockopt} do not require an extra parameter
  *    representing the length in bytes of the option value. AdaSockets
- *    nows the right size for every option.
+ *    knows the right size for every option.
  * concept: Manipulating socket options
  * concept: Setting socket options
  * see: Getsockopt (procedure)
