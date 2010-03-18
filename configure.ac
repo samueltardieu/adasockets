@@ -46,7 +46,6 @@ AM_CONDITIONAL(BUILD_EXAMPLES, test x$examples = xtrue)
 AC_CHECK_PROG(GETDEFS, getdefs, getdefs)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo)
 AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi)
-AC_CHECK_PROG(DVIPS, dvips, dvips)
 #
 # Look for the C compiler
 #

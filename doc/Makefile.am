@@ -8,18 +8,13 @@ ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 
 DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS}
 
-EXTRA_DIST = adasockets.pdf adasockets.ps adasockets.dvi \
+EXTRA_DIST = adasockets.pdf \
 	${info_TEXINFOS} ${adasockets_TEXINFOS} \
 	adadoc.tpl sockets.desc sockets-multicast.desc \
 	sockets-naming.desc
 
-all-local:: adasockets.ps adasockets.pdf
-
-docdir = ${DESTDIR}${prefix}/share/doc/adasockets
-
-install-data-local::
-	${mkinstalldirs} ${docdir}
-	-${INSTALL_DATA} adasockets.ps adasockets.pdf ${docdir}
+docdir = ${prefix}/share/doc/adasockets
+doc_DATA = adasockets.pdf
 
 adasockets.info: ${srcdir}/adasockets.texi
 	${MAKEINFO} --force --no-validate -I ${srcdir} \
@@ -41,6 +36,5 @@ sockets-naming.texi: ${srcdir}/sockets-naming.desc ${srcdir}/adadoc.tpl
 adasockets.pdf: ${srcdir}/adasockets.texi ${adasockets_TEXINFOS}
 	-${TEXI2DVI} --pdf ${srcdir}/adasockets.texi
 
-adasockets.ps: ${srcdir}/adasockets.texi ${adasockets_TEXINFOS}
-	-${TEXI2DVI} ${srcdir}/adasockets.texi && \
-	  ${DVIPS} -o adasockets.ps adasockets.dvi
+adasockets.dvi: ${srcdir}/adasockets.texi ${adasockets_TEXINFOS}
+	-${TEXI2DVI} --dvi ${srcdir}/adasockets.texi
