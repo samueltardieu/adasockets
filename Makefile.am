@@ -25,7 +25,8 @@ EXTRA_DIST = AUTHORS COPYING GMGPL INSTALL NEWS README README.RTEMS \
 CLEANFILES = ChangeLog
 
 ChangeLog: never
-	(cd ${srcdir} && git2cl) > ChangeLog
+	cd ${srcdir} && python2 utils/gitlog2changelog.py
+	-mv ${srcdir}/ChangeLog ChangeLog
 
 never::
 
