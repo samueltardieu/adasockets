@@ -89,11 +89,13 @@ package Sockets is
       Queue_Size : Positive := 5);
    --  Create a socket's listen queue
 
-   type Socket_Level is (SOL_SOCKET, IPPROTO_IP);
+   type Socket_Level is (SOL_SOCKET, IPPROTO_IP, SOL_TCP);
 
    type Socket_Option is (SO_REUSEADDR, SO_REUSEPORT, IP_MULTICAST_TTL,
                           IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
-                          IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF);
+                          IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF,
+                          SO_KEEPALIVE, TCP_KEEPCNT, TCP_KEEPIDLE,
+                          TCP_KEEPINTVL);
 
    procedure Getsockopt
      (Socket  :  Socket_FD'Class;

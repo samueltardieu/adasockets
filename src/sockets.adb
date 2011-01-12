@@ -65,7 +65,8 @@ package body Sockets is
 
    Socket_Level_Match : constant array (Socket_Level) of int :=
      (SOL_SOCKET => Constants.Sol_Socket,
-      IPPROTO_IP => Constants.Ipproto_Ip);
+      IPPROTO_IP => Constants.Ipproto_Ip,
+      SOL_TCP    => Constants.Sol_Tcp);
 
    Socket_Option_Match : constant array (Socket_Option) of int :=
      (SO_REUSEADDR       => Constants.So_Reuseaddr,
@@ -75,7 +76,11 @@ package body Sockets is
       IP_DROP_MEMBERSHIP => Constants.Ip_Drop_Membership,
       IP_MULTICAST_LOOP  => Constants.Ip_Multicast_Loop,
       SO_SNDBUF          => Constants.So_Sndbuf,
-      SO_RCVBUF          => Constants.So_Rcvbuf);
+      SO_RCVBUF          => Constants.So_Rcvbuf,
+      SO_KEEPALIVE       => Constants.So_Keepalive,
+      TCP_KEEPCNT        => Constants.Tcp_Keepcnt,
+      TCP_KEEPIDLE       => Constants.Tcp_Keepidle,
+      TCP_KEEPINTVL      => Constants.Tcp_Keepintvl);
 
    Socket_Option_Size  : constant array (Socket_Option) of Natural :=
      (SO_REUSEADDR       => 4,
@@ -85,7 +90,11 @@ package body Sockets is
       IP_DROP_MEMBERSHIP => 8,
       IP_MULTICAST_LOOP  => 1,
       SO_SNDBUF          => 4,
-      SO_RCVBUF          => 4);
+      SO_RCVBUF          => 4,
+      SO_KEEPALIVE       => 4,
+      TCP_KEEPCNT        => 4,
+      TCP_KEEPIDLE       => 4,
+      TCP_KEEPINTVL      => 4);
 
    CRLF : constant String := CR & LF;
 
