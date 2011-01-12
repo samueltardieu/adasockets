@@ -536,7 +536,7 @@ package body Sockets is
 
    procedure Setsockopt
      (Socket  : Socket_FD'Class;
-      Level   : Socket_Level := Sol_Socket;
+      Level   : Socket_Level := SOL_SOCKET;
       Optname : Socket_Option;
       Optval  : Integer)
    is
