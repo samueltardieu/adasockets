@@ -6,8 +6,8 @@
 --                                                                         --
 --                                S p e c                                  --
 --                                                                         --
---          Copyright (C) 1998-2010 Samuel Tardieu <sam@rfc1149.net>       --
---               Copyright (C) 1999-2003 ENST http://www.enst.fr/          --
+--          Copyright (C) 1998-2011 Samuel Tardieu <sam@rfc1149.net>       --
+--                 Copyright (C) 1999-2003 Télécom ParisTech               --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
 --   it  under terms of the GNU  General  Public License as published by   --
@@ -29,10 +29,10 @@
 --   executable file might be covered by the GNU Public License.           --
 --                                                                         --
 --   The main repository for this software is located at:                  --
---       http://www.rfc1149.net/devel/adasockets                           --
+--       http://www.rfc1149.net/devel/adasockets.html                      --
 --                                                                         --
---   If you have any question, please send a mail to the AdaSockets list   --
---       adasockets@lists.rfc1149.net                                      --
+--   If you have any question, please use the issues tracker at:           --
+--       https://github.com/samueltardieu/adasockets/issues                --
 --                                                                         --
 -----------------------------------------------------------------------------
 
@@ -94,9 +94,11 @@ package Sockets is
 
    subtype Socket_Level is GNAT.Sockets.Level_Type;
    function SOL_SOCKET return Socket_Level renames GNAT.Sockets.Socket_Level;
+   function SOL_TCP return Socket_Level
+     renames GNAT.Sockets.IP_Protocol_For_TCP_Level;
    function IPPROTO_IP return Socket_Level
      renames GNAT.Sockets.IP_Protocol_For_IP_Level;
-   --  Those two entries are kept for compatibility
+   --  Those three entries are kept for compatibility
 
    subtype Socket_Option is GNAT.Sockets.Option_Name;
    function SO_REUSEADDR return Socket_Option
@@ -113,7 +115,9 @@ package Sockets is
      renames GNAT.Sockets.Send_Buffer;
    function SO_RCVBUF return Socket_Option
      renames GNAT.Sockets.Receive_Buffer;
-   --  Those seven entries are kept for compatibility
+   function SO_KEEPALIVE return Socket_Option
+     renames GNAT.Sockets.Keep_Alive;
+   --  Those eight entries are kept for compatibility
 
    procedure Getsockopt
      (Socket  :  Socket_FD'Class;

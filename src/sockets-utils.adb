@@ -6,8 +6,8 @@
 --                                                                         --
 --                                B o d y                                  --
 --                                                                         --
---          Copyright (C) 1998-2010 Samuel Tardieu <sam@rfc1149.net>       --
---               Copyright (C) 1999-2003 ENST http://www.enst.fr/          --
+--          Copyright (C) 1998-2011 Samuel Tardieu <sam@rfc1149.net>       --
+--                 Copyright (C) 1999-2003 Télécom ParisTech               --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
 --   it  under terms of the GNU  General  Public License as published by   --
@@ -29,10 +29,10 @@
 --   executable file might be covered by the GNU Public License.           --
 --                                                                         --
 --   The main repository for this software is located at:                  --
---       http://www.rfc1149.net/devel/adasockets                           --
+--       http://www.rfc1149.net/devel/adasockets.html                      --
 --                                                                         --
---   If you have any question, please send a mail to the AdaSockets list   --
---       adasockets@lists.rfc1149.net                                      --
+--   If you have any question, please use the issues tracker at:           --
+--       https://github.com/samueltardieu/adasockets/issues                --
 --                                                                         --
 -----------------------------------------------------------------------------
 
