@@ -3,7 +3,7 @@
 
 if [ "x$1" = "x--version" ]; then
   set -- --modversion
-elif [ "x$1" == "x" ]; then
+elif [ "x$1" = "x" ]; then
   set -- --cflags --libs
 fi
 pkg-config adasockets "$@"
