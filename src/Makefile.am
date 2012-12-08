@@ -58,7 +58,7 @@ constants_nodef: constants.c config.h
 
 sockets-constants.ads: $(srcdir)/constants.sh split constants_nodef
 	$(SHELL) $(srcdir)/constants.sh Sockets.Constants $(srcdir) \
-	  sockets-constants.ads
+	  sockets-constants.ads "$(CC)"
 
 split: $(srcdir)/split.adb
 	$(GNATMAKE) -g -O2 $(srcdir)/split.adb

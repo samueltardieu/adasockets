@@ -8,6 +8,7 @@
 name=$1
 srcdir=$2
 fname=$3
+CC="$4"
 
 # List of constants we need to know
 
@@ -67,17 +68,17 @@ for c in ${constants}; do
 	*-*)
             OIFS=${IFS}; IFS="-"; set ${c}; IFS=${OIFS}; \
 	    echo "Checking value of $1 (or $2 as a substitute)"; \
-            (gcc -DCONSTANT_NAME=$1 -I. -o ${tmpe} ${srcdir}/constants.c \
+            (${CC} -DCONSTANT_NAME=$1 -I. -o ${tmpe} ${srcdir}/constants.c \
 	            2>/dev/null &&
 	            ${tmpe} $1 >> ${fname}) ||
-            (gcc -DCONSTANT_NAME=$2 -I. -o ${tmpe} ${srcdir}/constants.c \
+            (${CC} -DCONSTANT_NAME=$2 -I. -o ${tmpe} ${srcdir}/constants.c \
 	            2>/dev/null &&
 	            ${tmpe} $1 >> ${fname}) ||
             ./constants_nodef $1 >> ${fname}
     ;;
 	*)
 	    echo "Checking value of $c"; \
-            (gcc -DCONSTANT_NAME=${c} -I. -o ${tmpe} ${srcdir}/constants.c \
+            (${CC} -DCONSTANT_NAME=${c} -I. -o ${tmpe} ${srcdir}/constants.c \
 	            2>/dev/null && \
 	            ${tmpe} ${c} >> ${fname}) || \
              ./constants_nodef ${c} >> ${fname}
