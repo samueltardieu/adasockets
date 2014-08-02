@@ -356,13 +356,9 @@ The latest version of AdaSockets can always be found at:
 
 @center @url{http://www.rfc1149.net/devel/adasockets}
 
-There is a mailing-list that you can use to discuss problem or
-suggestions at:
+You can report issues or submit questions on GitHub's issue tracker at:
 
-@center @url{http://www.rfc1149.net/lists/info/adasockets}
-
-Please use the mailing-list for questions and discussions. However, you
-can send me patches by private mail (@email{sam@@rfc1149.net}).
+@center @url{https://github.com/samueltardieu/adasockets/issues}
 
 @node Index,  , Resources on the Internet, Top
 @unnumbered Index
