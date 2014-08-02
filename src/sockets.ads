@@ -6,7 +6,7 @@
 --                                                                         --
 --                                S p e c                                  --
 --                                                                         --
---          Copyright (C) 1998-2011 Samuel Tardieu <sam@rfc1149.net>       --
+--          Copyright (C) 1998-2013 Samuel Tardieu <sam@rfc1149.net>       --
 --                 Copyright (C) 1999-2003 Télécom ParisTech               --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
@@ -95,7 +95,7 @@ package Sockets is
                           IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
                           IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF,
                           SO_KEEPALIVE, TCP_KEEPCNT, TCP_KEEPIDLE,
-                          TCP_KEEPINTVL);
+                          TCP_KEEPINTVL, TCP_NODELAY);
 
    procedure Getsockopt
      (Socket  :  Socket_FD'Class;

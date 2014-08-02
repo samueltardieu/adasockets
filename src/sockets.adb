@@ -6,7 +6,7 @@
 --                                                                         --
 --                                B o d y                                  --
 --                                                                         --
---          Copyright (C) 1998-2011 Samuel Tardieu <sam@rfc1149.net>       --
+--          Copyright (C) 1998-2013 Samuel Tardieu <sam@rfc1149.net>       --
 --                 Copyright (C) 1999-2003 Télécom ParisTech               --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
@@ -80,7 +80,8 @@ package body Sockets is
       SO_KEEPALIVE       => Constants.So_Keepalive,
       TCP_KEEPCNT        => Constants.Tcp_Keepcnt,
       TCP_KEEPIDLE       => Constants.Tcp_Keepidle,
-      TCP_KEEPINTVL      => Constants.Tcp_Keepintvl);
+      TCP_KEEPINTVL      => Constants.Tcp_Keepintvl,
+      TCP_NODELAY        => Constants.Tcp_Nodelay);
 
    Socket_Option_Size  : constant array (Socket_Option) of Natural :=
      (SO_REUSEADDR       => 4,
@@ -94,7 +95,8 @@ package body Sockets is
       SO_KEEPALIVE       => 4,
       TCP_KEEPCNT        => 4,
       TCP_KEEPIDLE       => 4,
-      TCP_KEEPINTVL      => 4);
+      TCP_KEEPINTVL      => 4,
+      TCP_NODELAY        => 4);
 
    CRLF : constant String := CR & LF;
 
