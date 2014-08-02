@@ -39,6 +39,8 @@ constants="${constants} IPPROTO_IPV6"
 constants="${constants} IPV6_UNICAST_HOPS   IPV6_MULTICAST_IF"
 constants="${constants} IPV6_MULTICAST_HOPS IPV6_MULTICAST_LOOP"
 constants="${constants} IPV6_JOIN_GROUP     IPV6_LEAVE_GROUP"
+# ioctl
+constants="${constants} SIOCINQ SIOCOUTQ"
 
 # Debug
 

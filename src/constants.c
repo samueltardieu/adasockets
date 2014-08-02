@@ -88,6 +88,10 @@
 #include <termios.h>
 #endif
 
+#ifdef HAVE_LINUX_SOCKIOS_H
+#include <linux/sockios.h>
+#endif
+
 #ifdef HAVE_WINDOWS_H
 #define Win32_Winsock
 #include <windows.h>

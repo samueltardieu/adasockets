@@ -307,6 +307,50 @@ package body Sockets is
       return Result (1 .. Last);
    end Get_Line;
 
+   ----------------------------
+   -- Get_Receive_Queue_Size --
+   ----------------------------
+
+   function Get_Receive_Queue_Size (Socket : Socket_FD) return Integer is
+      Error : Interfaces.C.int;
+      Size  : aliased Interfaces.C.int := 0;
+   begin
+      pragma Warnings (Off, "condition is always *",
+        Reason => "the check always evaluates statically");
+      if Siocinq = -1 then
+         return -2;
+      end if;
+      pragma Warnings (On, "condition is always *");
+      Error := C_Ioctl (Socket.FD, Siocinq, Size'Access);
+      if Error < 0 then
+         return Integer (Error);
+      else
+         return Integer (Size);
+      end if;
+   end Get_Receive_Queue_Size;
+
+   -------------------------
+   -- Get_Send_Queue_Size --
+   -------------------------
+
+   function Get_Send_Queue_Size (Socket : Socket_FD) return Integer is
+      Error : Interfaces.C.int;
+      Size  : aliased Interfaces.C.int := 0;
+   begin
+      pragma Warnings (Off, "condition is always *",
+        Reason => "the check always evaluates statically");
+      if Siocoutq = -1 then
+         return -2;
+      end if;
+      pragma Warnings (On, "condition is always *");
+      Error := C_Ioctl (Socket.FD, Siocoutq, Size'Access);
+      if Error < 0 then
+         return Integer (Error);
+      else
+         return Integer (Size);
+      end if;
+   end Get_Send_Queue_Size;
+
    ----------------
    -- Getsockopt --
    ----------------

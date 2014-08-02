@@ -565,3 +565,30 @@
  * concept: Receiving data
 =*/
 
+/*=subprogram Get_Send_Queue_Size
+ *
+ * what: Return the size of the unsent data in the output queue
+ * kind: function
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * ret: Integer, The non-negative size in bytes of the output queue, or a negative value in case of error
+ * doc:
+ *    This function is only available on Linux platforms. On other operating
+ *    systems, it will return -2 to indicate that the necessary mechanisms to
+ *    retrieve the information are not available.
+ * concept: Sending data
+ * see: Send (procedure)
+=*/
+
+/*=subprogram Get_Receive_Queue_Size
+ *
+ * what: Return the size of the unread data in the input queue
+ * kind: function
+ * arg: Socket, in, Socket_FD'Class,, Initialized and connected socket object
+ * ret: Integer, The non-negative size in bytes of the input queue, or a negative value in case of error
+ * doc:
+ *    This function is only available on Linux platforms. On other operating
+ *    systems, it will return -2 to indicate that the necessary mechanisms to
+ *    retrieve the information are not available.
+ * concept: Receiving data
+ * see: Receive (procedure)
+=*/

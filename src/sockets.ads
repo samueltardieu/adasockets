@@ -212,6 +212,16 @@ package Sockets is
    --  no error will be raised. If it was buffered and the buffer was not
    --  empty, its content will be lost.
 
+   function Get_Send_Queue_Size (Socket : Socket_FD) return Integer;
+   --  Return size of unsent data in socket output buffer.
+   --  Return a value less than 0 in case of error. -2 means that the
+   --  information is not available (Linux only).
+
+   function Get_Receive_Queue_Size (Socket : Socket_FD) return Integer;
+   --  Return size of unread data in socket input buffer.
+   --  Return a value less than 0 in case of error. -2 means that the
+   --  information is not available (Linux only).
+
 private
 
    use type Ada.Streams.Stream_Element_Count;
