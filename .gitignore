@@ -16,6 +16,7 @@ support/ltversion.m4
 support/lt~obsolete.m4
 support/mdate-sh
 support/missing
+support/compile
 Makefile
 Makefile.in
 aclocal.m4
