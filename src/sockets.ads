@@ -232,13 +232,13 @@ private
 
    type Socket_FD is tagged record
       FD       : Interfaces.C.int := Interfaces.C."-" (1);
-      Shutdown : Shutdown_Array := (others => False);
+      Shutdown : Shutdown_Array := (others => True);
       Buffer   : Buffer_Access;
    end record;
 
    Null_Socket_FD : constant Socket_FD :=
      (FD => Interfaces.C."-" (1),
-      Shutdown => (others => False),
+      Shutdown => (others => True),
       Buffer => null);
 
 end Sockets;
