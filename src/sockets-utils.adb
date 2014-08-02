@@ -75,7 +75,8 @@ package body Sockets.Utils is
          begin
             if (Current < '0'
                 or else Current > '9')
-              and then Current /= '.' then
+              and then Current /= '.'
+            then
                return False;
             end if;
          end;
