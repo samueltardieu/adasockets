@@ -1,0 +1,8 @@
+language: c
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get install gnat texinfo texlive
+script:
+  - autoreconf -f -v -i
+  - ./configure
+  - make
