@@ -315,8 +315,8 @@ package body Sockets is
       Error : Interfaces.C.int;
       Size  : aliased Interfaces.C.int := 0;
    begin
-      pragma Warnings (Off, "condition is always *",
-        Reason => "the check always evaluates statically");
+      --  The check always evaluates statically
+      pragma Warnings (Off, "condition is always *");
       if Siocinq = -1 then
          return -2;
       end if;
@@ -337,8 +337,8 @@ package body Sockets is
       Error : Interfaces.C.int;
       Size  : aliased Interfaces.C.int := 0;
    begin
-      pragma Warnings (Off, "condition is always *",
-        Reason => "the check always evaluates statically");
+      --  The check always evaluates statically
+      pragma Warnings (Off, "condition is always *");
       if Siocoutq = -1 then
          return -2;
       end if;
