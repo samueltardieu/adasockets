@@ -54,11 +54,7 @@ trap "rm -f ${tmpe}" 0 1 2 3 15
 # Header of generated file
 
 cat > ${fname} << EOF
---  This package has been generated automatically on:
-EOF
-./split "`uname -a`" >> ${fname}
-echo "--  Generation date: `date`" >> ${fname}
-cat >> ${fname} << EOF
+--  This package has been generated automatically.
 --  Any change you make here is likely to be lost !
 package ${name} is
 EOF
