@@ -55,10 +55,10 @@ sockets-link.ads: sockets-link.ads.in Makefile.RTEMS
 	    -e '/@RESOLVNEEDED@/d' $< >$@
 
 sockets-thin.ads: sockets-thin.ads.unix
-	cp $< $@
+	cp -p $< $@
 
 sockets-constants.ads: ../rtems/sockets-constants.ads
-	cp $< $@
+	cp -p $< $@
 
 $(ADB_OBJ): %.o: %.adb
 	$(CC) $(CPU_CFLAGS) $(CFLAGS)-c $<

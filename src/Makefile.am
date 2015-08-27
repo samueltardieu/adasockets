@@ -73,11 +73,11 @@ nodist_libadasockets_la_SOURCES += \
 ADA_OBJECTS +=	sockets-windows_link.o
 
 sockets-thin.ads: $(srcdir)/sockets-thin.ads.win32
-	cp $(srcdir)/sockets-thin.ads.win32 sockets-thin.ads
-	cp $(srcdir)/sockets-thin.adb.win32 sockets-thin.adb
+	cp -p $(srcdir)/sockets-thin.ads.win32 sockets-thin.ads
+	cp -p $(srcdir)/sockets-thin.adb.win32 sockets-thin.adb
 else
 sockets-thin.ads: $(srcdir)/sockets-thin.ads.unix
-	cp -f $(srcdir)/sockets-thin.ads.unix sockets-thin.ads
+	cp -p -f $(srcdir)/sockets-thin.ads.unix sockets-thin.ads
 endif
 
 SUFFIXES = .ads .lo .ali
