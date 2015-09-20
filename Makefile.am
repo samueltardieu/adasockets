@@ -14,7 +14,7 @@ else
 SUBDIRS_EXAMPLES =
 endif
 
-EXTRA_DIST = AUTHORS COPYING GMGPL INSTALL NEWS README README.RTEMS \
+EXTRA_DIST = AUTHORS.md COPYING GMGPL INSTALL.md README.md README-RTEMS.md \
 	rtems/ChangeLog rtems/create_constants_c.sh rtems/Makefile.RTEMS \
 	rtems/README rtems/rtems_main.c rtems/sockets-constants-rtems.ads \
 	ChangeLog Makefile.VMS \
