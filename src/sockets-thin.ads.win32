@@ -6,7 +6,7 @@
 --                                                                         --
 --                                S p e c                                  --
 --                                                                         --
---          Copyright (C) 1998-2011 Samuel Tardieu <sam@rfc1149.net>       --
+--          Copyright (C) 1998-2015 Samuel Tardieu <sam@rfc1149.net>       --
 --                 Copyright (C) 1999-2003 Télécom ParisTech               --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
