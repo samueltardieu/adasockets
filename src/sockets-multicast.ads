@@ -50,12 +50,13 @@ package Sockets.Multicast is
 
    function Create_Multicast_Socket
      (Group     : String;
-      Port      : Positive;
+      Port      : Natural;
       TTL       : Positive := 16;
       Self_Loop : Boolean  := True;
       Local_If  : String   := "0.0.0.0")
      return Multicast_Socket_FD;
-   --  Create a multicast socket
+   --  Create a multicast socket. If Port is 0, this will be a local
+   --  socket with a system-chosen port.
 
    function Create_Multicast_Socket
      (Group      : String;

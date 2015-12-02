@@ -55,7 +55,7 @@ package body Sockets.Multicast is
 
    function Create_Multicast_Socket
      (Group      : String;
-      Port       : Positive;
+      Port       : Natural;
       Local_Port : Natural;
       TTL        : Positive := 16;
       Self_Loop  : Boolean  := True;
@@ -68,7 +68,7 @@ package body Sockets.Multicast is
 
    function Create_Multicast_Socket
      (Group      : String;
-      Port       : Positive;
+      Port       : Natural;
       Local_Port : Natural;
       TTL        : Positive := 16;
       Self_Loop  : Boolean  := True;
@@ -98,7 +98,12 @@ package body Sockets.Multicast is
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_TTL, TTL);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_LOOP, C_Self_Loop);
       Result.Target.Sin_Family := Constants.Af_Inet;
-      Result.Target.Sin_Port := Port_To_Network (unsigned_short (Port));
+      if Port /= 0 then
+         Result.Target.Sin_Port := Port_To_Network (unsigned_short (Port));
+      else
+         Result.Target.Sin_Port := Port_To_Network
+            (unsigned_short (Get_Sock_Port (Socket_FD (Result))));
+      end if;
       Result.Target.Sin_Addr := To_In_Addr (Address_Of (Group));
       return Result;
    end Create_Multicast_Socket;
@@ -109,7 +114,7 @@ package body Sockets.Multicast is
 
    function Create_Multicast_Socket
      (Group     : String;
-      Port      : Positive;
+      Port      : Natural;
       TTL       : Positive := 16;
       Self_Loop : Boolean  := True;
       Local_If  : String   := "0.0.0.0")

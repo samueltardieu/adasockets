@@ -23,7 +23,7 @@
  * what: Create an IP multicast socket
  * kind: function
  * arg: Group, in, String,, IP address of the multicast group to join
- * arg: Port, in, Positive,, Port of the multicast group to join
+ * arg: Port, in, Natural,, Port of the multicast group to join
  * arg: TTL, in, Positive, 16, Time-to-live of sent packets
  * arg:
  *   Self_Loop, in, Boolean, True, Should the socket receive the packets
@@ -39,6 +39,9 @@
  *   socket. Most IP multicast routers do implement threshold-based
  *   filtering and will not let IP multicast packets leave your
  *   organization if the TTL on the last router is smaller than 16.
+ *
+ *   If 0 is given for the Port, a local one will be chosen. It can
+ *   then later be retrieved using Get_Sock_Port.
  * concept: Creating a socket
  * concept: Creating a multicast socket
  * example:
