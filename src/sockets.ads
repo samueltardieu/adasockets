@@ -94,8 +94,8 @@ package Sockets is
    type Socket_Option is (SO_REUSEADDR, SO_REUSEPORT, IP_MULTICAST_TTL,
                           IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP,
                           IP_MULTICAST_LOOP, SO_SNDBUF, SO_RCVBUF,
-                          SO_KEEPALIVE, TCP_KEEPCNT, TCP_KEEPIDLE,
-                          TCP_KEEPINTVL, TCP_NODELAY);
+                          SO_KEEPALIVE, SO_NOSIGPIPE, TCP_KEEPCNT,
+                          TCP_KEEPIDLE, TCP_KEEPINTVL, TCP_NODELAY);
 
    procedure Getsockopt
      (Socket  :  Socket_FD'Class;

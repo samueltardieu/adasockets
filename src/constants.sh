@@ -25,6 +25,7 @@ constants="${constants} IPPROTO_IP IP_ADD_MEMBERSHIP IP_MULTICAST_LOOP"
 constants="${constants} IP_MULTICAST_TTL IP_DROP_MEMBERSHIP"
 constants="${constants} O_NONBLOCK MSG_PEEK FIONBIO FIONREAD SO_SNDBUF"
 constants="${constants} SOL_TCP SO_KEEPALIVE TCP_KEEPCNT TCP_KEEPIDLE TCP_KEEPINTVL"
+constants="${constants} SO_NOSIGPIPE MSG_NOSIGNAL"
 # ipv6
 constants="${constants} AF_INET6"
 # Constants for protocol independent nodename-address translations

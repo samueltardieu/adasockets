@@ -78,6 +78,7 @@ package body Sockets is
       SO_SNDBUF          => Constants.So_Sndbuf,
       SO_RCVBUF          => Constants.So_Rcvbuf,
       SO_KEEPALIVE       => Constants.So_Keepalive,
+      SO_NOSIGPIPE       => Constants.So_Nosigpipe,
       TCP_KEEPCNT        => Constants.Tcp_Keepcnt,
       TCP_KEEPIDLE       => Constants.Tcp_Keepidle,
       TCP_KEEPINTVL      => Constants.Tcp_Keepintvl,
@@ -93,6 +94,7 @@ package body Sockets is
       SO_SNDBUF          => 4,
       SO_RCVBUF          => 4,
       SO_KEEPALIVE       => 4,
+      SO_NOSIGPIPE       => 4,
       TCP_KEEPCNT        => 4,
       TCP_KEEPIDLE       => 4,
       TCP_KEEPINTVL      => 4,
@@ -554,12 +556,18 @@ package body Sockets is
       Index : Stream_Element_Offset  := Data'First;
       Rest  : Stream_Element_Count   := Data'Length;
       Count : int;
+      Flags : int := 0;
    begin
       if Socket.Shutdown (Send) then
          raise Connection_Closed;
       end if;
+      pragma Warnings (Off, "condition is always *");
+      if Constants.So_Nosigpipe = -1 and Constants.Msg_Nosignal /= -1 then
+         Flags := Constants.Msg_Nosignal;
+      end if;
+      pragma Warnings (On, "condition is always *");
       while Rest > 0 loop
-         Count := C_Send (Socket.FD, Data (Index) 'Address, int (Rest), 0);
+         Count := C_Send (Socket.FD, Data (Index) 'Address, int (Rest), Flags);
          if Count <= 0 then
             --  Count could be zero if the socket was in non-blocking mode
             --  and the output buffers were full. Since we do not support
@@ -671,6 +679,11 @@ package body Sockets is
          Raise_With_Message ("Unable to create socket");
       end if;
       Sock := (FD => Result, Shutdown => (others => False), Buffer => null);
+      pragma Warnings (Off, "condition is always *");
+      if Constants.So_Nosigpipe /= -1 then
+         Setsockopt (Sock, SOL_SOCKET, SO_NOSIGPIPE, 1);
+      end if;
+      pragma Warnings (On, "condition is always *");
    end Socket;
 
    ----------------
