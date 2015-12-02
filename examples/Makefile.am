@@ -1,4 +1,4 @@
-all-local: tcprelay listener multi stream_listener stream_sender value
+all-local: tcprelay listener multi stream_listener stream_sender
 
 tcprelay: never
 	$(GNATMAKE) -m -A../src -A$(top_srcdir)/src -I$(srcdir) tcprelay -cargs $(ADAFLAGS)
@@ -15,14 +15,11 @@ stream_listener: never
 stream_sender: never
 	$(GNATMAKE) -m -A../src -A$(top_srcdir)/src -I$(srcdir) stream_sender -cargs $(ADAFLAGS)
 
-value: never
-	$(GNATMAKE) -m -A../src -A$(top_srcdir)/src -I$(srcdir) value -cargs $(ADAFLAGS)
-
-DISTCLEANFILES = tcprelay listener multi stream_listener stream_sender value
+DISTCLEANFILES = tcprelay listener multi stream_listener stream_sender
 CLEANFILES = *.o *.ali b_*.c b~*.ad[bs]
 
 EXTRA_DIST = Makefile.RTEMS Makefile.VMS \
 	multi.adb rtems_init.c rtems_networkconfig.h stream_listener.adb \
-	listener.adb stream_sender.adb tcprelay.adb value.adb
+	listener.adb stream_sender.adb tcprelay.adb
 
 never::

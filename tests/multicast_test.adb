@@ -2,7 +2,7 @@
 --                                                                         --
 --                         ADASOCKETS COMPONENTS                           --
 --                                                                         --
---                               M U L T I                                 --
+--                      M U L T I C A S T - T E S T                        --
 --                                                                         --
 --                                B o d y                                  --
 --                                                                         --
@@ -41,7 +41,7 @@ with Ada.Exceptions;    use Ada.Exceptions;
 with Ada.Text_IO;       use Ada.Text_IO;
 with Sockets.Multicast; use Sockets, Sockets.Multicast;
 
-procedure Multi is
+procedure Multicast_Test is
 
    Sock : constant Multicast_Socket_FD :=
      Create_Multicast_Socket ("224.13.194.161", 0);
@@ -49,12 +49,11 @@ procedure Multi is
    task Send_Packets;
 
    task body Send_Packets is
-      Message : constant String := Argument (1);
    begin
       for I in 1 .. 30 loop
-         delay 2.0;
-         Put_Line ("Emitting """ & Message & """");
-         Put (Sock, Message);
+         delay 0.01;
+         Put_Line ("Emitting ""foo""");
+         Put (Sock, "foo");
       end loop;
    exception
       when E : others =>
@@ -63,10 +62,19 @@ procedure Multi is
    end Send_Packets;
 
 begin
-   loop
+   Set_Exit_Status (1);
+   select
+      delay 1.0;
+   then abort
       Put_Line ("Waiting for input");
-      Put_Line ("Received """ & Get (Sock) & """");
-   end loop;
+      if Get (Sock) = "foo" then
+         Put_Line ("Got ""foo""");
+         Set_Exit_Status (0);
+         abort Send_Packets;
+      else
+         Put_Line ("Got something else");
+      end if;
+   end select;
 exception
    when E : others =>
       Put_Line ("Exception raised in main task:" &
@@ -74,4 +82,4 @@ exception
       if Argument_Count < 1 then
          Put_Line ("Btw, usage is: multi ""string to send""");
       end if;
-end Multi;
+end Multicast_Test;

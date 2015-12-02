@@ -116,5 +116,6 @@ AC_CONFIG_FILES([Makefile
 	   src/adasockets.pc
            man/Makefile
            examples/Makefile
-           doc/Makefile])
+           doc/Makefile
+           tests/Makefile])
 AC_OUTPUT

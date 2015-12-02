@@ -54,11 +54,13 @@ support/ltversion.m4
 support/lt~obsolete.m4
 support/mdate-sh
 support/missing
+support/test-driver
 b~*.*
 *.o
 *.lo
 *.ali
 *.la
+.*.swp
 doc/adasockets.aux
 doc/adasockets.cp
 doc/adasockets.cps
@@ -84,7 +86,6 @@ examples/multi
 examples/stream_listener
 examples/stream_sender
 examples/tcprelay
-examples/value
 src/constants_nodef
 src/sockets-constants.ads
 src/sockets-thin.ads
@@ -93,3 +94,7 @@ src/.libs
 ChangeLog
 adasockets-*.tar.gz
 src/adasockets.pc
+tests/multicast_test
+tests/value
+tests/*.log
+tests/*.trs
