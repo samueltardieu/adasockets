@@ -6,7 +6,9 @@ ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 	  --subblock=exc=excname,excdesc \
 	  --template=${srcdir}/adadoc
 
-DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS}
+DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS} stamp-vti version.texi
+
+CLEANFILES = $(addprefix adasockets.,aux cp cps fn fns info log toc)
 
 EXTRA_DIST = adasockets.pdf \
 	${info_TEXINFOS} ${adasockets_TEXINFOS} \
