@@ -7,11 +7,10 @@
 @include version.texi
 
 @ifinfo
-@format
-START-INFO-DIR-ENTRY
+@dircategory Libraries
+@direntry
 * adasockets: (adasockets).		AdaSockets reference manual
-END-INFO-DIR-ENTRY
-@end format
+@end direntry
 @end ifinfo
 
 @ifinfo
