@@ -8,7 +8,7 @@ ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 
 DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS} stamp-vti version.texi
 
-CLEANFILES = $(addprefix adasockets.,aux cp cps fn fns info log toc)
+CLEANFILES = adasockets.aux adasockets.cp adasockets.cps adasockets.fn adasockets.fns adasockets.info adasockets.log adasockets.toc
 
 EXTRA_DIST = adasockets.pdf \
 	${info_TEXINFOS} ${adasockets_TEXINFOS} \
