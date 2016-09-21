@@ -29,7 +29,7 @@ EXTRA_DIST = AUTHORS.md COPYING GMGPL INSTALL.md README.md README-RTEMS.md \
 CLEANFILES = ChangeLog
 
 ChangeLog: never
-	(cd ${srcdir} && git2cl) > ChangeLog
+	(cd ${srcdir} && support/git2cl) > ChangeLog
 
 never::
 

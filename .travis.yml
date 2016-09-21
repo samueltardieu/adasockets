@@ -6,8 +6,4 @@ addons:
       - gnat
       - texinfo
       - texlive
-script:
-  - autoreconf -f -v -i
-  - ./configure
-  - make
-  - make check
+script: support/test-build.sh
