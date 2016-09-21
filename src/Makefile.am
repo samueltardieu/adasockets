@@ -1,3 +1,5 @@
+CCLD = $(CC)
+
 privatelibdir = $(libdir)/adasockets
 
 bin_SCRIPTS = adasockets-config
@@ -20,8 +22,6 @@ nodist_libadasockets_la_SOURCES = \
 	sockets-link.ads \
 	sockets-types.ads
 libadasockets_la_LDFLAGS = -version-info $(LIBVERSIONINFO)
-libadasockets_la_LINK = $(LIBTOOL) --tag=CC --mode=link $(CC) \
-	-o libadasockets.la
 
 EXTRA_DIST = Makefile.RTEMS Makefile.VMS sockets-vms_link.ads \
 	sockets-windows_link.ads sockets-windows_link.adb \
@@ -54,14 +54,14 @@ DISTCLEANFILES = b_split.c split constants_nodef \
 		sockets-constants.ads
 
 constants_nodef: constants.c config.h
-	$(CC) -I. -o constants_nodef $(srcdir)/constants.c
+	$(CC) -I. -o constants_nodef $(srcdir)/constants.c $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 sockets-constants.ads: $(srcdir)/constants.sh split constants_nodef
 	$(SHELL) $(srcdir)/constants.sh Sockets.Constants $(srcdir) \
 	  sockets-constants.ads "$(CC)"
 
 split: $(srcdir)/split.adb
-	$(GNATMAKE) -g -O2 $(srcdir)/split.adb
+	$(GNATMAKE) $(srcdir)/split.adb -cargs $(ADAFLAGS) -largs $(LDFLAGS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = adasockets.pc
@@ -85,11 +85,11 @@ SUFFIXES = .ads .lo .ali
 .ads.lo:
 	if [ -f `echo $< | sed -e 's/s$$/b/'` ]; then \
 	  $(LIBTOOL) --tag=CC --mode=compile \
-	  $(ADACOMPILER) $(GNATMAKE) $(ADAFLAGS) \
+	  $(ADACOMPILER) $(GNATMAKE) -cargs $(ADAFLAGS) -largs $(LDFLAGS) -margs \
 	  `echo $< | sed -e 's/s$$/b/'`; \
 	else \
 	  $(LIBTOOL) --tag=CC --mode=compile \
-	  $(ADACOMPILER) $(GNATMAKE) $(ADAFLAGS) $<; \
+	  $(ADACOMPILER) $(GNATMAKE) -cargs $(ADAFLAGS) -largs $(LDFLAGS) -margs $<; \
 	fi
 
 .lo.ali:

@@ -15,11 +15,11 @@ AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
 #
 # Check for maintainer mode
 #
+AC_ARG_VAR(ADAFLAGS,[Ada compiler flags])
 AC_ARG_ENABLE(maintainer-mode,
 AS_HELP_STRING(--enable-maintainer-mode,turn on debugging options),
-[ADAFLAGS="-g -O2 -Wall -Werror -gnatag -gnatwa -gnatwe"],
-[ADAFLAGS="-O2 -gnatpng"])
-AC_SUBST(ADAFLAGS)
+[ADAFLAGS="-g -O2 -Wall -Werror -gnatag -gnatwa -gnatwe $ADAFLAGS"],
+[ADAFLAGS="-O2 -gnatpng $ADAFLAGS"])
 #
 # Check for documentation build and installation
 #
