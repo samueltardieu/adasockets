@@ -14,7 +14,7 @@
 @end ifinfo
 
 @ifinfo
-Copyright @copyright{} 2002-2015 Samuel Tardieu
+Copyright @copyright{} 2002-2017 Samuel Tardieu
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -47,7 +47,7 @@ into another language, under the above conditions for modified versions.
 
 @vskip 0pt plus 1filll
 
-Copyright @copyright{} 2002-2015 Samuel Tardieu
+Copyright @copyright{} 2002-2017 Samuel Tardieu
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
