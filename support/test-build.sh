@@ -8,8 +8,10 @@ mkdir _build
 cd _build
 tar zxvf ../*.tar.gz
 cd adasockets*
-mkdir _build
+mkdir _build _install
+parent="$PWD"
 cd _build
-../configure
+../configure --prefix="$parent/_install"
 make
 make check
+make install
