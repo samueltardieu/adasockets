@@ -1,12 +1,12 @@
 info_TEXINFOS = adasockets.texi
-adasockets_TEXINFOS = sockets.texi sockets-multicast.texi sockets-naming.texi
+adasockets_TEXINFOS = sockets.texi sockets-multicast.texi sockets-naming.texi version.texi
 
 ADADOC_ARGS = --subblock=arg=argname,argmode,argtype,argdefault,argdesc \
 	  --subblock=ret=rettype,retdesc \
 	  --subblock=exc=excname,excdesc \
 	  --template=${srcdir}/adadoc
 
-DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS} stamp-vti version.texi
+DISTCLEANFILES =	*.defs ${adasockets_TEXINFOS} stamp-vti
 
 CLEANFILES = adasockets.aux adasockets.cp adasockets.cps adasockets.fn adasockets.fns adasockets.info adasockets.log adasockets.toc
 
