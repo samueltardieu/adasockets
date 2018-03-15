@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = info-in-builddir
+
 info_TEXINFOS = adasockets.texi
 adasockets_TEXINFOS = sockets.texi sockets-multicast.texi sockets-naming.texi version.texi
 
