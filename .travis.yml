@@ -6,4 +6,5 @@ addons:
       - gnat
       - texinfo
       - texlive
+      - autogen
 script: support/test-build.sh
