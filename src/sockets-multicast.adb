@@ -91,9 +91,9 @@ package body Sockets.Multicast is
          Setsockopt (Result, SOL_SOCKET, SO_REUSEPORT, 1);
       end if;
       pragma Warnings (On);
-      Bind (Result, Local_Port, Host => Local_If);
+      Bind (Result, Local_Port);
       Mreq.Imr_Multiaddr := To_In_Addr (Address_Of (Group));
-      Mreq.Imr_Interface := To_In_Addr (Address_Of ("0.0.0.0"));
+      Mreq.Imr_Interface := To_In_Addr (Address_Of (Local_If));
       Setsockopt_Add_Membership (Result, Mreq);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_TTL, TTL);
       Setsockopt (Result, IPPROTO_IP, IP_MULTICAST_LOOP, C_Self_Loop);
