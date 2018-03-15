@@ -1,4 +1,4 @@
-AC_INIT([adasockets], [1.10.1])
+AC_INIT([adasockets], [1.11.0])
 AC_CONFIG_SRCDIR([src/sockets.ads])
 AC_CONFIG_AUX_DIR([support])
 AC_CONFIG_MACRO_DIR([support])
