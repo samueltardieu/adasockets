@@ -1,5 +1,12 @@
 language: c
+
+branches:
+  only:
+    - staging
+    - trying
+
 sudo: false
+
 addons:
   apt:
     packages:
@@ -7,4 +14,5 @@ addons:
       - texinfo
       - texlive
       - autogen
+
 script: support/test-build.sh
