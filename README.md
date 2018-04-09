@@ -9,7 +9,7 @@ bugs. However, it is likely that others remain.
 
 To use AdaSockets with gnatmake once installed, type:
 
-% gnatmake `adasockets-config` ...
+    $ gnatmake $(adasockets-config) ...
 
 The `adasockets-config` part will add the correct options to gnatmake command
 line.
