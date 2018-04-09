@@ -229,11 +229,11 @@ private
    type Buffer_Type
      (Length : Ada.Streams.Stream_Element_Count)
    is record
-      Content : Ada.Streams.Stream_Element_Array (0 .. Length);
       --  One byte will stay unused, but this does not have any consequence
       First   : Ada.Streams.Stream_Element_Offset :=
         Ada.Streams.Stream_Element_Offset'Last;
       Last    : Ada.Streams.Stream_Element_Offset := 0;
+      Content : Ada.Streams.Stream_Element_Array (0 .. Length);
    end record;
 
    type Buffer_Access is access Buffer_Type;
