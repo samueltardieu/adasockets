@@ -22,7 +22,7 @@ EXTRA_DIST = AUTHORS.md COPYING GMGPL INSTALL.md README.md README-RTEMS.md \
 	contrib/win32/adasockets/build.bat contrib/win32/adasockets/clean.bat \
 	contrib/win32/adasockets/Readme.txt contrib/win32/distr \
 	contrib/win32/Readme.txt \
-	support/adacompiler \
+	src/adasockets.gpr.in support/adacompiler \
 	vms/constants.c_pre vms/constants.list vms/create_constants_ads.com \
 	vms/create_constants_c.com vms/Makefile.VMS
 
