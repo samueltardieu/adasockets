@@ -1,0 +1,8 @@
+library project Adasockets is
+   for Library_Name use "adasockets";
+   for Library_Kind use "relocatable";
+   for Library_Dir use "@libdir@";
+   for Source_Dirs use ("@ada_src_install_dir@/adasockets");
+   for Library_ALI_Dir use "@ali_install_dir@/adasockets";
+   for Externally_Built use "true";
+end Adasockets;

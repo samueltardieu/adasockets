@@ -7,8 +7,34 @@ AM_CONFIG_HEADER(src/config.h)
 #
 # Package description
 #
-LIBVERSIONINFO=1:0:0
+AC_ARG_WITH([libversioninfo],
+            [AS_HELP_STRING([--with-libversion=VSN],
+                            [Shared Object version for relocatable library [1:0:0]])],
+            [LIBVERSIONINFO=$withval],
+            [LIBVERSIONINFO=1:0:0])
 AC_SUBST(LIBVERSIONINFO)
+#
+AC_ARG_WITH([adasrcinstalldir],
+            [AS_HELP_STRING([--with-adasrcinstalldir=DIR],
+                            [Ada sources go under DIR/adasockets [LIBDIR]])],
+            [ada_src_install_dir=$withval],
+            [ada_src_install_dir='${libdir}'])
+AC_SUBST(ada_src_install_dir)
+#
+AC_ARG_WITH([aliinstalldir],
+            [AS_HELP_STRING([--with-aliinstalldir=DIR],
+                            [Ada Lib Info go under DIR/adasockets [LIBDIR]])],
+            [ali_install_dir=$withval],
+            [ali_install_dir='${libdir}'])
+AC_SUBST(ali_install_dir)
+#
+AC_ARG_WITH([gprinstalldir],
+            [AS_HELP_STRING([--with-gprinstalldir=DIR],
+                            [GPRBuild project goes under DIR [DATADIR/gpr]])],
+            [gpr_install_dir=$withval],
+            [gpr_install_dir='${datadir}/gpr'])
+AC_SUBST(gpr_install_dir)
+#
 AM_PROG_LIBTOOL
 #
 AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
