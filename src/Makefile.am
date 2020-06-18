@@ -1,7 +1,5 @@
 CCLD = $(CC)
 
-privatelibdir = $(libdir)/adasockets
-
 bin_SCRIPTS = adasockets-config
 
 lib_LTLIBRARIES = libadasockets.la
@@ -94,20 +92,32 @@ SUFFIXES = .ads .lo .ali
 
 .lo.ali:
 
+# ./configure would not substitute ${prefix} in the project.
 install-data-local: all
-	rm -rf $(DESTDIR)$(privatelibdir)
-	$(mkinstalldirs) $(DESTDIR)$(privatelibdir)
-	$(INSTALL) -m 444 $(ALIS) $(DESTDIR)$(privatelibdir)
+	rm -fr $(DESTDIR)$(ada_src_install_dir)/adasockets \
+	       $(DESTDIR)$(ali_install_dir)/adasockets
+	$(mkinstalldirs) \
+	  $(DESTDIR)$(ada_src_install_dir)/adasockets \
+	  $(DESTDIR)$(ali_install_dir)/adasockets \
+	  $(DESTDIR)$(gpr_install_dir)
+	$(INSTALL) -m 444 $(ALIS) $(DESTDIR)$(ali_install_dir)/adasockets
 	for i in $(dist_libadasockets_la_SOURCES) $(nodist_libadasockets_la_SOURCES); do \
 	  if test -f $$i; then \
-	    $(INSTALL) -m 644 $$i $(DESTDIR)$(privatelibdir); \
+	    $(INSTALL) -m 644 $$i $(DESTDIR)$(ada_src_install_dir)/adasockets; \
 	  else \
-	    $(INSTALL) -m 644  $(srcdir)/$$i $(DESTDIR)$(privatelibdir); \
+	    $(INSTALL) -m 644  $(srcdir)/$$i $(DESTDIR)$(ada_src_install_dir)/adasockets; \
 	  fi \
 	done
+	sed -e 's|@libdir[@]|$(libdir)|' \
+	    -e 's|@ada_src_install_dir[@]|$(ada_src_install_dir)|' \
+	    -e 's|@ali_install_dir[@]|$(ali_install_dir)|' \
+	     $(srcdir)/adasockets.gpr.in > $(DESTDIR)$(gpr_install_dir)/adasockets.gpr
+	chmod 644 $(DESTDIR)$(gpr_install_dir)/adasockets.gpr
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(privatelibdir)
+	rm -fr $(DESTDIR)$(ada_src_install_dir)/adasockets \
+	       $(DESTDIR)$(ali_install_dir)/adasockets
+	rm -f  $(DESTDIR)$(gpr_install_dir)/adasockets.gpr
 
 ### DO NOT REMOVE THIS LINE, IT IS USED BY MAKEDEPEND ###
 sockets-multicast.lo : sockets.ads sockets.adb sockets-constants.ads \

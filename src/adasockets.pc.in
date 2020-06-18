@@ -8,4 +8,4 @@ Description: BSD sockets in Ada.
 Requires:
 Version: @VERSION@
 Libs: -L${libdir} -ladasockets
-Cflags: -I${libdir}/adasockets -L${libdir}/adasockets
+Cflags: -aI@ada_src_install_dir@/adasockets -aO@ali_install_dir@/adasockets
