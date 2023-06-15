@@ -1,9 +1,9 @@
-AC_INIT([adasockets], [1.12])
+AC_INIT([adasockets],[1.12])
 AC_CONFIG_SRCDIR([src/sockets.ads])
 AC_CONFIG_AUX_DIR([support])
 AC_CONFIG_MACRO_DIR([support])
+AC_CONFIG_HEADERS(src/config.h)
 AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER(src/config.h)
 #
 # Package description
 #
@@ -35,7 +35,7 @@ AC_ARG_WITH([gprinstalldir],
             [gpr_install_dir='${datadir}/gpr'])
 AC_SUBST(gpr_install_dir)
 #
-AM_PROG_LIBTOOL
+LT_INIT
 #
 AC_CHECK_PROGS(AWK, [gnuawk gawk awk])
 #
@@ -88,7 +88,7 @@ fi
 #
 # Libtool checks
 #
-AC_PROG_LIBTOOL
+LT_INIT
 #
 # Test for -lnsl, -lsocket and -lresolv
 #
