@@ -21,6 +21,18 @@ You need to install the autogen software if you want to rebuild the
 documentation. You also need the autotools if you plan on modifying the
 AdaSockets build structure.
 
+## Building the development version
+
+If you build from the current development version (for example the git head version),
+you need to regenerate the configure file:
+
+```
+% autoreconf -i
+```
+
+This will invoke `autoconf`, `automake` and `libtool` (which all must be installed)
+with the right arguments.
+
 ## Building on OpenVMS
 
 ```
