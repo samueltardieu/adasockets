@@ -123,13 +123,6 @@ package body Sockets.Utils is
       else
          Raise_Exception (Socket_Error'Identity, Message);
       end if;
-
-      --  The following line works around a bug in GNAT that does not
-      --  recognize Ada.Exceptions.Raise_Exception as raising an exception,
-      --  even if it can compute statically that the occurrence cannot
-      --  be Null_Occurrence ???
-
-      raise Program_Error;
    end Raise_With_Message;
 
 end Sockets.Utils;
