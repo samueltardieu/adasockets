@@ -6,7 +6,7 @@
 --                                                                         --
 --                                B o d y                                  --
 --                                                                         --
---          Copyright (C) 1998-2020 Samuel Tardieu <sam@rfc1149.net>       --
+--          Copyright (C) 1998-2023 Samuel Tardieu <sam@rfc1149.net>       --
 --               Copyright (C) 1999-2003 ENST http://www.enst.fr/          --
 --                                                                         --
 --   AdaSockets is free software; you can  redistribute it and/or modify   --
